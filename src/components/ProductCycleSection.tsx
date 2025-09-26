@@ -73,45 +73,63 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     const discoverLabel = discoverLabelRef.current;
     const toolkitSection = toolkitSectionRef.current;
     
-    if (!section || !firstText || !secondText || !actionText || !nextSection || !nextText || !thirdSection || !thirdText || !dataInsights || !distributeLabel || !retargetLabel || !fourthSection || !fourthText || !emailMarketing || !fifthSection || !fifthText || !promotions || !sixthSection || !sixthText || !marketingInsights || !seventhSection || !seventhText || !miniPortfolio || !eighthSection || !eighthText || !discoveryChannel || !discoverLabel || !toolkitSection) return;
+    // Early return if any required elements are missing
+    if (!section || !firstText || !secondText || !actionText || !nextSection || !nextText || !thirdSection || !thirdText || !dataInsights || !distributeLabel || !retargetLabel || !fourthSection || !fourthText || !emailMarketing || !fifthSection || !fifthText || !promotions || !sixthSection || !sixthText || !marketingInsights || !seventhSection || !seventhText || !miniPortfolio || !eighthSection || !eighthText || !discoveryChannel || !discoverLabel || !toolkitSection) {
+      console.warn('ProductCycleSection: Some required elements are missing, skipping animation setup');
+      return;
+    }
 
-    const ctx = gsap.context(() => {
-      // Set initial state - both texts hidden
-      gsap.set(firstText, { opacity: 0 });
-      gsap.set(secondText, { opacity: 0 });
-      gsap.set(actionText.querySelector('.create-event'), { fontWeight: 400 });
-      gsap.set(actionText.querySelector('.issue-tickets'), { fontWeight: 400 });
-      gsap.set(nextSection, { x: "100%" });
-      gsap.set(nextText, { opacity: 0 });
-      gsap.set(thirdSection, { x: "100%" });
-      gsap.set(thirdText, { opacity: 0 });
-      gsap.set(dataInsights, { opacity: 0, y: "1.2em" });
-      gsap.set(retargetLabel, { opacity: 0 });
-      gsap.set(fourthSection, { x: "100%" });
-      gsap.set(fourthText, { opacity: 0 });
-      gsap.set(emailMarketing, { opacity: 0, y: "1.2em" });
-      gsap.set(fifthSection, { x: "100%" });
-      gsap.set(fifthText, { opacity: 0 });
-      gsap.set(promotions, { opacity: 0, y: "1.2em" });
-      gsap.set(sixthSection, { x: "100%" });
-      gsap.set(sixthText, { opacity: 0 });
-      gsap.set(marketingInsights, { opacity: 0, y: "1.2em" });
-      gsap.set(seventhSection, { x: "100%" });
-      gsap.set(seventhText, { opacity: 0 });
-      gsap.set(miniPortfolio, { opacity: 0, y: "1.2em" });
-      gsap.set(eighthSection, { x: "100%" });
-      gsap.set(eighthText, { opacity: 0 });
-      gsap.set(discoveryChannel, { opacity: 0, y: "1.2em" });
-      gsap.set(discoverLabel, { opacity: 0 });
-      gsap.set(toolkitSection, { x: "0%" });
-      
-      // Set initial position based on screen size
-      const isMobile = window.innerWidth < 768; // md breakpoint
-      if (isMobile) {
-        gsap.set(section.querySelector('.product-cycle-container'), { y: "100%" });
-      } else {
-        gsap.set(section.querySelector('.product-cycle-container'), { x: "100%" });
-      }
+    // Add a small delay to ensure DOM is fully ready, especially on mobile
+    const setupAnimation = () => {
+      try {
+
+        const ctx = gsap.context(() => {
+          // Set initial state - both texts hidden
+          gsap.set(firstText, { opacity: 0 });
+          gsap.set(secondText, { opacity: 0 });
+          
+          // Safely query selectors with null checks
+          const createEventEl = actionText?.querySelector('.create-event');
+          const issueTicketsEl = actionText?.querySelector('.issue-tickets');
+          
+          if (createEventEl) gsap.set(createEventEl, { fontWeight: 400 });
+          if (issueTicketsEl) gsap.set(issueTicketsEl, { fontWeight: 400 });
+          
+          gsap.set(nextSection, { x: "100%" });
+          gsap.set(nextText, { opacity: 0 });
+          gsap.set(thirdSection, { x: "100%" });
+          gsap.set(thirdText, { opacity: 0 });
+          gsap.set(dataInsights, { opacity: 0, y: "1.2em" });
+          gsap.set(retargetLabel, { opacity: 0 });
+          gsap.set(fourthSection, { x: "100%" });
+          gsap.set(fourthText, { opacity: 0 });
+          gsap.set(emailMarketing, { opacity: 0, y: "1.2em" });
+          gsap.set(fifthSection, { x: "100%" });
+          gsap.set(fifthText, { opacity: 0 });
+          gsap.set(promotions, { opacity: 0, y: "1.2em" });
+          gsap.set(sixthSection, { x: "100%" });
+          gsap.set(sixthText, { opacity: 0 });
+          gsap.set(marketingInsights, { opacity: 0, y: "1.2em" });
+          gsap.set(seventhSection, { x: "100%" });
+          gsap.set(seventhText, { opacity: 0 });
+          gsap.set(miniPortfolio, { opacity: 0, y: "1.2em" });
+          gsap.set(eighthSection, { x: "100%" });
+          gsap.set(eighthText, { opacity: 0 });
+          gsap.set(discoveryChannel, { opacity: 0, y: "1.2em" });
+          gsap.set(discoverLabel, { opacity: 0 });
+          gsap.set(toolkitSection, { x: "0%" });
+          
+          // Set initial position based on screen size
+          const isMobile = window.innerWidth < 768; // md breakpoint
+          const productCycleContainer = section.querySelector('.product-cycle-container');
+          
+          if (productCycleContainer) {
+            if (isMobile) {
+              gsap.set(productCycleContainer, { y: "100%" });
+            } else {
+              gsap.set(productCycleContainer, { x: "100%" });
+            }
+          }
 
       // Split first text into words for word-by-word animation
       const splitTextIntoWords = (element: Element) => {
@@ -169,36 +187,47 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       // Phase 1: Initial state (0% scroll) - both texts hidden
       tl.set(firstText, { opacity: 0 })
-        .set(secondText, { opacity: 0 })
-        .set(actionText.querySelector('.create-event'), { fontWeight: 400 })
-        .set(actionText.querySelector('.issue-tickets'), { fontWeight: 400 });
+        .set(secondText, { opacity: 0 });
+      
+      if (createEventEl) tl.set(createEventEl, { fontWeight: 400 });
+      if (issueTicketsEl) tl.set(issueTicketsEl, { fontWeight: 400 });
 
       // Phase 2: First text reveal (0-25% scroll)
-      tl.to(actionText.querySelector('.create-event'), { 
-          fontWeight: 600, 
-          duration: 0.25 
-        })
-        .to(firstText, { 
+      if (createEventEl) {
+        tl.to(createEventEl, { 
+            fontWeight: 600, 
+            duration: 0.25 
+          });
+      }
+      tl.to(firstText, { 
           opacity: 1, 
           duration: 0.1 
-        }, ">")
-        .to(firstText.querySelectorAll('.word'), {
+        }, ">");
+      
+      const firstTextWords = firstText.querySelectorAll('.word');
+      if (firstTextWords.length > 0) {
+        tl.to(firstTextWords, {
           opacity: 1,
           y: 0,
           duration: 0.4,
           stagger: 0.08,
           ease: "power2.out"
         }, ">");
+      }
 
       // Phase 3: Font weight transition (25-50% scroll)
-      tl.to(actionText.querySelector('.create-event'), { 
-          fontWeight: 400, 
-          duration: 0.25 
-        })
-        .to(actionText.querySelector('.issue-tickets'), { 
-          fontWeight: 600, 
-          duration: 0.25 
-        }, "<");
+      if (createEventEl) {
+        tl.to(createEventEl, { 
+            fontWeight: 400, 
+            duration: 0.25 
+          });
+      }
+      if (issueTicketsEl) {
+        tl.to(issueTicketsEl, { 
+            fontWeight: 600, 
+            duration: 0.25 
+          }, "<");
+      }
 
       // Phase 4: Text switch (50-75% scroll)
       tl.to(firstText, { 
@@ -208,14 +237,18 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         .to(secondText, { 
           opacity: 1, 
           duration: 0.1 
-        }, ">")
-        .to(secondText.querySelectorAll('.word'), {
+        }, ">");
+      
+      const secondTextWords = secondText.querySelectorAll('.word');
+      if (secondTextWords.length > 0) {
+        tl.to(secondTextWords, {
           opacity: 1,
           y: 0,
           duration: 0.4,
           stagger: 0.08,
           ease: "power2.out"
         }, ">");
+      }
 
       // Phase 5: Second state (75-100% scroll) - second text remains visible
       tl.set(secondText, { opacity: 1 });
@@ -230,13 +263,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(nextText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const nextTextWords = nextText.querySelectorAll('.word');
+      if (nextTextWords.length > 0) {
+        tl.to(nextTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
       // Phase 7: Slide to third section & label change (120%+ scroll)
       tl.to(nextSection, {
@@ -269,13 +305,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(thirdText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const thirdTextWords = thirdText.querySelectorAll('.word');
+      if (thirdTextWords.length > 0) {
+        tl.to(thirdTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
       // Phase 9: Slide to fourth section (160%+ scroll)
       tl.to(thirdSection, {
@@ -300,13 +339,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(fourthText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const fourthTextWords = fourthText.querySelectorAll('.word');
+      if (fourthTextWords.length > 0) {
+        tl.to(fourthTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
       // Phase 11: Slide to fifth section (200%+ scroll)
       tl.to(fourthSection, {
@@ -331,13 +373,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(fifthText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const fifthTextWords = fifthText.querySelectorAll('.word');
+      if (fifthTextWords.length > 0) {
+        tl.to(fifthTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
       // Phase 13: Slide to sixth section (240%+ scroll)
       tl.to(fifthSection, {
@@ -362,13 +407,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(sixthText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const sixthTextWords = sixthText.querySelectorAll('.word');
+      if (sixthTextWords.length > 0) {
+        tl.to(sixthTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
       // Phase 15: Slide to seventh section & label change (280%+ scroll)
       tl.to(sixthSection, {
@@ -401,13 +449,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(seventhText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const seventhTextWords = seventhText.querySelectorAll('.word');
+      if (seventhTextWords.length > 0) {
+        tl.to(seventhTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
       // Phase 17: Slide to eighth section (320%+ scroll)
       tl.to(seventhSection, {
@@ -432,42 +483,75 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         opacity: 1, 
         duration: 0.1 
       }, ">")
-      .to(eighthText.querySelectorAll('.word'), {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "power2.out"
-      }, ">");
+      const eighthTextWords = eighthText.querySelectorAll('.word');
+      if (eighthTextWords.length > 0) {
+        tl.to(eighthTextWords, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out"
+        }, ">");
+      }
 
-    }, section);
+        }, section);
 
-    // Handle resize events to update animation direction
-    const handleResize = () => {
-      const newIsMobile = window.innerWidth < 768;
-      const productCycleContainer = section?.querySelector('.product-cycle-container') as HTMLElement;
-      
-      if (productCycleContainer) {
-        if (newIsMobile) {
-          gsap.set(productCycleContainer, { x: "0%", y: "100%" });
-        } else {
-          gsap.set(productCycleContainer, { x: "100%", y: "0%" });
+        // Handle resize events to update animation direction
+        const handleResize = () => {
+          try {
+            const newIsMobile = window.innerWidth < 768;
+            const productCycleContainer = section?.querySelector('.product-cycle-container') as HTMLElement;
+            
+            if (productCycleContainer) {
+              if (newIsMobile) {
+                gsap.set(productCycleContainer, { x: "0%", y: "100%" });
+              } else {
+                gsap.set(productCycleContainer, { x: "100%", y: "0%" });
+              }
+            }
+          } catch (error) {
+            console.warn('ProductCycleSection: Error in resize handler:', error);
+          }
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+          try {
+            ctx.revert();
+            window.removeEventListener('resize', handleResize);
+          } catch (error) {
+            console.warn('ProductCycleSection: Error during cleanup:', error);
+          }
+        };
+      } catch (error) {
+        console.error('ProductCycleSection: Animation setup failed:', error);
+        // Fallback: ensure elements are visible even if animation fails
+        gsap.set([firstText, secondText, nextText, thirdText, fourthText, fifthText, sixthText, seventhText, eighthText], { opacity: 1 });
+        gsap.set([nextSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection], { x: "0%" });
+        gsap.set([dataInsights, emailMarketing, promotions, marketingInsights, miniPortfolio, discoveryChannel], { opacity: 1, y: 0 });
+        gsap.set([retargetLabel, discoverLabel], { opacity: 1 });
+        gsap.set(toolkitSection, { x: "0%" });
+        
+        const productCycleContainer = section?.querySelector('.product-cycle-container');
+        if (productCycleContainer) {
+          gsap.set(productCycleContainer, { x: "0%", y: "0%" });
         }
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    // Add a small delay to ensure DOM is fully ready, especially on mobile
+    const timeoutId = setTimeout(setupAnimation, 100);
 
     return () => {
-      ctx.revert();
-      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
     };
   }, []);
 
   return (
     <section ref={sectionRef} className={`${className || ''} w-full h-screen flex relative overflow-hidden`}>
       {/* Toolkit Section - Slides in from right first */}
-      <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden">
+      <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden" style={{ zIndex: 10 }}>
         <div className="w-full flex flex-col justify-between relative">
           {/* Top Content */}
           <div className="flex flex-col md:flex-row w-full h-fit mt-10">
