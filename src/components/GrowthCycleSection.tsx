@@ -20,9 +20,19 @@ export default function GrowthCycleSection({ className }: { className?: string }
       // Get circle radius dynamically (from first circle)
       const circleSize = circles[0].offsetWidth;
       const r = circleSize / 2;
-      const move = Math.sqrt(2) * r - r / 2.5; // diagonal move distance
-
+      
+      // Adjust move distance based on screen size
       const isMobile = window.innerWidth < 768; // detect mobile
+      const isSmallMobile = window.innerWidth < 480; // detect very small screens
+      
+      let move;
+      if (isSmallMobile) {
+        move = Math.sqrt(2) * r - r / 2.6; // smaller move for very small screens
+      } else if (isMobile) {
+        move = Math.sqrt(2) * r - r / 2.8; // slightly smaller move for mobile
+      } else {
+        move = Math.sqrt(2) * r - r / 2.5; // original move for desktop
+      }
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -130,20 +140,20 @@ export default function GrowthCycleSection({ className }: { className?: string }
           />
 
           {/* Animation container */}
-          <div className="w-full h-[80vh] z-30 relative flex items-center justify-center">
+          <div className="w-full h-[80vh] z-30 relative flex items-center justify-center px-4 sm:px-6 md:px-0">
             {/* Circles */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="circle w-[20%] min-w-[200px] center border border-[#343434]"></div>
-              <div className="circle w-[20%] min-w-[200px] border border-[#343434]">
+              <div className="circle w-[15%] sm:w-[18%] md:w-[20%] min-w-[150px] sm:min-w-[150px] md:min-w-[200px] center border border-[#343434]"></div>
+              <div className="circle w-[15%] sm:w-[18%] md:w-[20%] min-w-[150px] sm:min-w-[150px] md:min-w-[200px] border border-[#343434]">
                 <span className="circle-text text-[#ffffffbd]">Discover</span>
               </div>
-              <div className="circle w-[20%] min-w-[200px] border border-[#343434]">
+              <div className="circle w-[15%] sm:w-[18%] md:w-[20%] min-w-[150px] sm:min-w-[150px] md:min-w-[200px] border border-[#343434]">
                 <span className="circle-text text-[#ffffffbd]">Connect</span>
               </div>
-              <div className="circle w-[20%] min-w-[200px] border border-[#343434]">
+              <div className="circle w-[15%] sm:w-[18%] md:w-[20%] min-w-[150px] sm:min-w-[150px] md:min-w-[200px] border border-[#343434]">
                 <span className="circle-text text-[#ffffffbd]">Belong</span>
               </div>
-              <div className="circle w-[20%] min-w-[200px] border border-[#343434]">
+              <div className="circle w-[15%] sm:w-[18%] md:w-[20%] min-w-[150px] sm:min-w-[150px] md:min-w-[200px] border border-[#343434]">
                 <span className="circle-text text-[#ffffffbd]">Cultivate</span>
               </div>
             </div>
@@ -151,16 +161,16 @@ export default function GrowthCycleSection({ className }: { className?: string }
             {/* Feature Cards */}
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:left-auto md:right-auto">
               {/* Distribution Tools Card */}
-              <div className="card p-6 w-80 max-w-sm rounded-xl shadow-lg">
+              <div className="card p-4 sm:p-6 w-72 sm:w-80 max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="relative w-20 h-20 rounded-full flex items-center justify-center">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center">
                     <Image
                       src={"/Assets/Icons/Distribute.svg"}
                       alt="distribute"
                       fill
                     />
                   </div>
-                  <h3 className="text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
+                  <h3 className="text-2xl sm:text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
                     Distribution <br /> Tools
                   </h3>
                   <p className="text-xs text-[#949494] font-nohemi400 leading-relaxed">
@@ -170,16 +180,16 @@ export default function GrowthCycleSection({ className }: { className?: string }
               </div>
 
               {/* Data Insights Card */}
-              <div className="card p-6 w-80 max-w-sm rounded-xl shadow-lg">
+              <div className="card p-4 sm:p-6 w-72 sm:w-80 max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="relative w-20 h-20 rounded-full flex items-center justify-center">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center">
                     <Image
                       src={"/Assets/Icons/Insight.svg"}
                       alt="insight"
                       fill
                     />
                   </div>
-                  <h3 className="text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
+                  <h3 className="text-2xl sm:text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
                     Data <br /> Insights
                   </h3>
                   <p className="text-xs text-[#949494] font-nohemi400 leading-relaxed">
@@ -189,16 +199,16 @@ export default function GrowthCycleSection({ className }: { className?: string }
               </div>
 
               {/* Third Spaces Card */}
-              <div className="card p-6 w-80 max-w-sm rounded-xl shadow-lg">
+              <div className="card p-4 sm:p-6 w-72 sm:w-80 max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="relative w-20 h-20 rounded-full flex items-center justify-center">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center">
                     <Image
                       src={"/Assets/Icons/Space.svg"}
                       alt="space"
                       fill
                     />
                   </div>
-                  <h3 className="text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
+                  <h3 className="text-2xl sm:text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
                     Third <br /> Spaces
                   </h3>
                   <p className="text-xs text-[#949494] font-nohemi400 leading-relaxed">
@@ -240,8 +250,8 @@ export default function GrowthCycleSection({ className }: { className?: string }
               left: 50% !important;
               top: 50% !important;
               transform: translate(-50%, -50%) !important;
-              width: 320px !important;
-              max-width: 90vw !important;
+              width: 288px !important;
+              max-width: 85vw !important;
             }
           }
         `}</style>

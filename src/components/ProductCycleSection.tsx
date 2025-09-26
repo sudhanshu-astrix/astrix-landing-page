@@ -593,34 +593,34 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Main content */}
         <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
           {/* Text Content */}
-          <div className='w-full h-full flex flex-col items-start relative pt-20'>
+          <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-20'>
             {/* First Text */}
-            <div ref={firstTextRef} className="w-[80%] h-full flex flex-col pb-10 items-end justify-between">
-              <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+            <div ref={firstTextRef} className="w-full md:w-[80%] h-full flex flex-col pb-6 md:pb-10 items-end justify-between">
+              <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                 <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
               </h2>
-              <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+              <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                 <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
               </p>
             </div>
 
             {/* Second Text */}
-            <div ref={secondTextRef} className="absolute w-[80%] h-[70%] flex flex-col items-end justify-between">
-              <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+            <div ref={secondTextRef} className="absolute w-full md:w-[80%] h-[70%] flex flex-col items-end justify-between">
+              <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                 <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
               </h2>
-              <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+              <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                 <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
               </p>
             </div>
           </div>
 
           {/* Action Texts  */}
-          <div ref={actionTextRef} className='w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-            <p className='text-lg md:text-2xl font-nohemi400 text-gray-600 create-event'>
+          <div ref={actionTextRef} className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+            <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 create-event'>
               Create Event
             </p>
-            <p className='text-lg md:text-2xl font-nohemi400 text-gray-600 issue-tickets'>
+            <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 issue-tickets'>
               Issue Tickets
             </p>
           </div>
@@ -710,19 +710,19 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={thirdTextRef} className='w-full flex flex-col items-end relative h-full pt-10 md:pt-0'>
-                <div className="w-full flex flex-col py-10 items-end h-full md:h-[60%] md:justify-between justify-around">
-                  <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+              <div ref={thirdTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+                <div className="w-full flex flex-col py-6 md:py-10 items-end h-full md:h-[60%] md:justify-between justify-around">
+                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Own your data and make data-driven decisions.</span>
                   </h2>
-                  <p className="text-sm md:text-xl w-2/3 md:w-[80%] text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[80%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Unlock actionable insights on every event - from ticket sales to demographics and traffic sources.</span>
                   </p>
                 </div>
               </div>
               {/* Action Texts  */}
-              <div className='w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-                <p ref={dataInsightsRef} className='text-lg md:text-2xl font-nohemi400 text-[#363636] create-event'>
+              <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+                <p ref={dataInsightsRef} className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636] create-event'>
                   DATA INSIGHTS
                 </p>
               </div>
@@ -755,20 +755,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-full pt-10 md:pt-0'>
-                <div className="w-full flex flex-col py-10 items-end h-full md:h-[60%] md:justify-between justify-around">
-                  <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+              <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+                <div className="w-full flex flex-col py-6 md:py-10 items-end h-full md:h-[60%] md:justify-between justify-around">
+                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard.</span>
                   </h2>
-                  <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Reach fans where they are with data-backed precision.</span>
                   </p>
                 </div>
               </div>
 
               {/* Action Texts  */}
-              <div className='w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-                <p ref={emailMarketingRef} className='text-lg md:text-2xl font-nohemi400 text-[#363636] create-event'>
+              <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+                <p ref={emailMarketingRef} className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636] create-event'>
                   EMAIL MARKETING
                 </p>
               </div>
@@ -815,20 +815,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full md:order-2">
             <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={fifthTextRef} className='w-full flex flex-col items-end relative h-full md:pt-0'>
-                <div className="w-full flex flex-col py-0 md:py-10 items-end h-[60%] justify-between">
-                  <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+              <div ref={fifthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+                <div className="w-full flex flex-col py-6 md:py-10 items-end h-[60%] justify-between">
+                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Set up exclusive promoter codes and custom discounts in seconds.</span>
                   </h2>
-                  <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Boost sales, empower superfans, and simplify campaign tracking.</span>
                   </p>
                 </div>
               </div>
 
               {/* Action Texts  */}
-              <div className='text-left md:w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-                <p ref={promotionsRef} className='text-lg md:text-2xl font-nohemi400 text-[#363636] create-event w-1/2 md:w-full'>
+              <div className='text-left md:w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+                <p ref={promotionsRef} className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636] create-event w-full md:w-full'>
                   PROMOTIONS AND DISCOUNT CODES
                 </p>
               </div>
@@ -854,20 +854,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={sixthTextRef} className='w-full flex flex-col items-end relative h-full pt-20 md:pt-0'>
-                <div className="w-full flex flex-col items-end h-[50%] gap-10 justify-between">
-                  <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+              <div ref={sixthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+                <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
+                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">See the full story with live analytics - track revenue, reach, contacts and performance.</span>
                   </h2>
-                  <p className="text-sm md:text-xl w-2/3 md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Know what's working, fix what's not, and maximise every campaign.</span>
                   </p>
                 </div>
               </div>
 
               {/* Action Texts  */}
-              <div className='w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-                <p ref={marketingInsightsRef} className='text-lg md:text-2xl font-nohemi400 text-[#363636] create-event'>
+              <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+                <p ref={marketingInsightsRef} className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636] create-event'>
                   MARKETING INSIGHTS
                 </p>
               </div>
@@ -908,20 +908,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={seventhTextRef} className='w-full flex flex-col items-end relative h-full pt-20 md:pt-0'>
-                <div className="w-full flex flex-col items-start md:items-end h-[50%] gap-10 justify-between">
-                  <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+              <div ref={seventhTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+                <div className="w-full flex flex-col items-start md:items-end h-[50%] gap-6 md:gap-10 justify-between">
+                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists.</span>
                   </h2>
-                  <p className="text-sm md:text-xl w-2/3 md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Share your page and ask fans to subscribe, so you get direct access to their emails for future updates.</span>
                   </p>
                 </div>
               </div>
 
               {/* Action Texts  */}
-              <div className='w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-                <p ref={miniPortfolioRef} className='text-lg md:text-2xl font-nohemi400 text-[#363636] create-event'>
+              <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+                <p ref={miniPortfolioRef} className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636] create-event'>
                   MINI PORTFOLIO
                 </p>
               </div>
@@ -939,7 +939,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className='w-full h-full z-10 relative'>
-              <Image src="/Assets/Images/Toolkit/Discover_Portfolio.svg" alt="mini portfolio mobile app" fill className="object-contain md:object-cover" />
+              <Image src="/Assets/Images/Toolkit/Discover_Portfolio.svg" alt="mini portfolio mobile app" fill className="object-cover" />
             </div>
           </div>
         </div>
@@ -969,7 +969,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className='w-full h-full z-10 relative '>
-              <Image src="/Assets/Images/Toolkit/Discover_DiscoveryChannel.svg" alt="discovery channel mobile app" fill className="object-contain md:object-cover" />
+              <Image src="/Assets/Images/Toolkit/Discover_DiscoveryChannel.svg" alt="discovery channel mobile app" fill className="object-cover" />
             </div>
           </div>
 
@@ -977,20 +977,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full order-1 md:order-2">
             <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-20 md:pt-0'>
-                <div className="w-full flex flex-col items-end h-[50%] gap-10 justify-between">
-                  <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+              <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+                <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
+                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar</span>
                   </h2>
-                  <p className="text-sm md:text-xl w-2/3 md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Empower superfans, boost ticket sales, with frictionless campaign tools.</span>
                   </p>
                 </div>
               </div>
 
               {/* Action Texts  */}
-              <div className='w-full flex flex-col items-end md:items-start gap-0 py-3 md:py-5'>
-                <p ref={discoveryChannelRef} className='text-lg md:text-2xl font-nohemi400 text-[#363636] create-event'>
+              <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+                <p ref={discoveryChannelRef} className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636] create-event'>
                   DISCOVERY CHANNEL
                 </p>
               </div>
