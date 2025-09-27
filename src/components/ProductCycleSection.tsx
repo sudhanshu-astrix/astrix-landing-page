@@ -675,25 +675,25 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
         
         {/* Main content */}
-        <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+        <div className="h-full w-full mx-4 md:mx-25 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
           {/* Text Content */}
-          <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-20'>
+          <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
             {/* First Text */}
-            <div ref={firstTextRef} className="w-full md:w-[80%] h-full flex flex-col pb-6 md:pb-10 items-end justify-between">
-              <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+            <div ref={firstTextRef} className="w-full md:w-full h-fit flex flex-col pb-6 md:pb-0 items-end md:gap-20 justify-between">
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                 <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
               </h2>
-              <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                 <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
               </p>
             </div>
 
             {/* Second Text */}
-            <div ref={secondTextRef} className="absolute w-full md:w-[80%] h-[70%] flex flex-col items-end justify-between">
-              <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+            <div ref={secondTextRef} className="absolute w-full md:w-full h-[70%] md:h-fit md:gap-10 flex flex-col items-end justify-between">
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                 <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
               </h2>
-              <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                 <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
               </p>
             </div>
@@ -757,7 +757,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                {/* Text Content */}
                <div ref={nextTextRef} className='w-full flex flex-col items-end relative h-full pt-10 md:pt-0'>
                  <div className="w-full flex flex-col items-end h-full md:h-[50%] justify-around">
-                   <h2 className="text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
+                   <h2 className="text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
                      <span className="word-by-word">Give your fans a seamless way to book their tickets – apply discounts, confirm instantly.</span>
                    </h2>
                    <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
@@ -792,14 +792,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-25 md:mr-18 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={thirdTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
-                <div className="w-full flex flex-col py-6 md:py-10 items-end h-full md:h-[60%] md:justify-between justify-around">
-                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                <div className="w-full flex flex-col py-6 md:pt-10 items-end h-full md:h-[60%] md:justify-between justify-around">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Own your data and make data-driven decisions.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[80%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[80%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-0">
                     <span className="word-by-word">Unlock actionable insights on every event - from ticket sales to demographics and traffic sources.</span>
                   </p>
                 </div>
@@ -837,11 +837,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-25 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
-                <div className="w-full flex flex-col py-6 md:py-10 items-end h-full md:h-[60%] md:justify-between justify-around">
-                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+              <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-fit pt-16 md:pt-0'>
+                <div className="w-full flex flex-col py-6 md:py-0 items-end h-full md:h-fit md:gap-10 md:justify-between justify-around">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard.</span>
                   </h2>
                   <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
@@ -897,11 +897,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
           {/* Right Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full md:order-2">
-            <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:mr-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={fifthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
-                <div className="w-full flex flex-col py-6 md:py-10 items-end h-[60%] justify-between">
-                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                <div className="w-full flex flex-col py-6 md:py-10 items-end h-[60%] md:h-fit md:gap-10 justify-between">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Set up exclusive promoter codes and custom discounts in seconds.</span>
                   </h2>
                   <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
@@ -936,14 +936,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={sixthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
-                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">See the full story with live analytics - track revenue, reach, contacts and performance.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Know what's working, fix what's not, and maximise every campaign.</span>
                   </p>
                 </div>
@@ -990,14 +990,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={seventhTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-start md:items-end h-[50%] gap-6 md:gap-10 justify-between">
-                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Share your page and ask fans to subscribe, so you get direct access to their emails for future updates.</span>
                   </p>
                 </div>
@@ -1059,14 +1059,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           {/* Right Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full order-1 md:order-2">
-            <div className="h-full w-full mx-4 md:mx-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:mr-25 px-4 md:pl-14 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
-                  <h2 className="text-xl sm:text-2xl md:text-5xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[40%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Empower superfans, boost ticket sales, with frictionless campaign tools.</span>
                   </p>
                 </div>
