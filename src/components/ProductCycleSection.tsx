@@ -570,10 +570,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                     fill
                     className="object-contain"
                   />
-                  <h3 className="absolute top-[40%] md:top-[38%] lg:top-[38%] left-[18%] sm:text-[32px] md:text-[46px] lg:text-[48px] leading-none text-[#F0E9B2] instrument-serif-regular">
+                  <h3 className="absolute top-[40%] md:top-[38%] lg:top-[38%] left-[18%] sm:text-[32px] md:text-[40px] lg:text-[40px] leading-none text-[#F0E9B2] instrument-serif-regular">
                     Your Toolkit
                   </h3>
-                  <div className="absolute animate-pulse rotate-[90deg] md:rotate-0 w-[75px] md:w-[100px] h-[75px] md:h-[100px] top-[34.5%] right-[25.5%] md:right-[25%]">
+                  <div className="absolute animate-pulse rotate-[90deg] md:rotate-0 w-[75px] md:w-[80px] h-[75px] md:h-[80px] top-[34.5%] right-[25.5%] md:right-[25%]">
                     <Image
                       src={"/Assets/Icons/ToolkitArrow.svg"}
                       alt="arrow"
