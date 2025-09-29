@@ -50,7 +50,7 @@ export default function HeroSection({ className }: { className?: string }) {
 
       <div className="relative z-10 bottom-30 flex h-[45vh] flex-col items-center justify-between px-4 sm:px-6 md:px-8">
         <div className="text-center w-full h-full max-w-[90%] md:max-w-[80%] flex flex-col justify-between gap-6">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-nohemi600 text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-nohemi400 text-white leading-tight">
             An omnichannel platform<br />
             for optimizing community-<br />
             building process

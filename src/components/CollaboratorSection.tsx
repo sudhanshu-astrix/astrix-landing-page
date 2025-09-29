@@ -241,13 +241,13 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
                   
                   {/* Content */}
                   <div className="space-y-4 pl-4 border-l-[0.5px] border-[#E4E4E4] pt-6">
-                    <h3 className="text-lg md:text-2xl font-nohemi600 text-[#E4E4E4] leading-tight">
+                    <h3 className="text-lg md:text-3xl font-nohemi300 text-[#E4E4E4] leading-tight">
                       {collaborator.title}
                     </h3>
-                    <p className="text-xs md:text-xs text-[#9C9C9C] font-nohemi400 break-words leading-relaxed max-w-[350px]">
+                    <p className="text-xs md:text-xs text-[#9C9C9C] font-switzer400 break-words leading-relaxed max-w-[350px]">
                       {collaborator.description}
                     </p>
-                    <div className="text-[12px] md:text-[10px] text-[#E4E4E4] font-nohemi500 uppercase tracking-wider">
+                    <div className="text-[12px] md:text-[10px] text-[#E4E4E4] font-nohemi400 uppercase tracking-wider">
                       {collaborator.category}
                     </div>
                   </div>

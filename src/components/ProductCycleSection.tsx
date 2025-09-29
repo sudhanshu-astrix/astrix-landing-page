@@ -292,6 +292,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       .to(retargetLabel, { 
         opacity: 1, 
         duration: 0.25 
+      }, "labelChange")
+      .to(".distribute-mobile", { 
+        opacity: 0, 
+        duration: 0.25 
+      }, "labelChange")
+      .to(".retarget-mobile", { 
+        opacity: 1, 
+        duration: 0.25 
       }, "labelChange");
 
       // Phase 8: Third section text reveal (140%+ scroll)
@@ -436,6 +444,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       .to(discoverLabel, { 
         opacity: 1, 
         duration: 0.25 
+      }, "labelChange2")
+      .to(".retarget-mobile", { 
+        opacity: 0, 
+        duration: 0.25 
+      }, "labelChange2")
+      .to(".discover-mobile", { 
+        opacity: 1, 
+        duration: 0.25 
       }, "labelChange2");
 
       // Phase 16: Seventh section text reveal (300%+ scroll)
@@ -554,8 +570,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden" style={{ zIndex: 10 }}>
         <div className="w-full flex flex-col justify-between relative">
           {/* Top Content */}
-          <div className="flex flex-col md:flex-row w-full h-fit mt-10">
-            <h2 className="text-white text-3xl sm:text-4xl md:text-5xl ml-10 lg:text-[44px] max-w-[500px] md:max-w-[58%] w-[80%] md:w-[58%] font-nohemi500 leading-tight">
+          <div className="flex flex-col md:flex-row w-full h-fit mt-5 md:mt-10">
+            <h2 className="text-white text-2xl sm:text-4xl md:text-4xl ml-5 md:ml-10 lg:text-[44px] w-[70%] md:w-[100%] font-switzer400 leading-tight md:leading-tight">
               If your community had an HQ,
               it'd probably be here. Discover,
               distribute, and nudge fans
@@ -570,10 +586,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                     fill
                     className="object-contain"
                   />
-                  <h3 className="absolute top-[40%] md:top-[38%] lg:top-[38%] left-[18%] sm:text-[32px] md:text-[40px] lg:text-[40px] leading-none text-[#F0E9B2] instrument-serif-regular">
+                  <h3 className="absolute top-[38%] md:top-[38%] lg:top-[38%] left-[10%] md:left-[18%] text-[40px] md:text-[40px] leading-none text-[#F0E9B2] instrument-serif-regular">
                     Your Toolkit
                   </h3>
-                  <div className="absolute animate-pulse rotate-[90deg] md:rotate-0 w-[75px] md:w-[80px] h-[75px] md:h-[80px] top-[34.5%] right-[25.5%] md:right-[25%]">
+                  <div className="absolute animate-pulse rotate-[90deg] md:rotate-0 w-[60px] md:w-[80px] h-[60px] md:h-[80px] top-[34.5%] md:top-[34.5%] right-[24%] md:right-[25%] transition-all duration-300 hover:scale-[1.1]">
                     <Image
                       src={"/Assets/Icons/ToolkitArrow.svg"}
                       alt="arrow"
@@ -600,7 +616,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="absolute -bottom-40 md:-bottom-35 translate-x-[70%] md:translate-x-[130%] z-2 w-[70%] md:w-[40%] aspect-[4/3] transition-all hover:translate-y-[-10%] duration-300">
               <Image src="/Assets/Images/CenterRight.svg" alt="center right" fill className="object-contain" />
             </div>
-            <div className="absolute -bottom-50 translate-x-[185%] md:w-[40%] aspect-[4/3] transition-all hover:translate-y-[-10%] duration-300">
+            <div className="absolute -bottom-40 translate-x-[185%] md:w-[40%] aspect-[4/3] z-0 transition-all hover:translate-y-[-10%] duration-300">
               <Image src="/Assets/Images/RightCorner.svg" alt="right corner" fill className="object-contain" />
             </div>
           </div>
@@ -620,7 +636,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         {/* Vertical line and label - Fixed in place */}
-        <div className="absolute left-25 top-0 w-[0.5px] h-full bg-black z-50 hidden md:block"></div>
+        <div className="absolute left-24 top-0 w-[0.5px] h-full bg-black z-50 hidden md:block"></div>
         <div className="absolute md:hidden left-0 top-20 w-full h-[0.5px] bg-black z-50 block"></div>
         {/* 
           The horizontal line should extend/contract based on cursor X position.
@@ -662,20 +678,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
         {/* Labels - Desktop: rotated, Mobile: horizontal at top */}
         <div className="absolute left-0 bottom-40 -rotate-90 text-[#363636] instrument-serif-regular text-4xl tracking-wider z-50 hidden md:block">
-          <span ref={distributeLabelRef} className="absolute top-10 -left-14">Distribute</span>
-          <span ref={retargetLabelRef} className="absolute top-10 -left-14 opacity-0">Retarget</span>
-          <span ref={discoverLabelRef} className="absolute top-10 -left-14 opacity-0">Discover</span>
+          <span ref={distributeLabelRef} className="absolute top-10 -left-16">Distribute</span>
+          <span ref={retargetLabelRef} className="absolute top-10 -left-16 opacity-0">Retarget</span>
+          <span ref={discoverLabelRef} className="absolute top-10 -left-16 opacity-0">Discover</span>
         </div>
         
         {/* Mobile Labels - Horizontal at top */}
         <div className="absolute top-6 left-8 text-[#363636] instrument-serif-regular text-4xl tracking-wider z-50 md:hidden">
-          <span ref={distributeLabelRef} className="block absolute top-0 left-0">Distribute</span>
-          <span ref={retargetLabelRef} className="block opacity-0 absolute top-0 left-0">Retarget</span>
-          <span ref={discoverLabelRef} className="block opacity-0 absolute top-0 left-0">Discover</span>
+          <span className="block absolute top-0 left-0 distribute-mobile">Distribute</span>
+          <span className="block opacity-0 absolute top-0 left-0 retarget-mobile">Retarget</span>
+          <span className="block opacity-0 absolute top-0 left-0 discover-mobile">Discover</span>
         </div>
         
         {/* Main content */}
-        <div className="h-full w-full mx-4 md:mx-25 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+        <div className="h-full w-full mx-4 md:ml-24 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
           {/* Text Content */}
           <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
             {/* First Text */}
@@ -683,7 +699,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                 <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
               </h2>
-              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                 <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
               </p>
             </div>
@@ -693,7 +709,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                 <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
               </h2>
-              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                 <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
               </p>
             </div>
@@ -792,7 +808,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:ml-25 md:mr-18 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-24 md:mr-18 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={thirdTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col py-6 md:pt-10 items-end h-full md:h-[60%] md:justify-between justify-around">
@@ -837,7 +853,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:ml-25 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-24 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-fit pt-16 md:pt-0'>
                 <div className="w-full flex flex-col py-6 md:py-0 items-end h-full md:h-fit md:gap-10 md:justify-between justify-around">
@@ -891,13 +907,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Visual Content (Laptop Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full md:order-1">
-            <div className='mx-4 md:mx-25 w-full h-full overflow-hidden relative md:left-20 left-4 -bottom-10'>
+            <div className='mx-4 md:mx-24 w-full h-full overflow-hidden relative md:left-20 left-4 -bottom-10'>
               <Image src="/Assets/Images/Toolkit/Retarget_Promotions.svg" alt="promotions dashboard" fill className="object-contain" />
             </div>
           </div>
           {/* Right Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full md:order-2">
-            <div className="h-full w-full mx-4 md:mr-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:mr-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={fifthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col py-6 md:py-10 items-end h-[60%] md:h-fit md:gap-10 justify-between">
@@ -936,7 +952,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:ml-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={sixthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
@@ -990,7 +1006,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
-            <div className="h-full w-full mx-4 md:ml-25 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:ml-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={seventhTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-start md:items-end h-[50%] gap-6 md:gap-10 justify-between">
@@ -1059,7 +1075,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           {/* Right Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full order-1 md:order-2">
-            <div className="h-full w-full mx-4 md:mr-25 px-4 md:pl-14 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:mr-24 px-4 md:pl-14 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">

@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
@@ -48,10 +50,45 @@
 }
 
 @font-face {
+  font-family: "SwitzerThin";
+  src: url("/Fonts/Switzer/Switzer-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerThinItalic";
+  src: url("/Fonts/Switzer/Switzer-ThinItalic.ttf") format("truetype");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "SwitzerExtralight";
+  src: url("/Fonts/Switzer/Switzer-Extralight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerExtralightItalic";
+  src: url("/Fonts/Switzer/Switzer-ExtralightItalic.ttf") format("truetype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
   font-family: "SwitzerLight";
   src: url("/Fonts/Switzer/Switzer-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerLightItalic";
+  src: url("/Fonts/Switzer/Switzer-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
 }
 
 @font-face {
@@ -62,10 +99,24 @@
 }
 
 @font-face {
+  font-family: "SwitzerItalic";
+  src: url("/Fonts/Switzer/Switzer-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
   font-family: "SwitzerMedium";
   src: url("/Fonts/Switzer/Switzer-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerMediumItalic";
+  src: url("/Fonts/Switzer/Switzer-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
 }
 
 @font-face {
@@ -76,10 +127,66 @@
 }
 
 @font-face {
+  font-family: "SwitzerSemiboldItalic";
+  src: url("/Fonts/Switzer/Switzer-SemiboldItalic.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
   font-family: "SwitzerBold";
   src: url("/Fonts/Switzer/Switzer-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerBoldItalic";
+  src: url("/Fonts/Switzer/Switzer-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "SwitzerExtrabold";
+  src: url("/Fonts/Switzer/Switzer-Extrabold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerExtraboldItalic";
+  src: url("/Fonts/Switzer/Switzer-ExtraboldItalic.ttf") format("truetype");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "SwitzerBlack";
+  src: url("/Fonts/Switzer/Switzer-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerBlackItalic";
+  src: url("/Fonts/Switzer/Switzer-BlackItalic.ttf") format("truetype");
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "SwitzerVariable";
+  src: url("/Fonts/Switzer/Switzer-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SwitzerVariableItalic";
+  src: url("/Fonts/Switzer/Switzer-VariableItalic.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
 }
 
 html {
