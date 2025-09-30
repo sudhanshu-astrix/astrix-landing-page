@@ -6,20 +6,39 @@ import { useState } from "react";
 export default function HeroSection({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <section className={`${className || ''} relative min-h-screen h-fit w-full flex flex-col justify-between overflow-hidden`}>
+    <section className={`${className || ''} relative min-h-screen h-[120vh] md:h-fit w-full flex flex-col justify-between overflow-hidden`}>
       <div className="absolute inset-0 z-0 w-full h-full">
+        {/* Desktop Hero Image */}
         <Image
           src="/Assets/Images/HeroImage.png"
           alt="Hero Background"
           fill
-          className="object-cover"
+          className="object-cover hidden md:block"
           priority
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        {/* Mobile Hero Image */}
+        <Image
+          src="/Assets/Images/HeroImageMobile.svg"
+          alt="Hero Background Mobile"
+          fill
+          className="object-cover md:hidden"
+          priority
+        />
+        
+        {/* Noise effect background */}
+        <Image
+          src="/Assets/Images/NoiseEffectBg.svg"
+          alt="noise texture"
+          fill
+          className="absolute z-10 object-cover"
+          style={{ mixBlendMode: "multiply" }}
+        />
+        
+        <div className="absolute inset-0 bg-black/40 z-20"></div>
       </div>
 
       <nav className="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full">
-        <div className="flex items-center gap-2 w-[100%] max-w-[120px] h-[30px] relative">
+        <div className="flex items-center gap-2 w-[100%] max-w-[80px] h-[30px] relative">
           <Image
             src="/Assets/Icons/LogoIcon.png"
             alt="Astrix Logo"
@@ -29,14 +48,14 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5">ABOUT</button>
-          <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5">PRICING</button>
-          <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5">CONTACT US</button>
+          <button className="w-fit px-5 py-2 flex flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">ABOUT</button>
+          <button className="w-fit px-5 py-2 flex flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">PRICING</button>
+          <button className="w-fit px-5 py-2 flex flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">CONTACT US</button>
           {/* <Button href="#about" variant="nav" size="sm">ABOUT</Button> */}
           {/* <Button href="#pricing" variant="nav" size="sm">PRICING</Button> */}
           {/* <Button href="#contact" variant="nav" size="sm">CONTACT US</Button> */}
         </div>
-        <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex w-fit px-6 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5">GET STARTED</a>
+        <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex w-fit px-5 py-2 flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">GET STARTED</a>
 
         <button 
           className="md:hidden text-white z-50"
@@ -48,18 +67,21 @@ export default function HeroSection({ className }: { className?: string }) {
         </button>
       </nav>
 
-      <div className="relative z-10 bottom-30 flex h-[45vh] flex-col items-center justify-between px-4 sm:px-6 md:px-8">
-        <div className="text-center w-full h-full max-w-[90%] md:max-w-[80%] flex flex-col justify-between gap-6">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-nohemi400 text-white leading-tight">
+      <div className="relative z-10 bottom-30 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0">
+        <div className="text-center w-full h-fit max-w-full md:max-w-[80%] flex flex-col justify-around gap-10 md:gap-14">
+          <h1 className="text-2xl md:text-6xl lg:text-7xl font-nohemi400 text-white leading-tight">
             An omnichannel platform<br />
-            for optimizing community-<br />
-            building process
+            <span className="ml-10 md:ml-28">for optimizing community-</span><br />
+            <span className="ml-8 md:ml-0">building process</span>
           </h1>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[#0F0F0F]">GET STARTED</a>
-            <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5">BOOK A DEMO</button>
+          <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
+            <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none">GET STARTED</a>
+            <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none">BOOK A DEMO</button>
           </div>
+        </div>
+        <div className="relative w-full h-[30vh] md:hidden">
+          <Image src="/Assets/Images/HeroImageMobile.svg" alt="Hero Background Mobile" fill className="object-cover" priority />
         </div>
       </div>
 
@@ -91,7 +113,7 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="flex flex-col h-full">
           {/* Menu Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-700">
-            <div className="flex items-center gap-2 w-[100px] h-[30px] relative">
+            <div className="flex items-center gap-2 w-[60px] h-[20px] relative">
               <Image
                 src="/Assets/Icons/LogoIcon.png"
                 alt="Astrix Logo"
@@ -110,24 +132,24 @@ export default function HeroSection({ className }: { className?: string }) {
           </div>
 
           {/* Menu Items */}
-          <div className="flex-1 flex flex-col justify-center px-6 space-y-8">
+          <div className="flex-1 flex flex-col justify-start px-6 pt-8 space-y-6">
             <a 
               href="#" 
-              className="text-white text-xl font-nohemi400 hover:text-[#CCD0D7] transition-colors"
+              className="text-white text-xs font-nohemi400 hover:text-[#CCD0D7] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               ABOUT
             </a>
             <a 
               href="#" 
-              className="text-white text-xl font-nohemi400 hover:text-[#CCD0D7] transition-colors"
+              className="text-white text-xs font-nohemi400 hover:text-[#CCD0D7] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               PRICING
             </a>
             <a 
               href="#contact" 
-              className="text-white text-xl font-nohemi400 hover:text-[#CCD0D7] transition-colors"
+              className="text-white text-xs font-nohemi400 hover:text-[#CCD0D7] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               CONTACT US
@@ -136,7 +158,7 @@ export default function HeroSection({ className }: { className?: string }) {
               href="https://app.astrix.live" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-fit px-6 py-3 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white"
+              className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-xs leading-none"
               onClick={() => setIsMenuOpen(false)}
             >
               GET STARTED

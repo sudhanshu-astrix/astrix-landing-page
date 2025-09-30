@@ -23,19 +23,111 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Infinite automated scroll animation
-      const tl = gsap.timeline({ repeat: -1 });
+      // Mobile: Combined manual scroll + automated animation
+      let autoScrollTl: gsap.core.Timeline | null = null;
+      let isUserScrolling = false;
+      let scrollTimeout: NodeJS.Timeout;
+      let startX = 0;
+      let currentX = 0;
+
+      // Function to start auto scroll
+      const startAutoScroll = () => {
+        if (autoScrollTl) autoScrollTl.kill();
+        
+        autoScrollTl = gsap.timeline({ repeat: -1 });
+        
+        autoScrollTl.to(cards, {
+          x: () => -((cards.scrollWidth + 200) - window.innerWidth + 200),
+          duration: 70,
+          ease: "none",
+        })
+        .to(cards, {
+          x: 0,
+          duration: 0.5,
+          ease: "power2.inOut",
+        });
+      };
+
+      // Function to pause auto scroll
+      const pauseAutoScroll = () => {
+        if (autoScrollTl) {
+          autoScrollTl.pause();
+        }
+      };
+
+      // Function to resume auto scroll
+      const resumeAutoScroll = () => {
+        if (!isUserScrolling) {
+          startAutoScroll();
+        }
+      };
+
+      // Touch event handlers
+      const handleTouchStart = (e: TouchEvent) => {
+        console.log('Touch start detected');
+        isUserScrolling = true;
+        pauseAutoScroll();
+        
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        currentX = gsap.getProperty(cards, "x") as number;
+      };
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (isUserScrolling) {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const deltaX = touch.clientX - startX;
+          
+          // Apply manual scroll
+          gsap.set(cards, {
+            x: currentX + deltaX,
+            overwrite: true
+          });
+        }
+      };
+
+      const handleTouchEnd = () => {
+        console.log('Touch end detected');
+        isUserScrolling = false;
+        
+        // Clear timeout and set new one
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          resumeAutoScroll();
+        }, 2000);
+      };
+
+      // Add touch event listeners to both section and cards container
+      const section = sectionRef.current;
+      if (section) {
+        section.addEventListener('touchstart', handleTouchStart, { passive: false });
+        section.addEventListener('touchmove', handleTouchMove, { passive: false });
+        section.addEventListener('touchend', handleTouchEnd, { passive: false });
+      }
       
-      tl.to(cards, {
-        x: () => -((cards.scrollWidth + 200) - window.innerWidth + 200),
-        duration: 30, // 20 seconds for full scroll
-        ease: "none",
-      })
-      .to(cards, {
-        x: 0,
-        duration: 0.5,
-        ease: "power2.inOut",
-      });
+      cards.addEventListener('touchstart', handleTouchStart, { passive: false });
+      cards.addEventListener('touchmove', handleTouchMove, { passive: false });
+      cards.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+      // Start initial auto scroll
+      startAutoScroll();
+
+      // Cleanup function
+      return () => {
+        if (autoScrollTl) autoScrollTl.kill();
+        clearTimeout(scrollTimeout);
+        
+        if (section) {
+          section.removeEventListener('touchstart', handleTouchStart);
+          section.removeEventListener('touchmove', handleTouchMove);
+          section.removeEventListener('touchend', handleTouchEnd);
+        }
+        
+        cards.removeEventListener('touchstart', handleTouchStart);
+        cards.removeEventListener('touchmove', handleTouchMove);
+        cards.removeEventListener('touchend', handleTouchEnd);
+      };
     } else {
       // Desktop: ScrollTrigger animation
       const tl = gsap.timeline({
@@ -53,11 +145,11 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         x: () => -((cards.scrollWidth + 200) - window.innerWidth + 200), // Add extra padding to reach last card
         ease: "none",
       });
-    }
 
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
+      return () => {
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      };
+    }
   }, []);
 
   // Collaborator data matching the design
@@ -198,24 +290,24 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
   ];
 
   return (
-    <section ref={sectionRef} className={`h-screen bg-[#0A0A0A] flex items-center overflow-hidden ${className || ''}`}>
-      <div className="w-full mx-auto px-8 flex gap-20 items-center">
-        {/* Section Title - Left Side */}
-        <div className="flex-shrink-0 w-fit">
-          <h2 className="text-3xl instrument-serif-regular md:text-3xl lg:text-7xl text-[#F0E9B2] leading-tight">
+    <section ref={sectionRef} className={`h-screen bg-[#0A0A0A] flex flex-col md:flex-row items-start md:items-center overflow-hidden ${className || ''}`}>
+      <div className="w-full mx-auto px-8 flex flex-col md:flex-row gap-8 md:gap-20 items-start md:items-center h-full">
+        {/* Section Title - Top on mobile, Left on desktop */}
+        <div className="flex-shrink-0 md:w-fit pt-8 md:pt-0 w-full">
+          <h2 className="text-4xl instrument-serif-regular md:text-3xl lg:text-7xl text-[#F0E9B2] leading-tight">
             Collaborators
           </h2>
-          <p className="text-lg md:text-xl text-white font-nohemi400 mt-2 text-right">
+          <p className="text-xs md:text-xl text-[#949494] md:text-[#E4E4E4] font-nohemi300 md:font-nohemi400 mt-2 text-right">
             2024-25
           </p>
         </div>
 
-        {/* Horizontal Scrolling Cards - Right Side */}
-        <div className="flex-1 relative h-[80vh]">
+        {/* Horizontal Scrolling Cards - Below title on mobile, Right side on desktop */}
+        <div className="flex-1 relative h-[60vh] md:h-[80vh] w-full">
           <div 
             ref={cardsRef}
-            className={`flex gap-12 h-full bg-[#0A0A0A]`}
-            style={{ width: "max-content" }}
+            className={`flex gap-12 h-full bg-[#0A0A0A] touch-pan-x`}
+            style={{ width: "max-content", touchAction: "pan-x" }}
           >
             {collaborators.map((collaborator, index) => (
               <div
@@ -240,14 +332,14 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
                   </div>
                   
                   {/* Content */}
-                  <div className="space-y-4 pl-4 border-l-[0.5px] border-[#E4E4E4] pt-6">
+                  <div className="space-y-3 pl-4 border-l-[0.5px] border-[#E4E4E4] pt-6">
                     <h3 className="text-lg md:text-3xl font-nohemi300 text-[#E4E4E4] leading-tight">
                       {collaborator.title}
                     </h3>
-                    <p className="text-xs md:text-xs text-[#9C9C9C] font-switzer400 break-words leading-relaxed max-w-[350px]">
+                    <p className="text-xs md:text-[10px] text-[#9C9C9C] font-switzer400 break-words leading-relaxed max-w-[350px]">
                       {collaborator.description}
                     </p>
-                    <div className="text-[12px] md:text-[10px] text-[#E4E4E4] font-nohemi400 uppercase tracking-wider">
+                    <div className="text-[12px] md:text-[8px] text-[#E4E4E4] font-nohemi400 tracking-wider">
                       {collaborator.category}
                     </div>
                   </div>

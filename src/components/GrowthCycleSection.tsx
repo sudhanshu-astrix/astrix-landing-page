@@ -37,53 +37,67 @@ export default function GrowthCycleSection({ className }: { className?: string }
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top",
+          start: "center center",
           end: "+=3000",
           scrub: true,
           pin: true,
         },
       });
 
-      // Step 1: Expand circles outward
+      // Step 1: Expand circles outward diagonally
       tl.to(circles[1], { x: -move, y: -move }, 0)
         .to(circles[2], { x: move, y: -move }, 0)
         .to(circles[3], { x: move, y: move }, 0)
         .to(circles[4], { x: -move, y: move }, 0);
 
-      // Step 2: Reveal texts clockwise
+      // Step 2: Reveal texts clockwise (white text)
       tl.to(texts[0], { opacity: 1 }, ">")
         .to(texts[1], { opacity: 1 }, ">")
         .to(texts[2], { opacity: 1 }, ">")
         .to(texts[3], { opacity: 1 }, ">");
 
-      // Step 3: Cards animation
+      // Step 3: Fade circles and texts to 50% opacity
+      tl.to(circles, { opacity: 0.5 }, ">")
+        .to(texts, { opacity: 0.5 }, "<");
+
+      // Step 4: Cards animation
       if (isMobile) {
-        // Ensure all cards start off-screen bottom and are properly positioned
-        gsap.set(cards, { 
-          y: "100vh", 
-          opacity: 0,
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)"
+        // Mobile: True vertical carousel - only one card visible at a time
+        const viewportHeight = window.innerHeight;
+        
+        // Set initial positions - all cards start hidden below viewport
+        cards.forEach((card, i) => {
+          gsap.set(card, {
+            y: `${(i + 1) * viewportHeight}px`, // All cards start below viewport
+            opacity: 0, // All cards hidden initially
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            xPercent: -50,
+            yPercent: -50
+          });
         });
       
+        // Create sequential card reveal animation - all cards follow same pattern
         cards.forEach((card, i) => {
+          const cardHeight = viewportHeight;
+          
+          // All cards: slide in from below, hold, slide out to top
           tl.to(card, { 
-              y: "0vh", 
-              opacity: 1, 
-              duration: 0.8, 
-              ease: "power2.out" 
-            }, ">+0.5") // slide in from bottom
-            .to(card, { 
-              duration: 0.5 // hold in center 
-            })
-            .to(card, { 
-              y: "-100vh", 
-              opacity: 0, 
-              duration: 0.8, 
-              ease: "power2.in" 
-            }); // slide out to top
+            opacity: 1,
+            y: "0px", 
+            duration: 1.0, 
+            ease: "power2.out" 
+          }, ">") // Start after previous card
+          .to(card, { 
+            duration: 1.0 // Hold card visible
+          })
+          .to(card, { 
+            opacity: 0,
+            y: `-${cardHeight}px`, // Slide out to top
+            duration: 1.0, 
+            ease: "power2.in" 
+          }); // Slide out to make room for next card
         });
       } else {
         // Desktop: show all 3 together
@@ -91,7 +105,7 @@ export default function GrowthCycleSection({ className }: { className?: string }
           cards,
           { x: 400, y: -180, opacity: 0 },
           { x: 0, opacity: 1, stagger: 0.3 },
-          ">+0.5"
+          ">" // after fade effect
         );
       }
     }, sectionRef);
@@ -113,7 +127,7 @@ export default function GrowthCycleSection({ className }: { className?: string }
         </div>
 
         {/* Circular animation section */}
-        <div className="w-full flex flex-1 md:h-[100vh] h-[80vh] relative overflow-hidden">
+        <div className="w-full flex flex-1 md:h-[200vh] h-[80vh] relative overflow-hidden">
           {/* Background image */}
           <Image
             src="/Assets/Images/group23.svg"
@@ -140,79 +154,79 @@ export default function GrowthCycleSection({ className }: { className?: string }
           />
 
           {/* Animation container */}
-          <div className="w-full md:h-[100vh] h-[80vh] z-30 relative flex items-center justify-center px-4 sm:px-6 md:px-0">
+          <div className="w-full md:h-[200vh] h-[80vh] z-30 relative flex items-center justify-center px-4 sm:px-6 md:px-0">
             {/* Circles */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="circle w-[15%] sm:w-[18%] md:w-[23%] min-w-[250px] md:min-w-[250px] center border border-[#343434]"></div>
-              <div className="circle w-[15%] sm:w-[18%] md:w-[23%] min-w-[250px] md:min-w-[250px] border border-[#343434]">
-                <span className="circle-text text-[#ffffff5a]">Discover</span>
+              <div className="circle w-[25%] sm:w-[28%] md:w-[40%] min-w-[200px] md:min-w-[360px] center border border-[#343434]"></div>
+              <div className="circle w-[25%] sm:w-[28%] md:w-[40%] min-w-[200px] md:min-w-[360px] border border-[#343434]">
+                <span className="circle-text text-[#ffffff5a] uppercase">Discover</span>
               </div>
-              <div className="circle w-[15%] sm:w-[18%] md:w-[23%] min-w-[250px] md:min-w-[250px] border border-[#343434]">
-                <span className="circle-text text-[#ffffff5a]">Connect</span>
+              <div className="circle w-[25%] sm:w-[28%] md:w-[40%] min-w-[200px] md:min-w-[360px] border border-[#343434]">
+                <span className="circle-text text-[#ffffff5a] uppercase">Connect</span>
               </div>
-              <div className="circle w-[15%] sm:w-[18%] md:w-[23%] min-w-[250px] md:min-w-[250px] border border-[#343434]">
-                <span className="circle-text text-[#ffffff5a]">Belong</span>
+              <div className="circle w-[25%] sm:w-[28%] md:w-[40%] min-w-[200px] md:min-w-[360px] border border-[#343434]">
+                <span className="circle-text text-[#ffffff5a] uppercase">Belong</span>
               </div>
-              <div className="circle w-[15%] sm:w-[18%] md:w-[23%] min-w-[250px] md:min-w-[250px] border border-[#343434]">
-                <span className="circle-text text-[#ffffff5a]">Cultivate</span>
+              <div className="circle w-[25%] sm:w-[28%] md:w-[40%] min-w-[200px] md:min-w-[360px] border border-[#343434]">
+                <span className="circle-text text-[#ffffff5a] uppercase">Cultivate</span>
               </div>
             </div>
 
             {/* Feature Cards */}
-            <div className="flex flex-col md:flex-row gap-6 md:gap-10 absolute top-[40%] md:top-[51%] left-1/2 transform -translate-x-1/2 md:translate-x-0 md:left-auto md:right-auto">
+            <div className="w-full flex flex-col md:flex-row gap-6 md:gap-10 absolute top-[40%] md:top-[51%] left-1/2 transform -translate-x-1/2 md:translate-x-0 md:left-auto md:right-auto justify-around">
               {/* Distribution Tools Card */}
-              <div className="card p-4 sm:p-6 w-72 sm:w-80 max-w-sm rounded-xl shadow-lg">
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="relative w-14 h-14 sm:w-20 sm:h-20 md:w-18 md:h-18 rounded-full flex items-center justify-center">
+              <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
+                <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
+                  <div className="relative w-16 h-16 sm:w-24 sm:h-24 md:w-18 md:h-18 rounded-full flex items-center justify-center">
                     <Image
                       src={"/Assets/Icons/Distribute.svg"}
                       alt="distribute"
                       fill
                     />
                   </div>
-                  <h3 className="text-xl sm:text-2xl md:text-2xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
+                  <h3 className="text-2xl sm:text-3xl md:text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
                     Distribution <br /> Tools
                   </h3>
-                  <p className="text-[10px] sm:text-xs md:text-xs text-[#949494] font-nohemi400 leading-relaxed">
-                    Unified tools for distribution (e.g. tickets, <br /> marketing, rewards from a single dashboard)
+                  <p className="text-sm sm:text-base md:text-sm text-[#949494] font-switzer400 leading-relaxed">
+                    Unified tools for distribution (e.g. tickets, marketing, rewards from a single dashboard)
                   </p>
                 </div>
               </div>
 
               {/* Data Insights Card */}
-              <div className="card p-4 sm:p-6 w-72 sm:w-80 max-w-sm rounded-xl shadow-lg">
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="relative w-14 h-14 sm:w-20 sm:h-20 md:w-18 md:h-18 rounded-full flex items-center justify-center">
+              <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
+                <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
+                  <div className="relative w-16 h-16 sm:w-24 sm:h-24 md:w-18 md:h-18 rounded-full flex items-center justify-center">
                     <Image
                       src={"/Assets/Icons/Insight.svg"}
                       alt="insight"
                       fill
                     />
                   </div>
-                  <h3 className="text-xl sm:text-2xl md:text-2xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
+                  <h3 className="text-2xl sm:text-3xl md:text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
                     Data <br /> Insights
                   </h3>
-                  <p className="text-[10px] sm:text-xs md:text-xs text-[#949494] font-nohemi400 leading-relaxed">
+                  <p className="text-sm sm:text-base md:text-sm text-[#949494] font-switzer400 leading-relaxed">
                     Target your fans with data- <br /> backed insights.
                   </p>
                 </div>
               </div>
 
               {/* Third Spaces Card */}
-              <div className="card p-4 sm:p-6 w-72 sm:w-80 max-w-sm rounded-xl shadow-lg">
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="relative w-14 h-14 sm:w-20 sm:h-20 md:w-18 md:h-18 rounded-full flex items-center justify-center">
+              <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
+                <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
+                  <div className="relative w-16 h-16 sm:w-24 sm:h-24 md:w-18 md:h-18 rounded-full flex items-center justify-center">
                     <Image
                       src={"/Assets/Icons/Space.svg"}
                       alt="space"
                       fill
                     />
                   </div>
-                  <h3 className="text-xl sm:text-2xl md:text-2xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
+                  <h3 className="text-2xl sm:text-3xl md:text-3xl font-nohemi500 text-[#E4E4E4] instrument-serif-regular">
                     Third <br /> Spaces
                   </h3>
-                  <p className="text-[10px] sm:text-xs md:text-xs text-[#949494] font-nohemi400 leading-relaxed">
-                    Give your fans a dedicated portal leading to <br /> loyalty and authentic relationships
+                  <p className="text-sm sm:text-base md:text-sm text-[#949494] font-switzer400 leading-relaxed">
+                    Give your fans a dedicated portal leading to loyalty and authentic relationships
                   </p>
                 </div>
               </div>
@@ -249,9 +263,13 @@ export default function GrowthCycleSection({ className }: { className?: string }
               position: absolute !important;
               left: 50% !important;
               top: 50% !important;
-              transform: translate(-50%, -50%) !important;
-              width: 288px !important;
-              max-width: 85vw !important;
+              width: 90vw !important;
+              max-width: 90vw !important;
+              height: 80vh !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              z-index: 50 !important;
             }
           }
         `}</style>
