@@ -95,32 +95,46 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           if (createEventEl) gsap.set(createEventEl, { fontWeight: 400 });
           if (issueTicketsEl) gsap.set(issueTicketsEl, { fontWeight: 400 });
           
-          gsap.set(nextSection, { x: "100%" });
+          // Set initial positions based on screen size
+          const isMobile = window.innerWidth < 768; // md breakpoint
+          if (isMobile) {
+            // Mobile: Stack sections vertically - each section starts below the previous one
+            gsap.set(nextSection, { y: "100%" });
+            gsap.set(thirdSection, { y: "200%" });
+            gsap.set(fourthSection, { y: "300%" });
+            gsap.set(fifthSection, { y: "400%" });
+            gsap.set(sixthSection, { y: "500%" });
+            gsap.set(seventhSection, { y: "600%" });
+            gsap.set(eighthSection, { y: "700%" });
+            gsap.set(toolkitSection, { y: "0%" });
+          } else {
+            gsap.set(nextSection, { x: "100%" });
+            gsap.set(thirdSection, { x: "100%" });
+            gsap.set(fourthSection, { x: "100%" });
+            gsap.set(fifthSection, { x: "100%" });
+            gsap.set(sixthSection, { x: "100%" });
+            gsap.set(seventhSection, { x: "100%" });
+            gsap.set(eighthSection, { x: "100%" });
+            gsap.set(toolkitSection, { x: "0%" });
+          }
+          
           gsap.set(nextText, { opacity: 0 });
-          gsap.set(thirdSection, { x: "100%" });
           gsap.set(thirdText, { opacity: 0 });
           gsap.set(dataInsights, { opacity: 0, y: "1.2em" });
           gsap.set(retargetLabel, { opacity: 0 });
-          gsap.set(fourthSection, { x: "100%" });
           gsap.set(fourthText, { opacity: 0 });
           gsap.set(emailMarketing, { opacity: 0, y: "1.2em" });
-          gsap.set(fifthSection, { x: "100%" });
           gsap.set(fifthText, { opacity: 0 });
           gsap.set(promotions, { opacity: 0, y: "1.2em" });
-          gsap.set(sixthSection, { x: "100%" });
           gsap.set(sixthText, { opacity: 0 });
           gsap.set(marketingInsights, { opacity: 0, y: "1.2em" });
-          gsap.set(seventhSection, { x: "100%" });
           gsap.set(seventhText, { opacity: 0 });
           gsap.set(miniPortfolio, { opacity: 0, y: "1.2em" });
-          gsap.set(eighthSection, { x: "100%" });
           gsap.set(eighthText, { opacity: 0 });
           gsap.set(discoveryChannel, { opacity: 0, y: "1.2em" });
           gsap.set(discoverLabel, { opacity: 0 });
-          gsap.set(toolkitSection, { x: "0%" });
           
           // Set initial position based on screen size
-          const isMobile = window.innerWidth < 768; // md breakpoint
           const productCycleContainer = section.querySelector('.product-cycle-container');
           
           if (productCycleContainer) {
@@ -164,11 +178,19 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       });
 
       // Phase 0: Toolkit section slides out, ProductCycle section slides in
-      tl.to(toolkitSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      });
+      if (isMobile) {
+        tl.to(toolkitSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        });
+      } else {
+        tl.to(toolkitSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        });
+      }
       
       // Animate ProductCycle container based on screen size
       if (isMobile) {
@@ -254,15 +276,24 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       tl.set(secondText, { opacity: 1 });
 
       // Phase 6: Slide to next section (100%+ scroll)
-      tl.to(nextSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(nextText, { 
+      if (isMobile) {
+        tl.to(nextSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        });
+      } else {
+        tl.to(nextSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        });
+      }
+      
+      tl.to(nextText, { 
         opacity: 1, 
         duration: 0.1 
-      }, ">")
+      }, ">");
       const nextTextWords = nextText.querySelectorAll('.word');
       if (nextTextWords.length > 0) {
         tl.to(nextTextWords, {
@@ -275,17 +306,31 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Phase 7: Slide to third section & label change (120%+ scroll)
-      tl.to(nextSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(thirdSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      }, "<")
-      .to(distributeLabel, { 
+      if (isMobile) {
+        tl.to(nextSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(thirdSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      } else {
+        tl.to(nextSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(thirdSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      }
+      
+      tl.to(distributeLabel, { 
         opacity: 0, 
         duration: 0.25 
       }, "labelChange")
@@ -325,16 +370,29 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Phase 9: Slide to fourth section (160%+ scroll)
-      tl.to(thirdSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(fourthSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      }, "<");
+      if (isMobile) {
+        tl.to(thirdSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(fourthSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      } else {
+        tl.to(thirdSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(fourthSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      }
 
       // Phase 10: Fourth section text reveal (180%+ scroll)
       tl.to(emailMarketing, {
@@ -359,16 +417,29 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Phase 11: Slide to fifth section (200%+ scroll)
-      tl.to(fourthSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(fifthSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      }, "<");
+      if (isMobile) {
+        tl.to(fourthSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(fifthSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      } else {
+        tl.to(fourthSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(fifthSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      }
 
       // Phase 12: Fifth section text reveal (220%+ scroll)
       tl.to(promotions, {
@@ -393,16 +464,29 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Phase 13: Slide to sixth section (240%+ scroll)
-      tl.to(fifthSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(sixthSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      }, "<");
+      if (isMobile) {
+        tl.to(fifthSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(sixthSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      } else {
+        tl.to(fifthSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(sixthSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      }
 
       // Phase 14: Sixth section text reveal (260%+ scroll)
       tl.to(marketingInsights, {
@@ -427,17 +511,31 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Phase 15: Slide to seventh section & label change (280%+ scroll)
-      tl.to(sixthSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(seventhSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      }, "<")
-      .to(retargetLabel, { 
+      if (isMobile) {
+        tl.to(sixthSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(seventhSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      } else {
+        tl.to(sixthSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(seventhSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      }
+      
+      tl.to(retargetLabel, { 
         opacity: 0, 
         duration: 0.25 
       }, "labelChange2")
@@ -477,16 +575,29 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Phase 17: Slide to eighth section (320%+ scroll)
-      tl.to(seventhSection, {
-        x: "-100%",
-        duration: 1,
-        ease: "power2.inOut"
-      })
-      .to(eighthSection, {
-        x: "0%",
-        duration: 1,
-        ease: "power2.inOut"
-      }, "<");
+      if (isMobile) {
+        tl.to(seventhSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(eighthSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      } else {
+        tl.to(seventhSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        })
+        .to(eighthSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "<");
+      }
 
       // Phase 18: Eighth section text reveal (340%+ scroll)
       tl.to(discoveryChannel, {
@@ -521,8 +632,24 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             if (productCycleContainer) {
               if (newIsMobile) {
                 gsap.set(productCycleContainer, { x: "0%", y: "100%" });
+                gsap.set(toolkitSection, { x: "0%", y: "0%" });
+                gsap.set(nextSection, { x: "0%", y: "100%" });
+                gsap.set(thirdSection, { x: "0%", y: "200%" });
+                gsap.set(fourthSection, { x: "0%", y: "300%" });
+                gsap.set(fifthSection, { x: "0%", y: "400%" });
+                gsap.set(sixthSection, { x: "0%", y: "500%" });
+                gsap.set(seventhSection, { x: "0%", y: "600%" });
+                gsap.set(eighthSection, { x: "0%", y: "700%" });
               } else {
                 gsap.set(productCycleContainer, { x: "100%", y: "0%" });
+                gsap.set(toolkitSection, { x: "0%", y: "0%" });
+                gsap.set(nextSection, { x: "100%", y: "0%" });
+                gsap.set(thirdSection, { x: "100%", y: "0%" });
+                gsap.set(fourthSection, { x: "100%", y: "0%" });
+                gsap.set(fifthSection, { x: "100%", y: "0%" });
+                gsap.set(sixthSection, { x: "100%", y: "0%" });
+                gsap.set(seventhSection, { x: "100%", y: "0%" });
+                gsap.set(eighthSection, { x: "100%", y: "0%" });
               }
             }
           } catch (error) {
@@ -544,10 +671,19 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         console.error('ProductCycleSection: Animation setup failed:', error);
         // Fallback: ensure elements are visible even if animation fails
         gsap.set([firstText, secondText, nextText, thirdText, fourthText, fifthText, sixthText, seventhText, eighthText], { opacity: 1 });
-        gsap.set([nextSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection], { x: "0%" });
+        
+        // Set sections based on screen size
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          gsap.set([nextSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection], { x: "0%", y: "0%" });
+          gsap.set(toolkitSection, { x: "0%", y: "0%" });
+        } else {
+          gsap.set([nextSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection], { x: "0%" });
+          gsap.set(toolkitSection, { x: "0%" });
+        }
+        
         gsap.set([dataInsights, emailMarketing, promotions, marketingInsights, miniPortfolio, discoveryChannel], { opacity: 1, y: 0 });
         gsap.set([retargetLabel, discoverLabel], { opacity: 1 });
-        gsap.set(toolkitSection, { x: "0%" });
         
         const productCycleContainer = section?.querySelector('.product-cycle-container');
         if (productCycleContainer) {
@@ -776,7 +912,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                    <h2 className="text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
                      <span className="word-by-word">Give your fans a seamless way to book their tickets – apply discounts, confirm instantly.</span>
                    </h2>
-                   <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-6 md:mb-8">
+                   <p className="text-sm md:text-xl w-2/3 md:w-1/2 text-left font-switzer300 text-gray-600 italic mb-6 md:mb-8">
                      <span className="word-by-word">Flexible phases, codes, and RSVPs designed for every event format.</span>
                    </p>
                  </div>
@@ -815,7 +951,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Own your data and make data-driven decisions.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[80%] text-left font-switzer600 text-gray-600 italic mb-4 md:mb-0">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-[80%] text-left font-switzer300 text-gray-600 italic mb-4 md:mb-0">
                     <span className="word-by-word">Unlock actionable insights on every event - from ticket sales to demographics and traffic sources.</span>
                   </p>
                 </div>
@@ -860,7 +996,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Reach fans where they are with data-backed precision.</span>
                   </p>
                 </div>
@@ -920,7 +1056,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Set up exclusive promoter codes and custom discounts in seconds.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Boost sales, empower superfans, and simplify campaign tracking.</span>
                   </p>
                 </div>
@@ -959,7 +1095,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">See the full story with live analytics - track revenue, reach, contacts and performance.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Know what's working, fix what's not, and maximise every campaign.</span>
                   </p>
                 </div>
@@ -1013,7 +1149,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists.</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Share your page and ask fans to subscribe, so you get direct access to their emails for future updates.</span>
                   </p>
                 </div>
@@ -1082,7 +1218,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar</span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer600 text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-left font-switzer300 text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Empower superfans, boost ticket sales, with frictionless campaign tools.</span>
                   </p>
                 </div>
