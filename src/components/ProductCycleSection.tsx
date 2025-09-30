@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,6 +15,7 @@ interface ProductCycleSectionProps {
 
 const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [currentGif, setCurrentGif] = useState<'createEvent' | 'issueTickets'>('createEvent');
   const firstTextRef = useRef<HTMLDivElement>(null);
   const secondTextRef = useRef<HTMLDivElement>(null);
   const actionTextRef = useRef<HTMLDivElement>(null);
@@ -248,7 +249,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         tl.to(issueTicketsEl, { 
             fontWeight: 600, 
             duration: 0.25 
-          }, "<");
+          }, "<")
+          .call(() => setCurrentGif('issueTickets'), [], 0);
       }
 
       // Phase 4: Text switch (50-75% scroll)
@@ -863,12 +865,38 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Right Panel - Visual Content */}
-      <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
-        <div className='w-full h-full'>
-          <Image src="/Assets/Images/Toolkit/Distribute_CreateEvent.svg" alt="product cycle" fill className="object-cover" />
+        {/* Right Panel - Visual Content */}
+        <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+          <div className='w-full h-full relative'>
+            {/* Static SVG Background */}
+            <Image 
+              src="/Assets/Images/Toolkit/Distribute_CreateEvent.svg" 
+              alt="Create Event Background" 
+              fill 
+              className="object-cover" 
+            />
+            {/* GIF Overlay */}
+            {/* <div className='absolute inset-0 md:w-[80%] top-[40%] md:h-[25%] translate-x-[5%] mx-auto h-w-full h-full rounded-xl overflow-hidden'>
+              <Image 
+                src="/Assets/Images/Toolkit/Distribute_IssueTickets.gif" 
+                alt="Create Event Animation" 
+                fill 
+                className="object-contain" 
+              />
+            </div> */}
+             <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
+         <Image
+           src={currentGif === 'createEvent' 
+             ? "/Assets/Images/Toolkit/Distribute_CreateEvent.gif" 
+             : "/Assets/Images/Toolkit/Distribute_IssueTickets.gif"
+           }
+           alt={currentGif === 'createEvent' ? "Create Event Animation" : "Issue Tickets Animation"}
+           fill
+           className="w-full h-full object-cover [transform:perspective(800px)_rotateX(6deg)] md:[transform:perspective(800px)_rotateX(4deg)] rounded-lg"
+         />
+       </div>
+          </div>
         </div>
-      </div>
 
       {/* Next Section - Slides in from right */}
       <div ref={nextSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
