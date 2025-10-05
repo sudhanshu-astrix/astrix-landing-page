@@ -869,8 +869,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
           <div className='w-full h-full relative'>
             {/* Static SVG Background */}
-            <Image 
+            {/* <Image 
               src="/Assets/Images/Toolkit/Distribute_CreateEvent.svg" 
+              alt="Create Event Background" 
+              fill 
+              className="object-cover" 
+            /> */}
+            <Image 
+              src="/Assets/Gifs/creation.gif" 
               alt="Create Event Background" 
               fill 
               className="object-cover" 
@@ -884,7 +890,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 className="object-contain" 
               />
             </div> */}
-             <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
+             {/* <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
          <Image
            src={currentGif === 'createEvent' 
              ? "/Assets/Images/Toolkit/Distribute_CreateEvent.gif" 
@@ -894,7 +900,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
            fill
            className="w-full h-full object-cover [transform:perspective(800px)_rotateX(6deg)] md:[transform:perspective(800px)_rotateX(4deg)] rounded-lg"
          />
-       </div>
+       </div> */}
           </div>
         </div>
 
@@ -995,9 +1001,17 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           {/* Right Half - Visual Content (Laptop Image) */}
           <div className="w-full md:w-1/2 bg-gray-800 relative flex items-center justify-center h-1/2 md:h-full">
-            <div className='w-full h-full'>
+            {/* <div className='w-full h-full'>
               <Image src="/Assets/Images/Toolkit/Retarget_DataInsights.svg" alt="product cycle dashboard" fill className="object-cover" />
-            </div>
+            </div> */}
+             <div className="laptopWrapper h-full min-h-screen">
+      <div className="laptop w-full h-full min-h-screen">
+        <img src="/Assets/Frames/scene1.png" alt="a laptop frame" className='w-full h-full object-cover' />
+        <div className="laptopScreen skew-x-[-1.5deg] absolute w-[56.5%] h-[36%] top-[29%] left-[22%] rounded skew-y-[0.1deg] rotate-x-[0deg] rotate-y-[0deg] rotate-z-[0deg]">
+          <img src="/Assets/Gifs/dashboard.gif" alt="mock gif" className="laptopApp " />
+        </div>
+      </div>
+    </div>
           </div>
         </div>
       </div>
