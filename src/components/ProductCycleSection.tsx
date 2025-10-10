@@ -734,7 +734,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         
         {/* Main content */}
         <div ref={mainContentRef} className="top-0 left-0 w-full h-full flex flex-col md:flex-row">
-          <div className="md:w-1/2 md:h-full h-1/2 w-full mx-4 md:ml-24 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+          <div className="md:w-1/2 md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
             {/* Text Content */}
             <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
               {/* First Text */}
@@ -772,7 +772,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className='w-full h-full relative'>
               {/* Static SVG Background */}
               <Image 
-                src="/Assets/Images/Toolkit/Distribute_CreateEvent.svg" 
+                src={currentGif === "createEvent" ? "/Assets/Images/Toolkit/Creation.gif" : "/Assets/Images/Toolkit/Ticket.gif"}
                 alt="Create Event Background" 
                 fill 
                 className="object-cover" 
@@ -786,7 +786,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   className="object-contain" 
                 />
               </div> */}
-              <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
+              {/* <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
           <Image
             src={currentGif === 'createEvent' 
               ? "/Assets/Images/Toolkit/Distribute_CreateEvent.gif" 
@@ -796,7 +796,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             fill
             className="w-full h-full object-cover [transform:perspective(800px)_rotateX(6deg)] md:[transform:perspective(800px)_rotateX(4deg)] rounded-lg"
           />
-          </div>
+          </div> */}
             </div>
           </div>
         </div>
@@ -903,7 +903,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           {/* Right Half - Visual Content (Laptop Image) */}
           <div className="w-full md:w-1/2 bg-gray-800 relative flex items-center justify-center h-1/2 md:h-full">
             <div className='w-full h-full'>
-              <Image src="/Assets/Images/Toolkit/Retarget_DataInsights.svg" alt="product cycle dashboard" fill className="object-cover" />
+              <Image src="/Assets/Images/Toolkit/Data.gif" alt="product cycle dashboard" fill className="object-cover" />
             </div>
           </div>
         </div>
