@@ -1,29 +1,41 @@
 "use client";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function HeroSection({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Ensure video plays immediately on mount
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.log("Video autoplay failed:", error);
+      });
+    }
+  }, []);
+
   return (
     <section className={`${className || ''} relative min-h-screen h-[120vh] md:h-fit w-full flex flex-col justify-between overflow-hidden`}>
       <div className="absolute inset-0 z-0 w-full h-full">
-        {/* Desktop Hero Image */}
-        <Image
-          src="/Assets/Images/HeroImage.png"
-          alt="Hero Background"
-          fill
-          className="object-cover hidden md:block"
-          priority
-        />
-        {/* Mobile Hero Image */}
-        <Image
-          src="/Assets/Images/HeroImageMobile.svg"
-          alt="Hero Background Mobile"
-          fill
-          className="object-cover md:hidden"
-          priority
-        />
+        {/* Hero Background Video */}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectFit: 'cover' }}
+          disablePictureInPicture
+          disableRemotePlayback
+          x-webkit-airplay="deny"
+        >
+          <source src="/Assets/Images/HeroSection.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         
         {/* Noise effect background */}
         <Image
@@ -48,14 +60,15 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <button className="w-fit px-5 py-2 flex flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">ABOUT</button>
-          <button className="w-fit px-5 py-2 flex flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">PRICING</button>
-          <button className="w-fit px-5 py-2 flex flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">CONTACT US</button>
-          {/* <Button href="#about" variant="nav" size="sm">ABOUT</Button> */}
-          {/* <Button href="#pricing" variant="nav" size="sm">PRICING</Button> */}
-          {/* <Button href="#contact" variant="nav" size="sm">CONTACT US</Button> */}
+          <button className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"><p className="leading-none mt-0.5">ABOUT</p></button>
+          <button className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"><p className="leading-none mt-0.5">PRICING</p></button>
+          <a href="#contact" className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+          <p className="leading-none mt-0.5">CONTACT</p>
+          </a>
         </div>
-        <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex w-fit px-5 py-2 flex-row items-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">GET STARTED</a>
+        <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex w-fit px-5 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+        <p className="leading-none mt-0.5">GET STARTED</p>
+        </a>
 
         <button 
           className="md:hidden text-white z-50"
@@ -76,12 +89,29 @@ export default function HeroSection({ className }: { className?: string }) {
           </h1>
 
           <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
-            <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none">GET STARTED</a>
-            <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none">BOOK A DEMO</button>
+            <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="w-fit px-5 h-[30px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none">
+              <p className="leading-none mt-0.5">GET STARTED</p>
+            </a>
+            <a href="#contact" className="w-fit flex items-center justify-center px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none">
+              <p className="leading-none mt-0.5">BOOK A DEMO</p>
+            </a>
           </div>
         </div>
         <div className="relative w-full h-[30vh] md:hidden">
-          <Image src="/Assets/Images/HeroImageMobile.svg" alt="Hero Background Mobile" fill className="object-cover" priority />
+          <video
+            src="/Assets/Images/HeroSection.mp4"
+            className="object-cover w-full h-full"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            disableRemotePlayback
+            x-webkit-airplay="deny"
+            style={{ position: "absolute", top: 0, left: 0 }}
+            poster="/Assets/Images/HeroImageMobile.svg"
+          />
         </div>
       </div>
 
@@ -158,10 +188,10 @@ export default function HeroSection({ className }: { className?: string }) {
               href="https://app.astrix.live" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-xs leading-none"
+              className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-xs leading-none"
               onClick={() => setIsMenuOpen(false)}
             >
-              GET STARTED
+              <p className="leading-none mt-0.5">GET STARTED</p>
             </a>
           </div>
         </div>

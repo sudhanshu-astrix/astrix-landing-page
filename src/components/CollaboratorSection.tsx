@@ -23,12 +23,8 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Combined manual scroll + automated animation
+      // Mobile: Automatic scroll only
       let autoScrollTl: gsap.core.Timeline | null = null;
-      let isUserScrolling = false;
-      let scrollTimeout: NodeJS.Timeout;
-      let startX = 0;
-      let currentX = 0;
 
       // Function to start auto scroll
       const startAutoScroll = () => {
@@ -48,85 +44,12 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         });
       };
 
-      // Function to pause auto scroll
-      const pauseAutoScroll = () => {
-        if (autoScrollTl) {
-          autoScrollTl.pause();
-        }
-      };
-
-      // Function to resume auto scroll
-      const resumeAutoScroll = () => {
-        if (!isUserScrolling) {
-          startAutoScroll();
-        }
-      };
-
-      // Touch event handlers
-      const handleTouchStart = (e: TouchEvent) => {
-        console.log('Touch start detected');
-        isUserScrolling = true;
-        pauseAutoScroll();
-        
-        const touch = e.touches[0];
-        startX = touch.clientX;
-        currentX = gsap.getProperty(cards, "x") as number;
-      };
-
-      const handleTouchMove = (e: TouchEvent) => {
-        if (isUserScrolling) {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const deltaX = touch.clientX - startX;
-          
-          // Apply manual scroll
-          gsap.set(cards, {
-            x: currentX + deltaX,
-            overwrite: true
-          });
-        }
-      };
-
-      const handleTouchEnd = () => {
-        console.log('Touch end detected');
-        isUserScrolling = false;
-        
-        // Clear timeout and set new one
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          resumeAutoScroll();
-        }, 2000);
-      };
-
-      // Add touch event listeners to both section and cards container
-      const section = sectionRef.current;
-      if (section) {
-        section.addEventListener('touchstart', handleTouchStart, { passive: false });
-        section.addEventListener('touchmove', handleTouchMove, { passive: false });
-        section.addEventListener('touchend', handleTouchEnd, { passive: false });
-      }
-      
-      cards.addEventListener('touchstart', handleTouchStart, { passive: false });
-      cards.addEventListener('touchmove', handleTouchMove, { passive: false });
-      cards.addEventListener('touchend', handleTouchEnd, { passive: false });
-
       // Start initial auto scroll
       startAutoScroll();
 
       // Cleanup function
       return () => {
         if (autoScrollTl) autoScrollTl.kill();
-        clearTimeout(scrollTimeout);
-        
-        if (section) {
-          section.removeEventListener('touchstart', handleTouchStart);
-          section.removeEventListener('touchmove', handleTouchMove);
-          section.removeEventListener('touchend', handleTouchEnd);
-        }
-        
-        cards.removeEventListener('touchstart', handleTouchStart);
-        cards.removeEventListener('touchmove', handleTouchMove);
-        cards.removeEventListener('touchend', handleTouchEnd);
       };
     } else {
       // Desktop: ScrollTrigger animation
@@ -306,8 +229,8 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         <div className="flex-1 relative h-[60vh] md:h-[80vh] w-full">
           <div 
             ref={cardsRef}
-            className={`flex gap-12 h-full bg-[#0A0A0A] touch-pan-x`}
-            style={{ width: "max-content", touchAction: "pan-x" }}
+            className={`flex gap-12 h-full bg-[#0A0A0A]`}
+            style={{ width: "max-content" }}
           >
             {collaborators.map((collaborator, index) => (
               <div

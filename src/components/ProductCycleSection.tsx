@@ -43,6 +43,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const discoveryChannelRef = useRef<HTMLDivElement>(null);
   const discoverLabelRef = useRef<HTMLSpanElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
+  const mainContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -73,9 +74,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     const discoveryChannel = discoveryChannelRef.current;
     const discoverLabel = discoverLabelRef.current;
     const toolkitSection = toolkitSectionRef.current;
+    const mainContent = mainContentRef.current;
     
     // Early return if any required elements are missing
-    if (!section || !firstText || !secondText || !actionText || !nextSection || !nextText || !thirdSection || !thirdText || !dataInsights || !distributeLabel || !retargetLabel || !fourthSection || !fourthText || !emailMarketing || !fifthSection || !fifthText || !promotions || !sixthSection || !sixthText || !marketingInsights || !seventhSection || !seventhText || !miniPortfolio || !eighthSection || !eighthText || !discoveryChannel || !discoverLabel || !toolkitSection) {
+    if (!section || !firstText || !secondText || !actionText || !nextSection || !nextText || !thirdSection || !thirdText || !dataInsights || !distributeLabel || !retargetLabel || !fourthSection || !fourthText || !emailMarketing || !fifthSection || !fifthText || !promotions || !sixthSection || !sixthText || !marketingInsights || !seventhSection || !seventhText || !miniPortfolio || !eighthSection || !eighthText || !discoveryChannel || !discoverLabel || !toolkitSection || !mainContent) {
       console.warn('ProductCycleSection: Some required elements are missing, skipping animation setup');
       return;
     }
@@ -99,14 +101,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           // Set initial positions based on screen size
           const isMobile = window.innerWidth < 768; // md breakpoint
           if (isMobile) {
-            // Mobile: Stack sections vertically - each section starts below the previous one
+            // Mobile: All sections start from bottom (100%) - they'll slide in one by one
             gsap.set(nextSection, { y: "100%" });
-            gsap.set(thirdSection, { y: "200%" });
-            gsap.set(fourthSection, { y: "300%" });
-            gsap.set(fifthSection, { y: "400%" });
-            gsap.set(sixthSection, { y: "500%" });
-            gsap.set(seventhSection, { y: "600%" });
-            gsap.set(eighthSection, { y: "700%" });
+            gsap.set(thirdSection, { y: "100%" });
+            gsap.set(fourthSection, { y: "100%" });
+            gsap.set(fifthSection, { y: "100%" });
+            gsap.set(sixthSection, { y: "100%" });
+            gsap.set(seventhSection, { y: "100%" });
+            gsap.set(eighthSection, { y: "100%" });
             gsap.set(toolkitSection, { y: "0%" });
           } else {
             gsap.set(nextSection, { x: "100%" });
@@ -167,14 +169,55 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       splitTextIntoWords(seventhText);
       splitTextIntoWords(eighthText);
 
+      // Helper function to animate text with word-by-word reveal
+      const animateTextReveal = (textElement: HTMLElement, labelElement?: HTMLElement, delay: number = 0.2) => {
+        const textWords = textElement.querySelectorAll('.word');
+        const animTl = gsap.timeline({ delay });
+        
+        animTl.to(textElement, { 
+          opacity: 1, 
+          duration: 0.3,
+          ease: "power2.out"
+        });
+        
+        if (textWords.length > 0) {
+          animTl.to(textWords, {
+            opacity: 1,
+            y: 0,
+            duration: 1, // 1 second duration for text animation
+            stagger: 0.08,
+            ease: "power2.out"
+          }, "-=0.2");
+        }
+        
+        if (labelElement) {
+          animTl.to(labelElement, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out"
+          }, "-=0.8");
+        }
+        
+        return animTl;
+      };
+
       // Create timeline with ScrollTrigger
+      // We have 9 major sections, so snap points will be at every 1/9th
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: "+=10000", // 10x viewport height for smooth scrolling including toolkit section
-          scrub: true,
+          scrub: 2, // Increased scrub for smoother, slower animation (2 second catch-up delay)
           pin: true,
+          anticipatePin: 1,
+          snap: {
+            snapTo: 1 / 9, // Snap to every 1/9th of the timeline (9 sections)
+            duration: { min: 1.2, max: 1.8 }, // Longer snap duration for slower transitions
+            delay: 0.3, // Added delay before snapping begins
+            ease: "power2.inOut" // Smoother easing with more gradual acceleration/deceleration
+          }
         },
       });
 
@@ -208,420 +251,281 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         }, "<");
       }
 
-      // Phase 1: Initial state (0% scroll) - both texts hidden
-      tl.set(firstText, { opacity: 0 })
-        .set(secondText, { opacity: 0 });
-      
-      if (createEventEl) tl.set(createEventEl, { fontWeight: 400 });
-      if (issueTicketsEl) tl.set(issueTicketsEl, { fontWeight: 400 });
+      // Phase 1: Initial state - Auto-trigger first section text animation
+      tl.call(() => {
+        // Animate first text automatically
+        animateTextReveal(firstText);
+        if (createEventEl) gsap.to(createEventEl, { fontWeight: 600, duration: 0.5, ease: "power2.out" });
+      }, [], 0);
 
-      // Phase 2: First text reveal (0-25% scroll)
-      if (createEventEl) {
-        tl.to(createEventEl, { 
-            fontWeight: 600, 
-            duration: 0.25 
-          });
-      }
-      tl.to(firstText, { 
-          opacity: 1, 
-          duration: 0.1 
-        }, ">");
-      
-      const firstTextWords = firstText.querySelectorAll('.word');
-      if (firstTextWords.length > 0) {
-        tl.to(firstTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Phase 2: Font weight transition and switch to second text
+      tl.add("switchText", "+=1");
+      tl.call(() => {
+        if (createEventEl) gsap.to(createEventEl, { fontWeight: 400, duration: 0.5 });
+        if (issueTicketsEl) gsap.to(issueTicketsEl, { fontWeight: 600, duration: 0.5 });
+        setCurrentGif('issueTickets');
+        
+        // Fade out first text and animate second text
+        gsap.to(firstText, { opacity: 0, duration: 0.5 });
+        gsap.delayedCall(0.3, () => animateTextReveal(secondText, undefined, 0.1));
+      }, [], "switchText");
 
-      // Phase 3: Font weight transition (25-50% scroll)
-      if (createEventEl) {
-        tl.to(createEventEl, { 
-            fontWeight: 400, 
-            duration: 0.25 
-          });
-      }
-      if (issueTicketsEl) {
-        tl.to(issueTicketsEl, { 
-            fontWeight: 600, 
-            duration: 0.25 
-          }, "<")
-          .call(() => setCurrentGif('issueTickets'), [], 0);
-      }
-
-      // Phase 4: Text switch (50-75% scroll)
-      tl.to(firstText, { 
-          opacity: 0, 
-          duration: 0.25 
-        })
-        .to(secondText, { 
-          opacity: 1, 
-          duration: 0.1 
-        }, ">");
-      
-      const secondTextWords = secondText.querySelectorAll('.word');
-      if (secondTextWords.length > 0) {
-        tl.to(secondTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
-
-      // Phase 5: Second state (75-100% scroll) - second text remains visible
-      tl.set(secondText, { opacity: 1 });
-
-      // Phase 6: Slide to next section (100%+ scroll)
+      // Phase 3: Slide to next section (Purchase/RSVP) & slide out main content
+      tl.add("nextSection", "+=1");
       if (isMobile) {
-        tl.to(nextSection, {
+        // Slide out main content
+        tl.to(mainContent, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "nextSection")
+        // Slide in nextSection
+        .to(nextSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        });
+        }, "nextSection");
       } else {
-        tl.to(nextSection, {
+        // Slide out main content
+        tl.to(mainContent, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "nextSection")
+        // Slide in nextSection
+        .to(nextSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        });
+        }, "nextSection");
       }
       
-      tl.to(nextText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">");
-      const nextTextWords = nextText.querySelectorAll('.word');
-      if (nextTextWords.length > 0) {
-        tl.to(nextTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(nextText);
+      }, [], "nextSection+=0.95");
 
-      // Phase 7: Slide to third section & label change (120%+ scroll)
+      // Phase 4: Slide to third section (Data Insights) & label change
+      tl.add("thirdSection", "+=1");
       if (isMobile) {
         tl.to(nextSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "thirdSection")
         .to(thirdSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "thirdSection");
       } else {
         tl.to(nextSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "thirdSection")
         .to(thirdSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "thirdSection");
       }
       
+      // Label change animation
       tl.to(distributeLabel, { 
         opacity: 0, 
-        duration: 0.25 
-      }, "labelChange")
+        duration: 0.5 
+      }, "thirdSection")
       .to(retargetLabel, { 
         opacity: 1, 
-        duration: 0.25 
-      }, "labelChange")
+        duration: 0.5 
+      }, "thirdSection+=0.5")
       .to(".distribute-mobile", { 
         opacity: 0, 
-        duration: 0.25 
-      }, "labelChange")
+        duration: 0.5 
+      }, "thirdSection")
       .to(".retarget-mobile", { 
         opacity: 1, 
-        duration: 0.25 
-      }, "labelChange");
+        duration: 0.5 
+      }, "thirdSection+=0.5");
 
-      // Phase 8: Third section text reveal (140%+ scroll)
-      tl.to(dataInsights, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      }, ">")
-      .to(thirdText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">")
-      const thirdTextWords = thirdText.querySelectorAll('.word');
-      if (thirdTextWords.length > 0) {
-        tl.to(thirdTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(thirdText, dataInsights);
+      }, [], "thirdSection+=0.95");
 
-      // Phase 9: Slide to fourth section (160%+ scroll)
+      // Phase 5: Slide to fourth section (Email Marketing)
+      tl.add("fourthSection", "+=1");
       if (isMobile) {
         tl.to(thirdSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "fourthSection")
         .to(fourthSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "fourthSection");
       } else {
         tl.to(thirdSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "fourthSection")
         .to(fourthSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "fourthSection");
       }
 
-      // Phase 10: Fourth section text reveal (180%+ scroll)
-      tl.to(emailMarketing, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      }, ">")
-      .to(fourthText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">")
-      const fourthTextWords = fourthText.querySelectorAll('.word');
-      if (fourthTextWords.length > 0) {
-        tl.to(fourthTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(fourthText, emailMarketing);
+      }, [], "fourthSection+=0.95");
 
-      // Phase 11: Slide to fifth section (200%+ scroll)
+      // Phase 6: Slide to fifth section (Promotions)
+      tl.add("fifthSection", "+=1");
       if (isMobile) {
         tl.to(fourthSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "fifthSection")
         .to(fifthSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "fifthSection");
       } else {
         tl.to(fourthSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "fifthSection")
         .to(fifthSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "fifthSection");
       }
 
-      // Phase 12: Fifth section text reveal (220%+ scroll)
-      tl.to(promotions, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      }, ">")
-      .to(fifthText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">")
-      const fifthTextWords = fifthText.querySelectorAll('.word');
-      if (fifthTextWords.length > 0) {
-        tl.to(fifthTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(fifthText, promotions);
+      }, [], "fifthSection+=0.95");
 
-      // Phase 13: Slide to sixth section (240%+ scroll)
+      // Phase 7: Slide to sixth section (Marketing Insights)
+      tl.add("sixthSection", "+=1");
       if (isMobile) {
         tl.to(fifthSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "sixthSection")
         .to(sixthSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "sixthSection");
       } else {
         tl.to(fifthSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "sixthSection")
         .to(sixthSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "sixthSection");
       }
 
-      // Phase 14: Sixth section text reveal (260%+ scroll)
-      tl.to(marketingInsights, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      }, ">")
-      .to(sixthText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">")
-      const sixthTextWords = sixthText.querySelectorAll('.word');
-      if (sixthTextWords.length > 0) {
-        tl.to(sixthTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(sixthText, marketingInsights);
+      }, [], "sixthSection+=0.95");
 
-      // Phase 15: Slide to seventh section & label change (280%+ scroll)
+      // Phase 8: Slide to seventh section (Mini Portfolio) & label change
+      tl.add("seventhSection", "+=1");
       if (isMobile) {
         tl.to(sixthSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "seventhSection")
         .to(seventhSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "seventhSection");
       } else {
         tl.to(sixthSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "seventhSection")
         .to(seventhSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "seventhSection");
       }
       
+      // Label change animation
       tl.to(retargetLabel, { 
         opacity: 0, 
-        duration: 0.25 
-      }, "labelChange2")
+        duration: 0.5 
+      }, "seventhSection")
       .to(discoverLabel, { 
         opacity: 1, 
-        duration: 0.25 
-      }, "labelChange2")
+        duration: 0.5 
+      }, "seventhSection+=0.5")
       .to(".retarget-mobile", { 
         opacity: 0, 
-        duration: 0.25 
-      }, "labelChange2")
+        duration: 0.5 
+      }, "seventhSection")
       .to(".discover-mobile", { 
         opacity: 1, 
-        duration: 0.25 
-      }, "labelChange2");
+        duration: 0.5 
+      }, "seventhSection+=0.5");
 
-      // Phase 16: Seventh section text reveal (300%+ scroll)
-      tl.to(miniPortfolio, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      }, ">")
-      .to(seventhText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">")
-      const seventhTextWords = seventhText.querySelectorAll('.word');
-      if (seventhTextWords.length > 0) {
-        tl.to(seventhTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(seventhText, miniPortfolio);
+      }, [], "seventhSection+=0.95");
 
-      // Phase 17: Slide to eighth section (320%+ scroll)
+      // Phase 9: Slide to eighth section (Discovery Channel)
+      tl.add("eighthSection", "+=1");
       if (isMobile) {
         tl.to(seventhSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "eighthSection")
         .to(eighthSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "eighthSection");
       } else {
         tl.to(seventhSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        })
+        }, "eighthSection")
         .to(eighthSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "<");
+        }, "eighthSection");
       }
 
-      // Phase 18: Eighth section text reveal (340%+ scroll)
-      tl.to(discoveryChannel, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out"
-      }, ">")
-      .to(eighthText, { 
-        opacity: 1, 
-        duration: 0.1 
-      }, ">")
-      const eighthTextWords = eighthText.querySelectorAll('.word');
-      if (eighthTextWords.length > 0) {
-        tl.to(eighthTextWords, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "power2.out"
-        }, ">");
-      }
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(eighthText, discoveryChannel);
+      }, [], "eighthSection+=0.95");
 
         }, section);
 
@@ -636,12 +540,12 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 gsap.set(productCycleContainer, { x: "0%", y: "100%" });
                 gsap.set(toolkitSection, { x: "0%", y: "0%" });
                 gsap.set(nextSection, { x: "0%", y: "100%" });
-                gsap.set(thirdSection, { x: "0%", y: "200%" });
-                gsap.set(fourthSection, { x: "0%", y: "300%" });
-                gsap.set(fifthSection, { x: "0%", y: "400%" });
-                gsap.set(sixthSection, { x: "0%", y: "500%" });
-                gsap.set(seventhSection, { x: "0%", y: "600%" });
-                gsap.set(eighthSection, { x: "0%", y: "700%" });
+                gsap.set(thirdSection, { x: "0%", y: "100%" });
+                gsap.set(fourthSection, { x: "0%", y: "100%" });
+                gsap.set(fifthSection, { x: "0%", y: "100%" });
+                gsap.set(sixthSection, { x: "0%", y: "100%" });
+                gsap.set(seventhSection, { x: "0%", y: "100%" });
+                gsap.set(eighthSection, { x: "0%", y: "100%" });
               } else {
                 gsap.set(productCycleContainer, { x: "100%", y: "0%" });
                 gsap.set(toolkitSection, { x: "0%", y: "0%" });
@@ -764,7 +668,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       {/* Product Cycle Container - Slides in from right */}
       <div className="product-cycle-container absolute top-0 right-0 w-full h-full flex flex-col md:flex-row">
         {/* Left Panel - Text Content */}
-        <div className="w-full h-1/2 md:h-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center overflow-hidden">
+        <div className="w-full h-full md:h-full md:w-full bg-[#EBE4D4] relative flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -829,74 +733,77 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
         
         {/* Main content */}
-        <div className="h-full w-full mx-4 md:ml-24 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
-          {/* Text Content */}
-          <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
-            {/* First Text */}
-            <div ref={firstTextRef} className="w-full md:w-full h-fit flex flex-col pb-6 md:pb-0 items-end md:gap-20 justify-between">
-              <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
-                <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
-              </h2>
-              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
-                <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
-              </p>
+        <div ref={mainContentRef} className="top-0 left-0 w-full h-full flex flex-col md:flex-row">
+          <div className="md:w-1/2 md:h-full h-1/2 w-full mx-4 md:ml-24 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+            {/* Text Content */}
+            <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
+              {/* First Text */}
+              <div ref={firstTextRef} className="w-full md:w-full h-fit flex flex-col pb-6 md:pb-0 items-end md:gap-20 justify-between">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
+                </h2>
+                <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
+                  <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
+                </p>
+              </div>
+
+              {/* Second Text */}
+              <div ref={secondTextRef} className="absolute w-full md:w-full h-[70%] md:h-fit md:gap-10 flex flex-col items-end justify-between">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
+                </h2>
+                <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
+                  <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
+                </p>
+              </div>
             </div>
 
-            {/* Second Text */}
-            <div ref={secondTextRef} className="absolute w-full md:w-full h-[70%] md:h-fit md:gap-10 flex flex-col items-end justify-between">
-              <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
-                <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
-              </h2>
-              <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
-                <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
+            {/* Action Texts  */}
+            <div ref={actionTextRef} className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+              <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 create-event'>
+                Create Event
+              </p>
+              <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 issue-tickets'>
+                Issue Tickets
               </p>
             </div>
           </div>
-
-          {/* Action Texts  */}
-          <div ref={actionTextRef} className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
-            <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 create-event'>
-              Create Event
-            </p>
-            <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 issue-tickets'>
-              Issue Tickets
-            </p>
+          <div className="w-full md:w-1/2 z-100 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+            <div className='w-full h-full relative'>
+              {/* Static SVG Background */}
+              <Image 
+                src="/Assets/Images/Toolkit/Distribute_CreateEvent.svg" 
+                alt="Create Event Background" 
+                fill 
+                className="object-cover" 
+              />
+              {/* GIF Overlay */}
+              {/* <div className='absolute inset-0 md:w-[80%] top-[40%] md:h-[25%] translate-x-[5%] mx-auto h-w-full h-full rounded-xl overflow-hidden'>
+                <Image 
+                  src="/Assets/Images/Toolkit/Distribute_IssueTickets.gif" 
+                  alt="Create Event Animation" 
+                  fill 
+                  className="object-contain" 
+                />
+              </div> */}
+              <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
+          <Image
+            src={currentGif === 'createEvent' 
+              ? "/Assets/Images/Toolkit/Distribute_CreateEvent.gif" 
+              : "/Assets/Images/Toolkit/Distribute_IssueTickets.gif"
+            }
+            alt={currentGif === 'createEvent' ? "Create Event Animation" : "Issue Tickets Animation"}
+            fill
+            className="w-full h-full object-cover [transform:perspective(800px)_rotateX(6deg)] md:[transform:perspective(800px)_rotateX(4deg)] rounded-lg"
+          />
+          </div>
+            </div>
           </div>
         </div>
       </div>
 
         {/* Right Panel - Visual Content */}
-        <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
-          <div className='w-full h-full relative'>
-            {/* Static SVG Background */}
-            <Image 
-              src="/Assets/Images/Toolkit/Distribute_CreateEvent.svg" 
-              alt="Create Event Background" 
-              fill 
-              className="object-cover" 
-            />
-            {/* GIF Overlay */}
-            {/* <div className='absolute inset-0 md:w-[80%] top-[40%] md:h-[25%] translate-x-[5%] mx-auto h-w-full h-full rounded-xl overflow-hidden'>
-              <Image 
-                src="/Assets/Images/Toolkit/Distribute_IssueTickets.gif" 
-                alt="Create Event Animation" 
-                fill 
-                className="object-contain" 
-              />
-            </div> */}
-             <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
-         <Image
-           src={currentGif === 'createEvent' 
-             ? "/Assets/Images/Toolkit/Distribute_CreateEvent.gif" 
-             : "/Assets/Images/Toolkit/Distribute_IssueTickets.gif"
-           }
-           alt={currentGif === 'createEvent' ? "Create Event Animation" : "Issue Tickets Animation"}
-           fill
-           className="w-full h-full object-cover [transform:perspective(800px)_rotateX(6deg)] md:[transform:perspective(800px)_rotateX(4deg)] rounded-lg"
-         />
-       </div>
-          </div>
-        </div>
+        
 
       {/* Next Section - Slides in from right */}
       <div ref={nextSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
