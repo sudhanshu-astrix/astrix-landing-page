@@ -23,8 +23,12 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Automatic scroll only
+      // Mobile: Automatic scroll with manual override
       let autoScrollTl: gsap.core.Timeline | null = null;
+      let isUserInteracting = false;
+      let startX = 0;
+      let currentX = 0;
+      let isDragging = false;
 
       // Function to start auto scroll
       const startAutoScroll = () => {
@@ -32,9 +36,15 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         
         autoScrollTl = gsap.timeline({ repeat: -1 });
         
+        const currentXPos = gsap.getProperty(cards, "x") as number;
+        const targetX = -((cards.scrollWidth + 200) - window.innerWidth + 200);
+        const remainingDistance = Math.abs(targetX - currentXPos);
+        const totalDistance = Math.abs(targetX);
+        const duration = (remainingDistance / totalDistance) * 70;
+        
         autoScrollTl.to(cards, {
-          x: () => -((cards.scrollWidth + 200) - window.innerWidth + 200),
-          duration: 70,
+          x: targetX,
+          duration: duration,
           ease: "none",
         })
         .to(cards, {
@@ -44,12 +54,54 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         });
       };
 
+      // Handle touch start
+      const handleTouchStart = (e: TouchEvent) => {
+        isUserInteracting = true;
+        isDragging = true;
+        if (autoScrollTl) {
+          autoScrollTl.pause();
+        }
+        startX = e.touches[0].clientX;
+        currentX = gsap.getProperty(cards, "x") as number;
+      };
+
+      // Handle touch move
+      const handleTouchMove = (e: TouchEvent) => {
+        if (!isDragging) return;
+        const deltaX = e.touches[0].clientX - startX;
+        const newX = currentX + deltaX;
+        const maxX = 0;
+        const minX = -((cards.scrollWidth + 200) - window.innerWidth + 200);
+        
+        // Constrain within bounds
+        const constrainedX = Math.max(minX, Math.min(maxX, newX));
+        gsap.set(cards, { x: constrainedX });
+      };
+
+      // Handle touch end
+      const handleTouchEnd = () => {
+        isDragging = false;
+        isUserInteracting = false;
+        // Resume auto scroll immediately
+        startAutoScroll();
+      };
+
       // Start initial auto scroll
       startAutoScroll();
+
+      // Add touch event listeners
+      cards.addEventListener('touchstart', handleTouchStart, { passive: true });
+      cards.addEventListener('touchmove', handleTouchMove, { passive: true });
+      cards.addEventListener('touchend', handleTouchEnd);
+      cards.addEventListener('touchcancel', handleTouchEnd);
 
       // Cleanup function
       return () => {
         if (autoScrollTl) autoScrollTl.kill();
+        cards.removeEventListener('touchstart', handleTouchStart);
+        cards.removeEventListener('touchmove', handleTouchMove);
+        cards.removeEventListener('touchend', handleTouchEnd);
+        cards.removeEventListener('touchcancel', handleTouchEnd);
       };
     } else {
       // Desktop: ScrollTrigger animation
@@ -235,7 +287,7 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
             {collaborators.map((collaborator, index) => (
               <div
                 key={index}
-                className={`flex-shrink-0 bg-transparent flex ${collaborator?.random === 0 ? "items-center" : collaborator?.random === 1 ? "items-start" : "items-end"}`}
+                className={`flex-shrink-0 cursor-pointer bg-transparent flex ${collaborator?.random === 0 ? "items-center" : collaborator?.random === 1 ? "items-start" : "items-end"}`}
                 style={{ width: 'fit-content' }}
               >
                 <div className="relative group">

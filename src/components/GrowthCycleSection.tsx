@@ -154,7 +154,7 @@ export default function GrowthCycleSection({ className }: { className?: string }
           />
 
           {/* Animation container */}
-          <div className="w-full md:h-[200vh] h-[80vh] z-30 relative flex items-center justify-center px-4 sm:px-6 md:px-0">
+          <div className="w-full md:h-[200vh] h-[70vh] z-30 relative flex items-center justify-center px-4 sm:px-6 md:px-0">
             {/* Circles */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="circle w-[25%] sm:w-[28%] md:w-[40%] min-w-[200px] md:min-w-[360px] center border border-[#343434]"></div>

@@ -15,69 +15,68 @@ interface ProductCycleSectionProps {
 
 const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [currentGif, setCurrentGif] = useState<'createEvent' | 'issueTickets'>('createEvent');
   const firstTextRef = useRef<HTMLDivElement>(null);
   const secondTextRef = useRef<HTMLDivElement>(null);
-  const actionTextRef = useRef<HTMLDivElement>(null);
-  const nextSectionRef = useRef<HTMLDivElement>(null);
-  const nextTextRef = useRef<HTMLDivElement>(null);
+  const firstSectionRef = useRef<HTMLDivElement>(null);
+  const secondSectionRef = useRef<HTMLDivElement>(null);
   const thirdSectionRef = useRef<HTMLDivElement>(null);
   const thirdTextRef = useRef<HTMLDivElement>(null);
+  const fourthSectionRef = useRef<HTMLDivElement>(null);
+  const fourthTextRef = useRef<HTMLDivElement>(null);
   const dataInsightsRef = useRef<HTMLDivElement>(null);
   const distributeLabelRef = useRef<HTMLSpanElement>(null);
   const retargetLabelRef = useRef<HTMLSpanElement>(null);
-  const fourthSectionRef = useRef<HTMLDivElement>(null);
-  const fourthTextRef = useRef<HTMLDivElement>(null);
-  const emailMarketingRef = useRef<HTMLDivElement>(null);
   const fifthSectionRef = useRef<HTMLDivElement>(null);
   const fifthTextRef = useRef<HTMLDivElement>(null);
-  const promotionsRef = useRef<HTMLDivElement>(null);
+  const emailMarketingRef = useRef<HTMLDivElement>(null);
   const sixthSectionRef = useRef<HTMLDivElement>(null);
   const sixthTextRef = useRef<HTMLDivElement>(null);
-  const marketingInsightsRef = useRef<HTMLDivElement>(null);
+  const promotionsRef = useRef<HTMLDivElement>(null);
   const seventhSectionRef = useRef<HTMLDivElement>(null);
   const seventhTextRef = useRef<HTMLDivElement>(null);
-  const miniPortfolioRef = useRef<HTMLDivElement>(null);
+  const marketingInsightsRef = useRef<HTMLDivElement>(null);
   const eighthSectionRef = useRef<HTMLDivElement>(null);
   const eighthTextRef = useRef<HTMLDivElement>(null);
+  const miniPortfolioRef = useRef<HTMLDivElement>(null);
+  const ninthSectionRef = useRef<HTMLDivElement>(null);
+  const ninthTextRef = useRef<HTMLDivElement>(null);
   const discoveryChannelRef = useRef<HTMLDivElement>(null);
   const discoverLabelRef = useRef<HTMLSpanElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
-  const mainContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const firstText = firstTextRef.current;
     const secondText = secondTextRef.current;
-    const actionText = actionTextRef.current;
-    const nextSection = nextSectionRef.current;
-    const nextText = nextTextRef.current;
+    const firstSection = firstSectionRef.current;
+    const secondSection = secondSectionRef.current;
     const thirdSection = thirdSectionRef.current;
     const thirdText = thirdTextRef.current;
+    const fourthSection = fourthSectionRef.current;
+    const fourthText = fourthTextRef.current;
     const dataInsights = dataInsightsRef.current;
     const distributeLabel = distributeLabelRef.current;
     const retargetLabel = retargetLabelRef.current;
-    const fourthSection = fourthSectionRef.current;
-    const fourthText = fourthTextRef.current;
-    const emailMarketing = emailMarketingRef.current;
     const fifthSection = fifthSectionRef.current;
     const fifthText = fifthTextRef.current;
-    const promotions = promotionsRef.current;
+    const emailMarketing = emailMarketingRef.current;
     const sixthSection = sixthSectionRef.current;
     const sixthText = sixthTextRef.current;
-    const marketingInsights = marketingInsightsRef.current;
+    const promotions = promotionsRef.current;
     const seventhSection = seventhSectionRef.current;
     const seventhText = seventhTextRef.current;
-    const miniPortfolio = miniPortfolioRef.current;
+    const marketingInsights = marketingInsightsRef.current;
     const eighthSection = eighthSectionRef.current;
     const eighthText = eighthTextRef.current;
+    const miniPortfolio = miniPortfolioRef.current;
+    const ninthSection = ninthSectionRef.current;
+    const ninthText = ninthTextRef.current;
     const discoveryChannel = discoveryChannelRef.current;
     const discoverLabel = discoverLabelRef.current;
     const toolkitSection = toolkitSectionRef.current;
-    const mainContent = mainContentRef.current;
     
     // Early return if any required elements are missing
-    if (!section || !firstText || !secondText || !actionText || !nextSection || !nextText || !thirdSection || !thirdText || !dataInsights || !distributeLabel || !retargetLabel || !fourthSection || !fourthText || !emailMarketing || !fifthSection || !fifthText || !promotions || !sixthSection || !sixthText || !marketingInsights || !seventhSection || !seventhText || !miniPortfolio || !eighthSection || !eighthText || !discoveryChannel || !discoverLabel || !toolkitSection || !mainContent) {
+    if (!section || !firstText || !secondText || !firstSection || !secondSection || !thirdSection || !thirdText || !fourthSection || !fourthText || !dataInsights || !distributeLabel || !retargetLabel || !fifthSection || !fifthText || !emailMarketing || !sixthSection || !sixthText || !promotions || !seventhSection || !seventhText || !marketingInsights || !eighthSection || !eighthText || !miniPortfolio || !ninthSection || !ninthText || !discoveryChannel || !discoverLabel || !toolkitSection) {
       console.warn('ProductCycleSection: Some required elements are missing, skipping animation setup');
       return;
     }
@@ -91,62 +90,48 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           gsap.set(firstText, { opacity: 0 });
           gsap.set(secondText, { opacity: 0 });
           
-          // Safely query selectors with null checks
-          const createEventEl = actionText?.querySelector('.create-event');
-          const issueTicketsEl = actionText?.querySelector('.issue-tickets');
-          
-          if (createEventEl) gsap.set(createEventEl, { fontWeight: 400 });
-          if (issueTicketsEl) gsap.set(issueTicketsEl, { fontWeight: 400 });
-          
           // Set initial positions based on screen size
           const isMobile = window.innerWidth < 768; // md breakpoint
           if (isMobile) {
             // Mobile: All sections start from bottom (100%) - they'll slide in one by one
-            gsap.set(nextSection, { y: "100%" });
+            gsap.set(firstSection, { y: "100%" });
+            gsap.set(secondSection, { y: "100%" });
             gsap.set(thirdSection, { y: "100%" });
             gsap.set(fourthSection, { y: "100%" });
             gsap.set(fifthSection, { y: "100%" });
             gsap.set(sixthSection, { y: "100%" });
             gsap.set(seventhSection, { y: "100%" });
             gsap.set(eighthSection, { y: "100%" });
+            gsap.set(ninthSection, { y: "100%" });
             gsap.set(toolkitSection, { y: "0%" });
           } else {
-            gsap.set(nextSection, { x: "100%" });
+            gsap.set(firstSection, { x: "100%" });
+            gsap.set(secondSection, { x: "100%" });
             gsap.set(thirdSection, { x: "100%" });
             gsap.set(fourthSection, { x: "100%" });
             gsap.set(fifthSection, { x: "100%" });
             gsap.set(sixthSection, { x: "100%" });
             gsap.set(seventhSection, { x: "100%" });
             gsap.set(eighthSection, { x: "100%" });
+            gsap.set(ninthSection, { x: "100%" });
             gsap.set(toolkitSection, { x: "0%" });
           }
           
-          gsap.set(nextText, { opacity: 0 });
           gsap.set(thirdText, { opacity: 0 });
+          gsap.set(fourthText, { opacity: 0 });
           gsap.set(dataInsights, { opacity: 0, y: "1.2em" });
           gsap.set(retargetLabel, { opacity: 0 });
-          gsap.set(fourthText, { opacity: 0 });
-          gsap.set(emailMarketing, { opacity: 0, y: "1.2em" });
           gsap.set(fifthText, { opacity: 0 });
-          gsap.set(promotions, { opacity: 0, y: "1.2em" });
+          gsap.set(emailMarketing, { opacity: 0, y: "1.2em" });
           gsap.set(sixthText, { opacity: 0 });
-          gsap.set(marketingInsights, { opacity: 0, y: "1.2em" });
+          gsap.set(promotions, { opacity: 0, y: "1.2em" });
           gsap.set(seventhText, { opacity: 0 });
-          gsap.set(miniPortfolio, { opacity: 0, y: "1.2em" });
+          gsap.set(marketingInsights, { opacity: 0, y: "1.2em" });
           gsap.set(eighthText, { opacity: 0 });
+          gsap.set(miniPortfolio, { opacity: 0, y: "1.2em" });
+          gsap.set(ninthText, { opacity: 0 });
           gsap.set(discoveryChannel, { opacity: 0, y: "1.2em" });
           gsap.set(discoverLabel, { opacity: 0 });
-          
-          // Set initial position based on screen size
-          const productCycleContainer = section.querySelector('.product-cycle-container');
-          
-          if (productCycleContainer) {
-            if (isMobile) {
-              gsap.set(productCycleContainer, { y: "100%" });
-            } else {
-              gsap.set(productCycleContainer, { x: "100%" });
-            }
-          }
 
       // Split first text into words for word-by-word animation
       const splitTextIntoWords = (element: Element) => {
@@ -161,13 +146,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       // Split all texts into words
       splitTextIntoWords(firstText);
       splitTextIntoWords(secondText);
-      splitTextIntoWords(nextText);
       splitTextIntoWords(thirdText);
       splitTextIntoWords(fourthText);
       splitTextIntoWords(fifthText);
       splitTextIntoWords(sixthText);
       splitTextIntoWords(seventhText);
       splitTextIntoWords(eighthText);
+      splitTextIntoWords(ninthText);
 
       // Helper function to animate text with word-by-word reveal
       const animateTextReveal = (textElement: HTMLElement, labelElement?: HTMLElement, delay: number = 0.2) => {
@@ -203,17 +188,17 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       };
 
       // Create timeline with ScrollTrigger
-      // We have 9 major sections, so snap points will be at every 1/9th
+      // We have 10 major sections, so snap points will be at every 1/10th
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=10000", // 10x viewport height for smooth scrolling including toolkit section
+          end: "+=11000", // 11x viewport height for smooth scrolling including toolkit section
           scrub: 2, // Increased scrub for smoother, slower animation (2 second catch-up delay)
           pin: true,
           anticipatePin: 1,
           snap: {
-            snapTo: 1 / 9, // Snap to every 1/9th of the timeline (9 sections)
+            snapTo: 1 / 10, // Snap to every 1/10th of the timeline (10 sections)
             duration: { min: 1.2, max: 1.8 }, // Longer snap duration for slower transitions
             delay: 0.3, // Added delay before snapping begins
             ease: "power2.inOut" // Smoother easing with more gradual acceleration/deceleration
@@ -221,7 +206,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         },
       });
 
-      // Phase 0: Toolkit section slides out, ProductCycle section slides in
+      // Phase 0: Toolkit section slides out, First Section (CreateEvent) slides in
       if (isMobile) {
         tl.to(toolkitSection, {
           y: "-100%",
@@ -236,79 +221,61 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         });
       }
       
-      // Animate ProductCycle container based on screen size
+      // Animate First Section based on screen size
       if (isMobile) {
-        tl.to(section.querySelector('.product-cycle-container'), {
+        tl.to(firstSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
         }, "<");
       } else {
-        tl.to(section.querySelector('.product-cycle-container'), {
+        tl.to(firstSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
         }, "<");
       }
 
-      // Phase 1: Initial state - Auto-trigger first section text animation
+      // Phase 1: Auto-trigger first section text animation (CreateEvent)
       tl.call(() => {
-        // Animate first text automatically
         animateTextReveal(firstText);
-        if (createEventEl) gsap.to(createEventEl, { fontWeight: 600, duration: 0.5, ease: "power2.out" });
       }, [], 0);
 
-      // Phase 2: Font weight transition and switch to second text
-      tl.add("switchText", "+=1");
-      tl.call(() => {
-        if (createEventEl) gsap.to(createEventEl, { fontWeight: 400, duration: 0.5 });
-        if (issueTicketsEl) gsap.to(issueTicketsEl, { fontWeight: 600, duration: 0.5 });
-        setCurrentGif('issueTickets');
-        
-        // Fade out first text and animate second text
-        gsap.to(firstText, { opacity: 0, duration: 0.5 });
-        gsap.delayedCall(0.3, () => animateTextReveal(secondText, undefined, 0.1));
-      }, [], "switchText");
-
-      // Phase 3: Slide to next section (Purchase/RSVP) & slide out main content
-      tl.add("nextSection", "+=1");
+      // Phase 2: Slide to second section (Issue Tickets)
+      tl.add("secondSection", "+=1");
       if (isMobile) {
-        // Slide out main content
-        tl.to(mainContent, {
+        tl.to(firstSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        }, "nextSection")
-        // Slide in nextSection
-        .to(nextSection, {
+        }, "secondSection")
+        .to(secondSection, {
           y: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "nextSection");
+        }, "secondSection");
       } else {
-        // Slide out main content
-        tl.to(mainContent, {
+        tl.to(firstSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
-        }, "nextSection")
-        // Slide in nextSection
-        .to(nextSection, {
+        }, "secondSection")
+        .to(secondSection, {
           x: "0%",
           duration: 1,
           ease: "power2.inOut"
-        }, "nextSection");
+        }, "secondSection");
       }
       
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(nextText);
-      }, [], "nextSection+=0.95");
+        animateTextReveal(secondText);
+      }, [], "secondSection+=0.95");
 
-      // Phase 4: Slide to third section (Data Insights) & label change
+      // Phase 3: Slide to third section (Purchase/RSVP)
       tl.add("thirdSection", "+=1");
       if (isMobile) {
-        tl.to(nextSection, {
+        tl.to(secondSection, {
           y: "-100%",
           duration: 1,
           ease: "power2.inOut"
@@ -319,7 +286,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           ease: "power2.inOut"
         }, "thirdSection");
       } else {
-        tl.to(nextSection, {
+        tl.to(secondSection, {
           x: "-100%",
           duration: 1,
           ease: "power2.inOut"
@@ -331,30 +298,12 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         }, "thirdSection");
       }
       
-      // Label change animation
-      tl.to(distributeLabel, { 
-        opacity: 0, 
-        duration: 0.5 
-      }, "thirdSection")
-      .to(retargetLabel, { 
-        opacity: 1, 
-        duration: 0.5 
-      }, "thirdSection+=0.5")
-      .to(".distribute-mobile", { 
-        opacity: 0, 
-        duration: 0.5 
-      }, "thirdSection")
-      .to(".retarget-mobile", { 
-        opacity: 1, 
-        duration: 0.5 
-      }, "thirdSection+=0.5");
-
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(thirdText, dataInsights);
+        animateTextReveal(thirdText);
       }, [], "thirdSection+=0.95");
 
-      // Phase 5: Slide to fourth section (Email Marketing)
+      // Phase 4: Slide to fourth section (Data Insights) & label change
       tl.add("fourthSection", "+=1");
       if (isMobile) {
         tl.to(thirdSection, {
@@ -379,13 +328,31 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           ease: "power2.inOut"
         }, "fourthSection");
       }
+      
+      // Label change animation
+      tl.to(distributeLabel, { 
+        opacity: 0, 
+        duration: 0.5 
+      }, "fourthSection")
+      .to(retargetLabel, { 
+        opacity: 1, 
+        duration: 0.5 
+      }, "fourthSection+=0.5")
+      .to(".distribute-mobile", { 
+        opacity: 0, 
+        duration: 0.5 
+      }, "fourthSection")
+      .to(".retarget-mobile", { 
+        opacity: 1, 
+        duration: 0.5 
+      }, "fourthSection+=0.5");
 
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(fourthText, emailMarketing);
+        animateTextReveal(fourthText, dataInsights);
       }, [], "fourthSection+=0.95");
 
-      // Phase 6: Slide to fifth section (Promotions)
+      // Phase 5: Slide to fifth section (Email Marketing)
       tl.add("fifthSection", "+=1");
       if (isMobile) {
         tl.to(fourthSection, {
@@ -413,10 +380,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(fifthText, promotions);
+        animateTextReveal(fifthText, emailMarketing);
       }, [], "fifthSection+=0.95");
 
-      // Phase 7: Slide to sixth section (Marketing Insights)
+      // Phase 6: Slide to sixth section (Promotions)
       tl.add("sixthSection", "+=1");
       if (isMobile) {
         tl.to(fifthSection, {
@@ -444,10 +411,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(sixthText, marketingInsights);
+        animateTextReveal(sixthText, promotions);
       }, [], "sixthSection+=0.95");
 
-      // Phase 8: Slide to seventh section (Mini Portfolio) & label change
+      // Phase 7: Slide to seventh section (Marketing Insights)
       tl.add("seventhSection", "+=1");
       if (isMobile) {
         tl.to(sixthSection, {
@@ -472,31 +439,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           ease: "power2.inOut"
         }, "seventhSection");
       }
-      
-      // Label change animation
-      tl.to(retargetLabel, { 
-        opacity: 0, 
-        duration: 0.5 
-      }, "seventhSection")
-      .to(discoverLabel, { 
-        opacity: 1, 
-        duration: 0.5 
-      }, "seventhSection+=0.5")
-      .to(".retarget-mobile", { 
-        opacity: 0, 
-        duration: 0.5 
-      }, "seventhSection")
-      .to(".discover-mobile", { 
-        opacity: 1, 
-        duration: 0.5 
-      }, "seventhSection+=0.5");
 
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(seventhText, miniPortfolio);
+        animateTextReveal(seventhText, marketingInsights);
       }, [], "seventhSection+=0.95");
 
-      // Phase 9: Slide to eighth section (Discovery Channel)
+      // Phase 8: Slide to eighth section (Mini Portfolio) & label change
       tl.add("eighthSection", "+=1");
       if (isMobile) {
         tl.to(seventhSection, {
@@ -521,11 +470,60 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           ease: "power2.inOut"
         }, "eighthSection");
       }
+      
+      // Label change animation
+      tl.to(retargetLabel, { 
+        opacity: 0, 
+        duration: 0.5 
+      }, "eighthSection")
+      .to(discoverLabel, { 
+        opacity: 1, 
+        duration: 0.5 
+      }, "eighthSection+=0.5")
+      .to(".retarget-mobile", { 
+        opacity: 0, 
+        duration: 0.5 
+      }, "eighthSection")
+      .to(".discover-mobile", { 
+        opacity: 1, 
+        duration: 0.5 
+      }, "eighthSection+=0.5");
 
       // Auto-trigger text animation when section is 95% visible
       tl.call(() => {
-        animateTextReveal(eighthText, discoveryChannel);
+        animateTextReveal(eighthText, miniPortfolio);
       }, [], "eighthSection+=0.95");
+
+      // Phase 9: Slide to ninth section (Discovery Channel)
+      tl.add("ninthSection", "+=1");
+      if (isMobile) {
+        tl.to(eighthSection, {
+          y: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "ninthSection")
+        .to(ninthSection, {
+          y: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "ninthSection");
+      } else {
+        tl.to(eighthSection, {
+          x: "-100%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "ninthSection")
+        .to(ninthSection, {
+          x: "0%",
+          duration: 1,
+          ease: "power2.inOut"
+        }, "ninthSection");
+      }
+
+      // Auto-trigger text animation when section is 95% visible
+      tl.call(() => {
+        animateTextReveal(ninthText, discoveryChannel);
+      }, [], "ninthSection+=0.95");
 
         }, section);
 
@@ -533,30 +531,29 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         const handleResize = () => {
           try {
             const newIsMobile = window.innerWidth < 768;
-            const productCycleContainer = section?.querySelector('.product-cycle-container') as HTMLElement;
             
-            if (productCycleContainer) {
-              if (newIsMobile) {
-                gsap.set(productCycleContainer, { x: "0%", y: "100%" });
-                gsap.set(toolkitSection, { x: "0%", y: "0%" });
-                gsap.set(nextSection, { x: "0%", y: "100%" });
-                gsap.set(thirdSection, { x: "0%", y: "100%" });
-                gsap.set(fourthSection, { x: "0%", y: "100%" });
-                gsap.set(fifthSection, { x: "0%", y: "100%" });
-                gsap.set(sixthSection, { x: "0%", y: "100%" });
-                gsap.set(seventhSection, { x: "0%", y: "100%" });
-                gsap.set(eighthSection, { x: "0%", y: "100%" });
-              } else {
-                gsap.set(productCycleContainer, { x: "100%", y: "0%" });
-                gsap.set(toolkitSection, { x: "0%", y: "0%" });
-                gsap.set(nextSection, { x: "100%", y: "0%" });
-                gsap.set(thirdSection, { x: "100%", y: "0%" });
-                gsap.set(fourthSection, { x: "100%", y: "0%" });
-                gsap.set(fifthSection, { x: "100%", y: "0%" });
-                gsap.set(sixthSection, { x: "100%", y: "0%" });
-                gsap.set(seventhSection, { x: "100%", y: "0%" });
-                gsap.set(eighthSection, { x: "100%", y: "0%" });
-              }
+            if (newIsMobile) {
+              gsap.set(toolkitSection, { x: "0%", y: "0%" });
+              gsap.set(firstSection, { x: "0%", y: "100%" });
+              gsap.set(secondSection, { x: "0%", y: "100%" });
+              gsap.set(thirdSection, { x: "0%", y: "100%" });
+              gsap.set(fourthSection, { x: "0%", y: "100%" });
+              gsap.set(fifthSection, { x: "0%", y: "100%" });
+              gsap.set(sixthSection, { x: "0%", y: "100%" });
+              gsap.set(seventhSection, { x: "0%", y: "100%" });
+              gsap.set(eighthSection, { x: "0%", y: "100%" });
+              gsap.set(ninthSection, { x: "0%", y: "100%" });
+            } else {
+              gsap.set(toolkitSection, { x: "0%", y: "0%" });
+              gsap.set(firstSection, { x: "100%", y: "0%" });
+              gsap.set(secondSection, { x: "100%", y: "0%" });
+              gsap.set(thirdSection, { x: "100%", y: "0%" });
+              gsap.set(fourthSection, { x: "100%", y: "0%" });
+              gsap.set(fifthSection, { x: "100%", y: "0%" });
+              gsap.set(sixthSection, { x: "100%", y: "0%" });
+              gsap.set(seventhSection, { x: "100%", y: "0%" });
+              gsap.set(eighthSection, { x: "100%", y: "0%" });
+              gsap.set(ninthSection, { x: "100%", y: "0%" });
             }
           } catch (error) {
             console.warn('ProductCycleSection: Error in resize handler:', error);
@@ -576,25 +573,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       } catch (error) {
         console.error('ProductCycleSection: Animation setup failed:', error);
         // Fallback: ensure elements are visible even if animation fails
-        gsap.set([firstText, secondText, nextText, thirdText, fourthText, fifthText, sixthText, seventhText, eighthText], { opacity: 1 });
+        gsap.set([firstText, secondText, thirdText, fourthText, fifthText, sixthText, seventhText, eighthText, ninthText], { opacity: 1 });
         
         // Set sections based on screen size
         const isMobile = window.innerWidth < 768;
         if (isMobile) {
-          gsap.set([nextSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection], { x: "0%", y: "0%" });
+          gsap.set([firstSection, secondSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection, ninthSection], { x: "0%", y: "0%" });
           gsap.set(toolkitSection, { x: "0%", y: "0%" });
         } else {
-          gsap.set([nextSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection], { x: "0%" });
+          gsap.set([firstSection, secondSection, thirdSection, fourthSection, fifthSection, sixthSection, seventhSection, eighthSection, ninthSection], { x: "0%" });
           gsap.set(toolkitSection, { x: "0%" });
         }
         
         gsap.set([dataInsights, emailMarketing, promotions, marketingInsights, miniPortfolio, discoveryChannel], { opacity: 1, y: 0 });
         gsap.set([retargetLabel, discoverLabel], { opacity: 1 });
-        
-        const productCycleContainer = section?.querySelector('.product-cycle-container');
-        if (productCycleContainer) {
-          gsap.set(productCycleContainer, { x: "0%", y: "0%" });
-        }
       }
     };
 
@@ -665,29 +657,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Product Cycle Container - Slides in from right */}
-      <div className="product-cycle-container absolute top-0 right-0 w-full h-full flex flex-col md:flex-row">
-        {/* Left Panel - Text Content */}
-        <div className="w-full h-full md:h-full md:w-full bg-[#EBE4D4] relative flex items-center justify-center overflow-hidden">
-        {/* Noise effect overlay */}
-        <Image
-          src="/Assets/Images/NoiseEffectBg.svg"
-          alt="noise texture"
-          fill
-          className="pointer-events-none select-none object-cover z-0"
-          style={{ mixBlendMode: "multiply" }}
-        />
-        {/* Vertical line and label - Fixed in place */}
+      {/* Persistent Labels and Lines Container - Visible across all sections */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 100 }}>
+        {/* Vertical line - Fixed in place */}
         <div className="absolute left-24 top-0 w-[0.5px] h-full bg-black z-50 hidden md:block"></div>
         <div className="absolute md:hidden left-0 top-20 w-full h-[0.5px] bg-black z-50 block"></div>
-        {/* 
-          The horizontal line should extend/contract based on cursor X position.
-          We'll use React state to track the width, and an effect to listen to mousemove.
-          We'll clamp the width between 250px and window.innerWidth.
-          We'll also ensure a high z-index so it stays above all images/sections.
-        */}
+        
         {/* Interactive horizontal line - Desktop only */}
-        <div className="hidden md:block">
+        <div className="hidden md:block pointer-events-auto">
           {(() => {
             const [lineWidth, setLineWidth] = React.useState(250);
             const lineRef = React.useRef<HTMLDivElement>(null);
@@ -710,7 +687,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 style={{
                   width: `${lineWidth}px`,
                   transition: 'width 0.2s cubic-bezier(0.4,0,0.2,1)',
-                  zIndex: 9999 // Ensure the line is always on top
+                  zIndex: 9999
                 }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45" style={{zIndex: 10000}}></div>
@@ -718,6 +695,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             );
           })()}
         </div>
+        
         {/* Labels - Desktop: rotated, Mobile: horizontal at top */}
         <div className="absolute left-0 bottom-40 -rotate-90 text-[#363636] instrument-serif-regular text-4xl tracking-wider z-50 hidden md:block">
           <span ref={distributeLabelRef} className="absolute top-10 -left-16">Distribute</span>
@@ -731,82 +709,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <span className="block opacity-0 absolute top-0 left-0 retarget-mobile">Retarget</span>
           <span className="block opacity-0 absolute top-0 left-0 discover-mobile">Discover</span>
         </div>
-        
-        {/* Main content */}
-        <div ref={mainContentRef} className="top-0 left-0 w-full h-full flex flex-col md:flex-row">
-          <div className="md:w-1/2 md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
-            {/* Text Content */}
-            <div className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
-              {/* First Text */}
-              <div ref={firstTextRef} className="w-full md:w-full h-fit flex flex-col pb-6 md:pb-0 items-end md:gap-20 justify-between">
-                <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
-                  <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
-                </h2>
-                <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
-                  <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
-                </p>
-              </div>
-
-              {/* Second Text */}
-              <div ref={secondTextRef} className="absolute w-full md:w-full h-[70%] md:h-fit md:gap-10 flex flex-col items-end justify-between">
-                <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
-                  <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
-                </h2>
-                <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
-                  <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
-                </p>
-              </div>
-            </div>
-
-            {/* Action Texts  */}
-            <div ref={actionTextRef} className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
-              <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 create-event'>
-                Create Event
-              </p>
-              <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-gray-600 issue-tickets'>
-                Issue Tickets
-              </p>
-            </div>
-          </div>
-          <div className="w-full md:w-1/2 z-100 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
-            <div className='w-full h-full relative'>
-              {/* Static SVG Background */}
-              <Image 
-                src={currentGif === "createEvent" ? "/Assets/Images/Toolkit/Creation.gif" : "/Assets/Images/Toolkit/Ticket.gif"}
-                alt="Create Event Background" 
-                fill 
-                className="object-cover" 
-              />
-              {/* GIF Overlay */}
-              {/* <div className='absolute inset-0 md:w-[80%] top-[40%] md:h-[25%] translate-x-[5%] mx-auto h-w-full h-full rounded-xl overflow-hidden'>
-                <Image 
-                  src="/Assets/Images/Toolkit/Distribute_IssueTickets.gif" 
-                  alt="Create Event Animation" 
-                  fill 
-                  className="object-contain" 
-                />
-              </div> */}
-              {/* <div className="absolute inset-0 md:top-[41%] top-[40%] md:left-[27.5%] left-[29%] w-[49%] md:w-[52%] md:h-[25%] h-[27%] overflow-hidden">
-          <Image
-            src={currentGif === 'createEvent' 
-              ? "/Assets/Images/Toolkit/Distribute_CreateEvent.gif" 
-              : "/Assets/Images/Toolkit/Distribute_IssueTickets.gif"
-            }
-            alt={currentGif === 'createEvent' ? "Create Event Animation" : "Issue Tickets Animation"}
-            fill
-            className="w-full h-full object-cover [transform:perspective(800px)_rotateX(6deg)] md:[transform:perspective(800px)_rotateX(4deg)] rounded-lg"
-          />
-          </div> */}
-            </div>
-          </div>
-        </div>
       </div>
 
-        {/* Right Panel - Visual Content */}
-        
-
-      {/* Next Section - Slides in from right */}
-      <div ref={nextSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* First Section - Create Event - Slides in from right */}
+      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -816,7 +722,93 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Next Section Content */}
+        {/* Content */}
+        <div className="w-full h-full flex flex-col md:flex-row">
+          <div className="md:w-1/2 md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+            <div ref={firstTextRef} className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
+              <div className="w-full md:w-full h-fit flex flex-col pb-6 md:pb-0 items-end md:gap-20 justify-between">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <span className="word-by-word">Host anything from standard events to multi-day festivals and tours.</span>
+                </h2>
+                <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
+                  <span className="word-by-word">Add multiple time slots, customise ticket formats, and launch instantly.</span>
+                </p>
+              </div>
+            </div>
+            <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+              <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636]'>
+                Create Event
+              </p>
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 z-100 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+            <div className='w-full h-full relative'>
+              <Image 
+                src="/Assets/Images/Toolkit/Creation.gif"
+                alt="Create Event Background" 
+                fill 
+                className="object-cover" 
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Section - Issue Tickets - Slides in from right */}
+      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+        {/* Noise effect overlay */}
+        <Image
+          src="/Assets/Images/NoiseEffectBg.svg"
+          alt="noise texture"
+          fill
+          className="pointer-events-none select-none object-cover z-0"
+          style={{ mixBlendMode: "multiply" }}
+        />
+        
+        {/* Content */}
+        <div className="w-full h-full flex flex-col md:flex-row">
+          <div className="md:w-1/2 md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+            <div ref={secondTextRef} className='w-full h-full flex flex-col items-start relative pt-16 md:pt-0'>
+              <div className="w-full md:w-full h-[70%] md:h-fit md:gap-10 flex flex-col items-end justify-between">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
+                  <span className="word-by-word">Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.</span>
+                </h2>
+                <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-right font-switzer300 text-gray-600 italic mb-4 md:mb-8">
+                  <span className="word-by-word">tickets are issued and stored on blockchain, making it impossible to forge or duplicate.</span>
+                </p>
+              </div>
+            </div>
+            <div className='w-full flex flex-col items-end md:items-start gap-0 py-2 md:py-5'>
+              <p className='text-base md:text-lg lg:text-2xl font-nohemi400 text-[#363636]'>
+                Issue Tickets
+              </p>
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 z-100 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+            <div className='w-full h-full relative'>
+              <Image 
+                src="/Assets/Images/Toolkit/Ticket.gif"
+                alt="Issue Tickets Background" 
+                fill 
+                className="object-cover" 
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Third Section - Purchase/RSVP - Slides in from right */}
+      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+        {/* Noise effect overlay */}
+        <Image
+          src="/Assets/Images/NoiseEffectBg.svg"
+          alt="noise texture"
+          fill
+          className="pointer-events-none select-none object-cover z-0"
+          style={{ mixBlendMode: "multiply" }}
+        />
+        
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Visual Content (Smartphone Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full">
@@ -842,7 +834,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
               <div className="h-full w-full mx-4 md:mx-20 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
                {/* Text Content */}
-               <div ref={nextTextRef} className='w-full flex flex-col items-end relative h-full pt-10 md:pt-0'>
+               <div ref={thirdTextRef} className='w-full flex flex-col items-end relative h-full pt-10 md:pt-0'>
                  <div className="w-full flex flex-col items-end h-full md:h-[50%] justify-around">
                    <h2 className="text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-4 md:mb-6 w-full">
                      <span className="word-by-word">Give your fans a seamless way to book their tickets – apply discounts, confirm instantly.</span>
@@ -864,8 +856,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Third Section - Slides in from right */}
-      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* Fourth Section - Data Insights - Slides in from right */}
+      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -875,13 +867,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Third Section Content */}
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:ml-24 md:mr-18 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={thirdTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+              <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col py-6 md:pt-10 items-end h-full md:h-[60%] md:justify-between justify-around">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Own your data and make data-driven decisions.</span>
@@ -909,8 +901,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Fourth Section - Email Marketing */}
-      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* Fifth Section - Email Marketing */}
+      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -920,13 +912,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Fourth Section Content */}
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:ml-24 px-4 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={fourthTextRef} className='w-full flex flex-col items-end relative h-fit pt-16 md:pt-0'>
+              <div ref={fifthTextRef} className='w-full flex flex-col items-end relative h-fit pt-16 md:pt-0'>
                 <div className="w-full flex flex-col py-6 md:py-0 items-end h-full md:h-fit md:gap-10 md:justify-between justify-around">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard.</span>
@@ -963,8 +955,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Fifth Section - Promotions and Discount Codes */}
-      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* Sixth Section - Promotions and Discount Codes */}
+      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay - Applied to entire section */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -974,7 +966,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Fifth Section Content */}
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Visual Content (Laptop Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full md:order-1">
@@ -986,7 +978,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full md:order-2">
             <div className="h-full w-full mx-4 md:mr-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={fifthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+              <div ref={sixthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col py-6 md:py-10 items-end h-[60%] md:h-fit md:gap-10 justify-between">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Set up exclusive promoter codes and custom discounts in seconds.</span>
@@ -1008,8 +1000,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Sixth Section - Marketing Insights */}
-      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* Seventh Section - Marketing Insights */}
+      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1019,13 +1011,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Sixth Section Content */}
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:ml-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={sixthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+              <div ref={seventhTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">See the full story with live analytics - track revenue, reach, contacts and performance.</span>
@@ -1062,8 +1054,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Seventh Section - Mini Portfolio */}
-      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* Eighth Section - Mini Portfolio */}
+      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1073,13 +1065,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Seventh Section Content */}
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:ml-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={seventhTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+              <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-start md:items-end h-[50%] gap-6 md:gap-10 justify-between">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists.</span>
@@ -1116,8 +1108,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
       </div>
 
-      {/* Eighth Section - Discovery Channel */}
-      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      {/* Ninth Section - Discovery Channel */}
+      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1127,7 +1119,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           style={{ mixBlendMode: "multiply" }}
         />
         
-        {/* Eighth Section Content */}
+        {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Visual Content (iPhone Image) */}
           <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full order-2 md:order-1">
@@ -1148,7 +1140,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full order-1 md:order-2">
             <div className="h-full w-full mx-4 md:mr-24 px-4 md:pl-14 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
-              <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
+              <div ref={ninthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-end h-[50%] gap-6 md:gap-10 justify-between">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer400 text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar</span>
@@ -1168,7 +1160,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

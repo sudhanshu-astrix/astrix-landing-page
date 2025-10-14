@@ -25,7 +25,7 @@ export default function Home() {
     smootherRef.current = ScrollSmoother.create({
       smooth: 1.5,              // Smooth duration (in seconds) - how long it takes to catch up
       effects: true,            // Enable data-speed and data-lag effects
-      smoothTouch: 0.1,         // Much shorter on touch devices (0.1 = minimal smoothing on mobile)
+      smoothTouch: 1.2,         // Smooth scrolling on touch devices (mobile)
       normalizeScroll: false,   // Prevents address bar issues on mobile
       ignoreMobileResize: true, // Prevents refresh when mobile keyboard shows up
     });

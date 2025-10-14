@@ -17,7 +17,7 @@ export default function HeroSection({ className }: { className?: string }) {
   }, []);
 
   return (
-    <section className={`${className || ''} relative min-h-screen h-[120vh] md:h-fit w-full flex flex-col justify-between overflow-hidden`}>
+    <section className={`${className || ''} relative min-h-screen h-[100vh] md:h-fit w-full flex flex-col justify-between overflow-hidden`}>
       <div className="absolute inset-0 z-0 w-full h-full">
         {/* Hero Background Video */}
         <video
@@ -115,7 +115,15 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
       </div>
 
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-10">
+      <div 
+        className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-10 cursor-pointer"
+        onClick={() => {
+          window.scrollBy({
+            top: window.innerHeight * 0.9,
+            behavior: 'smooth'
+          });
+        }}
+      >
         <div className="flex flex-col items-center text-white">
           <div className="animate-bounce">
             {/* Double down arrow using the DownArrow.svg image, stacked */}
