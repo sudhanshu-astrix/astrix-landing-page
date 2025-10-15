@@ -18,90 +18,80 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
 
   useEffect(() => {
     const cards = cardsRef.current;
-    if (!cards) return;
+    const section = sectionRef.current;
+    if (!cards || !section) return;
 
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Automatic scroll with manual override
+      // Mobile: Automatic scroll + Native scrolling with auto-resume
       let autoScrollTl: gsap.core.Timeline | null = null;
-      let isUserInteracting = false;
-      let startX = 0;
-      let currentX = 0;
-      let isDragging = false;
+      let scrollTimeout: NodeJS.Timeout | null = null;
+      let isUserScrolling = false;
+      const scrollContainer = section.querySelector('.scroll-container') as HTMLElement;
 
       // Function to start auto scroll
       const startAutoScroll = () => {
         if (autoScrollTl) autoScrollTl.kill();
+        if (!scrollContainer) return;
         
         autoScrollTl = gsap.timeline({ repeat: -1 });
         
-        const currentXPos = gsap.getProperty(cards, "x") as number;
-        const targetX = -((cards.scrollWidth + 200) - window.innerWidth + 200);
-        const remainingDistance = Math.abs(targetX - currentXPos);
-        const totalDistance = Math.abs(targetX);
-        const duration = (remainingDistance / totalDistance) * 70;
+        const currentScrollPos = scrollContainer.scrollLeft;
+        const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+        const remainingDistance = maxScroll - currentScrollPos;
+        const totalDistance = maxScroll;
+        const duration = (remainingDistance / totalDistance) * 60; // 60 seconds for full scroll
         
-        autoScrollTl.to(cards, {
-          x: targetX,
+        autoScrollTl.to(scrollContainer, {
+          scrollLeft: maxScroll,
           duration: duration,
           ease: "none",
         })
-        .to(cards, {
-          x: 0,
+        .to(scrollContainer, {
+          scrollLeft: 0,
           duration: 0.5,
           ease: "power2.inOut",
         });
       };
 
-      // Handle touch start
-      const handleTouchStart = (e: TouchEvent) => {
-        isUserInteracting = true;
-        isDragging = true;
+      // Handle user scrolling
+      const handleScroll = () => {
+        // User is scrolling
+        isUserScrolling = true;
+        
+        // Pause auto-scroll
         if (autoScrollTl) {
           autoScrollTl.pause();
         }
-        startX = e.touches[0].clientX;
-        currentX = gsap.getProperty(cards, "x") as number;
-      };
-
-      // Handle touch move
-      const handleTouchMove = (e: TouchEvent) => {
-        if (!isDragging) return;
-        const deltaX = e.touches[0].clientX - startX;
-        const newX = currentX + deltaX;
-        const maxX = 0;
-        const minX = -((cards.scrollWidth + 200) - window.innerWidth + 200);
         
-        // Constrain within bounds
-        const constrainedX = Math.max(minX, Math.min(maxX, newX));
-        gsap.set(cards, { x: constrainedX });
-      };
-
-      // Handle touch end
-      const handleTouchEnd = () => {
-        isDragging = false;
-        isUserInteracting = false;
-        // Resume auto scroll immediately
-        startAutoScroll();
+        // Clear existing timeout
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+        }
+        
+        // Set timeout to resume auto-scroll after user stops scrolling
+        scrollTimeout = setTimeout(() => {
+          isUserScrolling = false;
+          startAutoScroll();
+        }, 1000); // Resume after 1 second of no scrolling
       };
 
       // Start initial auto scroll
       startAutoScroll();
 
-      // Add touch event listeners
-      cards.addEventListener('touchstart', handleTouchStart, { passive: true });
-      cards.addEventListener('touchmove', handleTouchMove, { passive: true });
-      cards.addEventListener('touchend', handleTouchEnd);
-      cards.addEventListener('touchcancel', handleTouchEnd);
+      // Add scroll event listener
+      if (scrollContainer) {
+        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      }
 
       // Cleanup function
       return () => {
         if (autoScrollTl) autoScrollTl.kill();
-        cards.removeEventListener('touchstart', handleTouchStart);
-        cards.removeEventListener('touchmove', handleTouchMove);
-        cards.removeEventListener('touchend', handleTouchEnd);
-        cards.removeEventListener('touchcancel', handleTouchEnd);
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        if (scrollContainer) {
+          scrollContainer.removeEventListener('scroll', handleScroll);
+        }
       };
     } else {
       // Desktop: ScrollTrigger animation
@@ -278,7 +268,13 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         </div>
 
         {/* Horizontal Scrolling Cards - Below title on mobile, Right side on desktop */}
-        <div className="flex-1 relative h-[60vh] md:h-[80vh] w-full">
+        <div 
+          className="flex-1 relative h-[60vh] md:h-[80vh] w-full scroll-container overflow-x-auto md:overflow-hidden scrollbar-hide"
+          style={{ 
+            scrollBehavior: 'smooth',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
           <div 
             ref={cardsRef}
             className={`flex gap-12 h-full bg-[#0A0A0A]`}

@@ -6,10 +6,81 @@ import { useState, useEffect, useRef } from "react";
 export default function HeroSection({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Ensure video plays immediately on mount
-    if (videoRef.current) {
+    const isMobile = window.innerWidth < 768;
+    
+    if (isMobile && videoRef.current && mobileVideoRef.current) {
+      // Wait for both videos to load on mobile, then play simultaneously
+      const backgroundVideo = videoRef.current;
+      const mobileVideo = mobileVideoRef.current;
+      
+      const playBothVideos = () => {
+        // Ensure both videos start at exactly 0
+        backgroundVideo.currentTime = 0;
+        mobileVideo.currentTime = 0;
+        
+        // Use requestAnimationFrame to sync the play() calls as closely as possible
+        requestAnimationFrame(() => {
+          backgroundVideo.play().catch((error) => {
+            console.log("Background video autoplay failed:", error);
+          });
+          mobileVideo.play().catch((error) => {
+            console.log("Mobile video autoplay failed:", error);
+          });
+        });
+
+        // Sync videos periodically to ensure they stay in sync
+        const syncInterval = setInterval(() => {
+          if (Math.abs(backgroundVideo.currentTime - mobileVideo.currentTime) > 0.3) {
+            // If videos drift apart by more than 0.3 seconds, resync
+            mobileVideo.currentTime = backgroundVideo.currentTime;
+          }
+        }, 1000); // Check every second
+
+        // Clean up interval
+        return syncInterval;
+      };
+
+      // Check if both videos are ready
+      let backgroundReady = backgroundVideo.readyState >= 2; // HAVE_CURRENT_DATA or higher
+      let mobileReady = mobileVideo.readyState >= 2;
+      let syncInterval: NodeJS.Timeout | null = null;
+
+      const checkAndPlay = () => {
+        if (backgroundReady && mobileReady && !syncInterval) {
+          syncInterval = playBothVideos();
+        }
+      };
+
+      // Listen for loadeddata events (more reliable than canplay)
+      const handleBackgroundLoaded = () => {
+        backgroundReady = true;
+        checkAndPlay();
+      };
+
+      const handleMobileLoaded = () => {
+        mobileReady = true;
+        checkAndPlay();
+      };
+
+      backgroundVideo.addEventListener('loadeddata', handleBackgroundLoaded);
+      mobileVideo.addEventListener('loadeddata', handleMobileLoaded);
+
+      // If already loaded, play immediately
+      checkAndPlay();
+
+      // Cleanup
+      return () => {
+        backgroundVideo.removeEventListener('loadeddata', handleBackgroundLoaded);
+        mobileVideo.removeEventListener('loadeddata', handleMobileLoaded);
+        if (syncInterval) {
+          clearInterval(syncInterval);
+        }
+      };
+    } else if (!isMobile && videoRef.current) {
+      // Desktop: just play the background video
       videoRef.current.play().catch((error) => {
         console.log("Video autoplay failed:", error);
       });
@@ -99,6 +170,7 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
         <div className="relative w-full h-[30vh] md:hidden">
           <video
+            ref={mobileVideoRef}
             src="/Assets/Images/HeroSection.mp4"
             className="object-cover w-full h-full"
             autoPlay
@@ -110,7 +182,7 @@ export default function HeroSection({ className }: { className?: string }) {
             disableRemotePlayback
             x-webkit-airplay="deny"
             style={{ position: "absolute", top: 0, left: 0 }}
-            poster="/Assets/Images/HeroImageMobile.svg"
+            poster="/Assets/Images/HeroImage.png"
           />
         </div>
       </div>

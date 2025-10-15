@@ -44,6 +44,22 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const discoverLabelRef = useRef<HTMLSpanElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
 
+  // Preload critical images for better performance
+  useEffect(() => {
+    const imagesToPreload = [
+      '/Assets/Images/Toolkit/Creation.gif',
+      '/Assets/Images/Toolkit/Ticket.gif',
+      '/Assets/Images/Toolkit/Data.gif',
+      '/Assets/Images/Star.svg',
+      '/Assets/Images/NoiseEffectBg.svg',
+    ];
+
+    imagesToPreload.forEach((src) => {
+      const img = document.createElement('img');
+      img.src = src;
+    });
+  }, []);
+
   useEffect(() => {
     const section = sectionRef.current;
     const firstText = firstTextRef.current;
@@ -155,54 +171,55 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       splitTextIntoWords(ninthText);
 
       // Helper function to animate text with word-by-word reveal
-      const animateTextReveal = (textElement: HTMLElement, labelElement?: HTMLElement, delay: number = 0.2) => {
+      const animateTextReveal = (textElement: HTMLElement, labelElement?: HTMLElement, delay: number = 0.1) => {
         const textWords = textElement.querySelectorAll('.word');
         const animTl = gsap.timeline({ delay });
         
         animTl.to(textElement, { 
           opacity: 1, 
-          duration: 0.3,
+          duration: 0.2,
           ease: "power2.out"
         });
         
         if (textWords.length > 0) {
+          // Faster animations for better user experience
+          const animationDuration = isMobile ? 0.4 : 0.6;
+          const staggerAmount = isMobile ? 0.02 : 0.04;
+          
           animTl.to(textWords, {
             opacity: 1,
             y: 0,
-            duration: 1, // 1 second duration for text animation
-            stagger: 0.08,
+            duration: animationDuration,
+            stagger: staggerAmount,
             ease: "power2.out"
-          }, "-=0.2");
+          }, "-=0.1");
         }
         
         if (labelElement) {
           animTl.to(labelElement, {
             opacity: 1,
             y: 0,
-            duration: 0.6,
+            duration: isMobile ? 0.3 : 0.4,
             ease: "power2.out"
-          }, "-=0.8");
+          }, "-=0.5");
         }
         
         return animTl;
       };
 
       // Create timeline with ScrollTrigger
-      // We have 10 major sections, so snap points will be at every 1/10th
+      // We have 10 major sections
+      // Optimize for mobile performance - removed snap for smoother, more natural scrolling
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=11000", // 11x viewport height for smooth scrolling including toolkit section
-          scrub: 2, // Increased scrub for smoother, slower animation (2 second catch-up delay)
+          end: () => isMobile ? "+=8000" : "+=12000", // Shorter on mobile for better performance, longer on desktop
+          scrub: isMobile ? 0.5 : 1.5, // Smooth scrub value for natural scrolling
           pin: true,
           anticipatePin: 1,
-          snap: {
-            snapTo: 1 / 10, // Snap to every 1/10th of the timeline (10 sections)
-            duration: { min: 1.2, max: 1.8 }, // Longer snap duration for slower transitions
-            delay: 0.3, // Added delay before snapping begins
-            ease: "power2.inOut" // Smoother easing with more gradual acceleration/deceleration
-          }
+          invalidateOnRefresh: true, // Recalculate on resize
+          pinSpacing: true, // Ensure proper spacing
         },
       });
 
@@ -210,13 +227,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       if (isMobile) {
         tl.to(toolkitSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         });
       } else {
         tl.to(toolkitSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         });
       }
@@ -225,13 +242,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       if (isMobile) {
         tl.to(firstSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "<");
       } else {
         tl.to(firstSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "<");
       }
@@ -242,288 +259,288 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }, [], 0);
 
       // Phase 2: Slide to second section (Issue Tickets)
-      tl.add("secondSection", "+=1");
+      tl.add("secondSection", "+=0.8");
       if (isMobile) {
         tl.to(firstSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "secondSection")
         .to(secondSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "secondSection");
       } else {
         tl.to(firstSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "secondSection")
         .to(secondSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "secondSection");
       }
       
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(secondText);
-      }, [], "secondSection+=0.95");
+      }, [], "secondSection+=0.72");
 
       // Phase 3: Slide to third section (Purchase/RSVP)
-      tl.add("thirdSection", "+=1");
+      tl.add("thirdSection", "+=0.8");
       if (isMobile) {
         tl.to(secondSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "thirdSection")
         .to(thirdSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "thirdSection");
       } else {
         tl.to(secondSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "thirdSection")
         .to(thirdSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "thirdSection");
       }
       
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(thirdText);
-      }, [], "thirdSection+=0.95");
+      }, [], "thirdSection+=0.72");
 
       // Phase 4: Slide to fourth section (Data Insights) & label change
-      tl.add("fourthSection", "+=1");
+      tl.add("fourthSection", "+=0.8");
       if (isMobile) {
         tl.to(thirdSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fourthSection")
         .to(fourthSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fourthSection");
       } else {
         tl.to(thirdSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fourthSection")
         .to(fourthSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fourthSection");
       }
       
-      // Label change animation
+      // Label change animation (faster)
       tl.to(distributeLabel, { 
         opacity: 0, 
-        duration: 0.5 
+        duration: 0.3 
       }, "fourthSection")
       .to(retargetLabel, { 
         opacity: 1, 
-        duration: 0.5 
-      }, "fourthSection+=0.5")
+        duration: 0.3 
+      }, "fourthSection+=0.3")
       .to(".distribute-mobile", { 
         opacity: 0, 
-        duration: 0.5 
+        duration: 0.3 
       }, "fourthSection")
       .to(".retarget-mobile", { 
         opacity: 1, 
-        duration: 0.5 
-      }, "fourthSection+=0.5");
+        duration: 0.3 
+      }, "fourthSection+=0.3");
 
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(fourthText, dataInsights);
-      }, [], "fourthSection+=0.95");
+      }, [], "fourthSection+=0.72");
 
       // Phase 5: Slide to fifth section (Email Marketing)
-      tl.add("fifthSection", "+=1");
+      tl.add("fifthSection", "+=0.8");
       if (isMobile) {
         tl.to(fourthSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fifthSection")
         .to(fifthSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fifthSection");
       } else {
         tl.to(fourthSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fifthSection")
         .to(fifthSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "fifthSection");
       }
 
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(fifthText, emailMarketing);
-      }, [], "fifthSection+=0.95");
+      }, [], "fifthSection+=0.72");
 
       // Phase 6: Slide to sixth section (Promotions)
-      tl.add("sixthSection", "+=1");
+      tl.add("sixthSection", "+=0.8");
       if (isMobile) {
         tl.to(fifthSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "sixthSection")
         .to(sixthSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "sixthSection");
       } else {
         tl.to(fifthSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "sixthSection")
         .to(sixthSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "sixthSection");
       }
 
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(sixthText, promotions);
-      }, [], "sixthSection+=0.95");
+      }, [], "sixthSection+=0.72");
 
       // Phase 7: Slide to seventh section (Marketing Insights)
-      tl.add("seventhSection", "+=1");
+      tl.add("seventhSection", "+=0.8");
       if (isMobile) {
         tl.to(sixthSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "seventhSection")
         .to(seventhSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "seventhSection");
       } else {
         tl.to(sixthSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "seventhSection")
         .to(seventhSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "seventhSection");
       }
 
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(seventhText, marketingInsights);
-      }, [], "seventhSection+=0.95");
+      }, [], "seventhSection+=0.72");
 
       // Phase 8: Slide to eighth section (Mini Portfolio) & label change
-      tl.add("eighthSection", "+=1");
+      tl.add("eighthSection", "+=0.8");
       if (isMobile) {
         tl.to(seventhSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "eighthSection")
         .to(eighthSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "eighthSection");
       } else {
         tl.to(seventhSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "eighthSection")
         .to(eighthSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "eighthSection");
       }
       
-      // Label change animation
+      // Label change animation (faster)
       tl.to(retargetLabel, { 
         opacity: 0, 
-        duration: 0.5 
+        duration: 0.3 
       }, "eighthSection")
       .to(discoverLabel, { 
         opacity: 1, 
-        duration: 0.5 
-      }, "eighthSection+=0.5")
+        duration: 0.3 
+      }, "eighthSection+=0.3")
       .to(".retarget-mobile", { 
         opacity: 0, 
-        duration: 0.5 
+        duration: 0.3 
       }, "eighthSection")
       .to(".discover-mobile", { 
         opacity: 1, 
-        duration: 0.5 
-      }, "eighthSection+=0.5");
+        duration: 0.3 
+      }, "eighthSection+=0.3");
 
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(eighthText, miniPortfolio);
-      }, [], "eighthSection+=0.95");
+      }, [], "eighthSection+=0.72");
 
       // Phase 9: Slide to ninth section (Discovery Channel)
-      tl.add("ninthSection", "+=1");
+      tl.add("ninthSection", "+=0.8");
       if (isMobile) {
         tl.to(eighthSection, {
           y: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "ninthSection")
         .to(ninthSection, {
           y: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "ninthSection");
       } else {
         tl.to(eighthSection, {
           x: "-100%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "ninthSection")
         .to(ninthSection, {
           x: "0%",
-          duration: 1,
+          duration: 0.8,
           ease: "power2.inOut"
         }, "ninthSection");
       }
 
-      // Auto-trigger text animation when section is 95% visible
+      // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(ninthText, discoveryChannel);
-      }, [], "ninthSection+=0.95");
+      }, [], "ninthSection+=0.72");
 
         }, section);
 
@@ -562,10 +579,19 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         window.addEventListener('resize', handleResize);
 
+        // Force ScrollTrigger refresh after animations are set up
+        ScrollTrigger.refresh();
+
         return () => {
           try {
             ctx.revert();
             window.removeEventListener('resize', handleResize);
+            // Clean up all ScrollTriggers for this section
+            ScrollTrigger.getAll().forEach(st => {
+              if (st.trigger === section) {
+                st.kill();
+              }
+            });
           } catch (error) {
             console.warn('ProductCycleSection: Error during cleanup:', error);
           }
@@ -599,9 +625,17 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   }, []);
 
   return (
-    <section ref={sectionRef} className={`${className || ''} w-full h-screen flex relative overflow-hidden`}>
+    <section 
+      ref={sectionRef} 
+      className={`${className || ''} w-full h-screen flex relative overflow-hidden`}
+      style={{
+        transform: 'translateZ(0)', // Force GPU acceleration
+        backfaceVisibility: 'hidden',
+        perspective: 1000,
+      }}
+    >
       {/* Toolkit Section - Slides in from right first */}
-      <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden" style={{ zIndex: 10 }}>
+      <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden" style={{ zIndex: 10, willChange: 'transform' }}>
         <div className="w-full flex flex-col justify-between relative">
           {/* Top Content */}
           <div className="flex flex-col md:flex-row w-full h-fit mt-5 md:mt-10">
@@ -712,7 +746,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* First Section - Create Event - Slides in from right */}
-      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -755,7 +789,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Second Section - Issue Tickets - Slides in from right */}
-      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -798,7 +832,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Third Section - Purchase/RSVP - Slides in from right */}
-      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -857,7 +891,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Fourth Section - Data Insights - Slides in from right */}
-      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -893,16 +927,24 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
 
           {/* Right Half - Visual Content (Laptop Image) */}
-          <div className="w-full md:w-1/2 bg-gray-800 relative flex items-center justify-center h-1/2 md:h-full">
-            <div className='w-full h-full'>
-              <Image src="/Assets/Images/Toolkit/Data.gif" alt="product cycle dashboard" fill className="object-cover" />
+          <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+            {/* Noise effect overlay */}
+            <Image
+              src="/Assets/Images/NoiseEffectBg.svg"
+              alt="noise texture"
+              fill
+              className="pointer-events-none select-none object-cover z-0"
+              style={{ mixBlendMode: "multiply" }}
+            />
+            <div className='w-full h-full relative z-10'>
+              <Image src="/Assets/Images/Toolkit/Data_Insights.gif" alt="product cycle dashboard" fill className="object-cover" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Fifth Section - Email Marketing */}
-      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -948,15 +990,15 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               className="pointer-events-none select-none object-cover z-0"
               style={{ mixBlendMode: "multiply" }}
             />
-            <div className='w-full h-full md:h-[80%] z-10 relative md:-bottom-25 md:left-20 -bottom-14 left-0'>
-              <Image src="/Assets/Images/Toolkit/Retarget_EmailMarketing.svg" alt="email marketing dashboard" fill className="object-cover" />
+            <div className='w-full h-full md:h-[80%] z-10 relative top-0 left-0'>
+              <Image src="/Assets/Images/Toolkit/Email_Marketing.gif" alt="email marketing dashboard" fill className="object-cover" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Sixth Section - Promotions and Discount Codes */}
-      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay - Applied to entire section */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1001,7 +1043,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Seventh Section - Marketing Insights */}
-      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1055,7 +1097,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Eighth Section - Mini Portfolio */}
-      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1109,7 +1151,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Ninth Section - Discovery Channel */}
-      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden">
+      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
