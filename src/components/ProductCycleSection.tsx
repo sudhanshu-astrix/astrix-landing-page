@@ -97,6 +97,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       return;
     }
 
+    // Detect Safari for optimization
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
     // Add a small delay to ensure DOM is fully ready, especially on mobile
     const setupAnimation = () => {
       try {
@@ -210,16 +213,23 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       // Create timeline with ScrollTrigger
       // We have 10 major sections
       // Optimize for mobile performance - removed snap for smoother, more natural scrolling
+      // Extra optimization for Safari to prevent lag
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => isMobile ? "+=8000" : "+=12000", // Shorter on mobile for better performance, longer on desktop
-          scrub: isMobile ? 0.5 : 1.5, // Smooth scrub value for natural scrolling
+          end: () => {
+            // Safari mobile gets even shorter distance for better performance
+            if (isSafari && isMobile) return "+=6000";
+            if (isMobile) return "+=8000";
+            return "+=12000";
+          },
+          scrub: isSafari && isMobile ? 0.3 : (isMobile ? 0.5 : 1.5), // Extra fast on Safari mobile
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true, // Recalculate on resize
           pinSpacing: true, // Ensure proper spacing
+          fastScrollEnd: isSafari, // Safari-specific optimization
         },
       });
 
@@ -581,6 +591,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         // Force ScrollTrigger refresh after animations are set up
         ScrollTrigger.refresh();
+        
+        // Safari-specific delayed refresh to prevent rendering issues
+        if (isSafari) {
+          gsap.delayedCall(1.5, () => {
+            ScrollTrigger.refresh();
+          });
+        }
 
         return () => {
           try {
@@ -846,12 +863,12 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Visual Content (Smartphone Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full">
-            <div className="relative w-full h-full -bottom-10 md:-bottom-10 -left-18 md:-left-0">
+            <div className="relative w-full h-full top-0 left-0">
               <Image 
-                src="/Assets/Images/Toolkit/Distribute_PurchaseTicket2.svg" 
+                src="/Assets/Images/Toolkit/Purchase.gif" 
                 alt="smartphone with event booking app" 
                 fill 
-                className="object-contain z-10" 
+                className="object-cover z-10" 
               />
               <div className="absolute md:left-[45%] md:top-[40%] left-[35%] top-[30%] w-80 h-80 md:w-120 md:h-120">
                 <Image
@@ -1090,7 +1107,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className='w-full h-full -bottom-5 z-10 relative'>
-              <Image src="/Assets/Images/Toolkit/Retarget_MarketingInsights.svg" alt="marketing insights dashboard" fill className="object-contain md:object-cover" />
+              <Image src="/Assets/Images/Toolkit/Temp/marketing_analytics.png" alt="marketing insights dashboard" fill className="object-contain md:object-cover" />
             </div>
           </div>
         </div>
@@ -1144,7 +1161,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className='w-full h-full z-10 relative'>
-              <Image src="/Assets/Images/Toolkit/Discover_Portfolio.svg" alt="mini portfolio mobile app" fill className="object-cover" />
+              <Image src="/Assets/Images/Toolkit/Temp/profile.png" alt="mini portfolio mobile app" fill className="object-cover" />
             </div>
           </div>
         </div>
@@ -1174,7 +1191,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className='w-full h-full z-10 relative '>
-              <Image src="/Assets/Images/Toolkit/Discover_DiscoveryChannel.svg" alt="discovery channel mobile app" fill className="object-cover" />
+              <Image src="/Assets/Images/Toolkit/Temp/home pic.png" alt="discovery channel mobile app" fill className="object-cover" />
             </div>
           </div>
 

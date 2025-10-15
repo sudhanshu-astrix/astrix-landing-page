@@ -21,13 +21,18 @@ export default function Home() {
   const smootherRef = useRef<any>(null);
 
   useEffect(() => {
-    // Create ScrollSmoother instance
+    // Detect Safari and mobile
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isMobile = window.innerWidth < 768;
+    const isSafariMobile = isSafari && isMobile;
+
+    // Optimize ScrollSmoother settings for Safari
     smootherRef.current = ScrollSmoother.create({
-      smooth: 1.5,              // Smooth duration (in seconds) - how long it takes to catch up
-      effects: true,            // Enable data-speed and data-lag effects
-      smoothTouch: 1.2,         // Smooth scrolling on touch devices (mobile)
-      normalizeScroll: false,   // Prevents address bar issues on mobile
-      ignoreMobileResize: true, // Prevents refresh when mobile keyboard shows up
+      smooth: isSafariMobile ? 0.5 : 1.5,  // Much lighter smoothing on Safari mobile
+      effects: !isSafariMobile,             // Disable effects on Safari mobile for performance
+      smoothTouch: isSafariMobile ? 0.1 : 1.2, // Minimal smoothing on Safari mobile
+      normalizeScroll: isSafariMobile,      // Enable on Safari mobile to prevent issues
+      ignoreMobileResize: true,
     });
 
     // Setup section animations after ScrollSmoother is created
@@ -39,30 +44,54 @@ export default function Home() {
       // Skip hero section (index 0) and collaborator section (index 1) as they have their own animations
       if (index === 0 || index === 1) return;
 
-      // Set initial state
-      gsap.set(section, {
-        y: 100,
-        opacity: 0,
-      });
+      // Simplified animations for Safari mobile
+      if (isSafariMobile) {
+        gsap.set(section, {
+          opacity: 0,
+        });
 
-      // Create scroll trigger animation
-      gsap.to(section, {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse",
-        },
-      });
+        gsap.to(section, {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      } else {
+        // Full animations for other browsers
+        gsap.set(section, {
+          y: 100,
+          opacity: 0,
+        });
+
+        gsap.to(section, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      }
     });
 
     };
 
     setupSectionAnimations();
+
+    // Safari-specific fix: Delayed ScrollTrigger refresh
+    if (isSafari) {
+      gsap.delayedCall(2, () => {
+        ScrollTrigger.refresh();
+      });
+    }
 
     // Handle anchor link clicks for smooth scrolling to contact
     const handleAnchorClick = (e: Event) => {

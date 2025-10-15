@@ -17,6 +17,9 @@ export default function GrowthCycleSection({ className }: { className?: string }
 
       if (circles.length < 5) return;
 
+      // Detect Safari for optimization
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
       // Get circle radius dynamically (from first circle)
       const circleSize = circles[0].offsetWidth;
       const r = circleSize / 2;
@@ -38,9 +41,11 @@ export default function GrowthCycleSection({ className }: { className?: string }
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "center center",
-          end: "+=3000",
-          scrub: true,
+          end: isSafari && isMobile ? "+=2000" : "+=3000", // Shorter on Safari mobile
+          scrub: isSafari && isMobile ? 0.5 : true, // Less smooth but faster on Safari mobile
           pin: true,
+          anticipatePin: 1,
+          fastScrollEnd: isSafari, // Safari-specific optimization
         },
       });
 
@@ -109,6 +114,14 @@ export default function GrowthCycleSection({ className }: { className?: string }
         );
       }
     }, sectionRef);
+
+    // Safari-specific delayed refresh to prevent rendering issues
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      gsap.delayedCall(1.5, () => {
+        ScrollTrigger.refresh();
+      });
+    }
 
     return () => ctx.revert();
   }, []);

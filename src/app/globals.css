@@ -191,6 +191,10 @@
 
 html {
   scroll-behavior: smooth;
+  /* Safari-specific fix for scrolling issues */
+  overscroll-behavior: unset !important;
+  /* Prevent elastic scrolling in Safari */
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -198,6 +202,9 @@ body {
   color: var(--foreground);
   font-family: "NohemiRegular", Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+  /* Safari performance optimization */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Hide scrollbar for mobile card scroll */
@@ -232,6 +239,9 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
+  /* Safari performance optimization */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 #smooth-content {
@@ -239,4 +249,59 @@ body {
   width: 100%;
   /* Set explicit height to help with scroll calculation */
   will-change: transform;
+  /* Safari optimization */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
+/* Safari-specific SVG optimization */
+svg {
+  /* Ensure SVGs are properly sized for Safari */
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optimize all animated elements for Safari */
+section {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Safari-specific optimizations for images and GIFs */
+img, picture {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Reduce animation complexity on Safari mobile */
+@media (max-width: 767px) {
+  @supports (-webkit-touch-callout: none) {
+    /* Safari iOS specific styles */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Disable hover effects on mobile Safari for better performance */
+    *:hover {
+      transition-duration: 0s !important;
+    }
+  }
+}
+
+/* Respect user's motion preferences for better performance and accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

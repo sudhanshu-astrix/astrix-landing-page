@@ -21,6 +21,8 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const section = sectionRef.current;
     if (!cards || !section) return;
 
+    // Detect Safari for optimization
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
@@ -35,23 +37,30 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         if (autoScrollTl) autoScrollTl.kill();
         if (!scrollContainer) return;
         
-        autoScrollTl = gsap.timeline({ repeat: -1 });
+        autoScrollTl = gsap.timeline({ 
+          repeat: -1,
+          defaults: {
+            force3D: true, // Hardware acceleration for smoother scroll
+          }
+        });
         
         const currentScrollPos = scrollContainer.scrollLeft;
         const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
         const remainingDistance = maxScroll - currentScrollPos;
         const totalDistance = maxScroll;
-        const duration = (remainingDistance / totalDistance) * 60; // 60 seconds for full scroll
+        const duration = (remainingDistance / totalDistance) * 45; // 45 seconds for full scroll (faster)
         
         autoScrollTl.to(scrollContainer, {
           scrollLeft: maxScroll,
           duration: duration,
-          ease: "none",
+          ease: "linear", // Smoother than "none"
+          force3D: true,
         })
         .to(scrollContainer, {
           scrollLeft: 0,
           duration: 0.5,
           ease: "power2.inOut",
+          force3D: true,
         });
       };
 
@@ -102,6 +111,8 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           end: "+=500%", // 4x the viewport height for horizontal scroll
           scrub: 1,
           pin: true,
+          anticipatePin: 1,
+          fastScrollEnd: isSafari, // Safari-specific optimization
         },
       });
 
@@ -110,6 +121,13 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         x: () => -((cards.scrollWidth + 200) - window.innerWidth + 200), // Add extra padding to reach last card
         ease: "none",
       });
+
+      // Safari-specific delayed refresh to prevent rendering issues
+      if (isSafari) {
+        gsap.delayedCall(1.5, () => {
+          ScrollTrigger.refresh();
+        });
+      }
 
       return () => {
         ScrollTrigger.getAll().forEach(trigger => trigger.kill());
@@ -271,14 +289,22 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         <div 
           className="flex-1 relative h-[60vh] md:h-[80vh] w-full scroll-container overflow-x-auto md:overflow-hidden scrollbar-hide"
           style={{ 
-            scrollBehavior: 'smooth',
-            WebkitOverflowScrolling: 'touch'
+            scrollBehavior: 'auto', // Changed from 'smooth' for GSAP to handle smoothing
+            WebkitOverflowScrolling: 'touch',
+            willChange: 'scroll-position',
+            transform: 'translateZ(0)', // Hardware acceleration
+            backfaceVisibility: 'hidden' as const,
           }}
         >
           <div 
             ref={cardsRef}
             className={`flex gap-12 h-full bg-[#0A0A0A]`}
-            style={{ width: "max-content" }}
+            style={{ 
+              width: "max-content",
+              willChange: 'transform',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden' as const,
+            }}
           >
             {collaborators.map((collaborator, index) => (
               <div
