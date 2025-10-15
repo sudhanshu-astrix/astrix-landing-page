@@ -16,72 +16,114 @@ export default function HeroSection({ className }: { className?: string }) {
       const backgroundVideo = videoRef.current;
       const mobileVideo = mobileVideoRef.current;
       
+      // Pause both videos initially to prevent auto-play before sync
+      backgroundVideo.pause();
+      mobileVideo.pause();
+      
+      // Force load both videos
+      backgroundVideo.load();
+      mobileVideo.load();
+      
+      let backgroundReady = false;
+      let mobileReady = false;
+      let syncInterval: NodeJS.Timeout | null = null;
+      let hasStartedPlaying = false;
+      
       const playBothVideos = () => {
-        // Ensure both videos start at exactly 0
+        if (hasStartedPlaying) return;
+        hasStartedPlaying = true;
+        
+        // Set both videos to start from the beginning multiple times to ensure it sticks
         backgroundVideo.currentTime = 0;
         mobileVideo.currentTime = 0;
         
-        // Use requestAnimationFrame to sync the play() calls as closely as possible
-        requestAnimationFrame(() => {
-          backgroundVideo.play().catch((error) => {
-            console.log("Background video autoplay failed:", error);
+        // Small delay to ensure currentTime is set
+        setTimeout(() => {
+          backgroundVideo.currentTime = 0;
+          mobileVideo.currentTime = 0;
+          
+          // Use requestAnimationFrame for maximum synchronization
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              // Play both videos in the same frame
+              const playPromises = [
+                backgroundVideo.play().catch((error) => {
+                  console.log("Background video autoplay failed:", error);
+                }),
+                mobileVideo.play().catch((error) => {
+                  console.log("Mobile video autoplay failed:", error);
+                })
+              ];
+              
+              // Start sync monitoring after both play
+              Promise.all(playPromises).then(() => {
+                // Tight sync interval - check every 100ms for better sync
+                syncInterval = setInterval(() => {
+                  if (!backgroundVideo.paused && !mobileVideo.paused) {
+                    const timeDiff = Math.abs(backgroundVideo.currentTime - mobileVideo.currentTime);
+                    
+                    // If videos drift apart by more than 0.15 seconds, resync
+                    if (timeDiff > 0.15) {
+                      // Sync mobile to background
+                      mobileVideo.currentTime = backgroundVideo.currentTime;
+                    }
+                  }
+                }, 100); // Check every 100ms for tighter sync
+              });
+            });
           });
-          mobileVideo.play().catch((error) => {
-            console.log("Mobile video autoplay failed:", error);
-          });
-        });
-
-        // Sync videos periodically to ensure they stay in sync
-        const syncInterval = setInterval(() => {
-          if (Math.abs(backgroundVideo.currentTime - mobileVideo.currentTime) > 0.3) {
-            // If videos drift apart by more than 0.3 seconds, resync
-            mobileVideo.currentTime = backgroundVideo.currentTime;
-          }
-        }, 1000); // Check every second
-
-        // Clean up interval
-        return syncInterval;
+        }, 50);
       };
 
-      // Check if both videos are ready
-      let backgroundReady = backgroundVideo.readyState >= 2; // HAVE_CURRENT_DATA or higher
-      let mobileReady = mobileVideo.readyState >= 2;
-      let syncInterval: NodeJS.Timeout | null = null;
-
       const checkAndPlay = () => {
-        if (backgroundReady && mobileReady && !syncInterval) {
-          syncInterval = playBothVideos();
+        if (backgroundReady && mobileReady && !hasStartedPlaying) {
+          playBothVideos();
         }
       };
 
-      // Listen for loadeddata events (more reliable than canplay)
-      const handleBackgroundLoaded = () => {
+      // Use canplaythrough for better reliability - ensures video can play without buffering
+      const handleBackgroundReady = () => {
         backgroundReady = true;
         checkAndPlay();
       };
 
-      const handleMobileLoaded = () => {
+      const handleMobileReady = () => {
         mobileReady = true;
         checkAndPlay();
       };
 
-      backgroundVideo.addEventListener('loadeddata', handleBackgroundLoaded);
-      mobileVideo.addEventListener('loadeddata', handleMobileLoaded);
+      // Use multiple events to catch when videos are ready
+      backgroundVideo.addEventListener('canplaythrough', handleBackgroundReady);
+      backgroundVideo.addEventListener('loadeddata', handleBackgroundReady);
+      
+      mobileVideo.addEventListener('canplaythrough', handleMobileReady);
+      mobileVideo.addEventListener('loadeddata', handleMobileReady);
 
-      // If already loaded, play immediately
+      // Check immediately in case videos are already loaded
+      if (backgroundVideo.readyState >= 3) { // HAVE_FUTURE_DATA or HAVE_ENOUGH_DATA
+        backgroundReady = true;
+      }
+      if (mobileVideo.readyState >= 3) {
+        mobileReady = true;
+      }
       checkAndPlay();
 
       // Cleanup
       return () => {
-        backgroundVideo.removeEventListener('loadeddata', handleBackgroundLoaded);
-        mobileVideo.removeEventListener('loadeddata', handleMobileLoaded);
+        backgroundVideo.removeEventListener('canplaythrough', handleBackgroundReady);
+        backgroundVideo.removeEventListener('loadeddata', handleBackgroundReady);
+        mobileVideo.removeEventListener('canplaythrough', handleMobileReady);
+        mobileVideo.removeEventListener('loadeddata', handleMobileReady);
+        
         if (syncInterval) {
           clearInterval(syncInterval);
         }
       };
     } else if (!isMobile && videoRef.current) {
       // Desktop: just play the background video
-      videoRef.current.play().catch((error) => {
+      const backgroundVideo = videoRef.current;
+      backgroundVideo.currentTime = 0;
+      backgroundVideo.play().catch((error) => {
         console.log("Video autoplay failed:", error);
       });
     }
@@ -93,7 +135,6 @@ export default function HeroSection({ className }: { className?: string }) {
         {/* Hero Background Video */}
         <video
           ref={videoRef}
-          autoPlay
           loop
           muted
           playsInline
@@ -173,7 +214,6 @@ export default function HeroSection({ className }: { className?: string }) {
             ref={mobileVideoRef}
             src="/Assets/Images/HeroSection.mp4"
             className="object-cover w-full h-full"
-            autoPlay
             loop
             muted
             playsInline

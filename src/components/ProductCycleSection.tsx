@@ -139,6 +139,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           gsap.set(thirdText, { opacity: 0 });
           gsap.set(fourthText, { opacity: 0 });
           gsap.set(dataInsights, { opacity: 0, y: "1.2em" });
+          gsap.set(distributeLabel, { opacity: 0 }); // Hide initially, show when first section appears
           gsap.set(retargetLabel, { opacity: 0 });
           gsap.set(fifthText, { opacity: 0 });
           gsap.set(emailMarketing, { opacity: 0, y: "1.2em" });
@@ -151,6 +152,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           gsap.set(ninthText, { opacity: 0 });
           gsap.set(discoveryChannel, { opacity: 0, y: "1.2em" });
           gsap.set(discoverLabel, { opacity: 0 });
+          
+          // Hide mobile labels initially
+          gsap.set(".distribute-mobile", { opacity: 0 });
+          gsap.set(".retarget-mobile", { opacity: 0 });
+          gsap.set(".discover-mobile", { opacity: 0 });
 
       // Split first text into words for word-by-word animation
       const splitTextIntoWords = (element: Element) => {
@@ -262,6 +268,18 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           ease: "power2.inOut"
         }, "<");
       }
+
+      // Show Distribute label when first section appears
+      tl.to(distributeLabel, { 
+        opacity: 1, 
+        duration: 0.3,
+        ease: "power2.out"
+      }, "<")
+      .to(".distribute-mobile", { 
+        opacity: 1, 
+        duration: 0.3,
+        ease: "power2.out"
+      }, "<");
 
       // Phase 1: Auto-trigger first section text animation (CreateEvent)
       tl.call(() => {
@@ -763,7 +781,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* First Section - Create Event - Slides in from right */}
-      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 20, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -806,7 +824,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Second Section - Issue Tickets - Slides in from right */}
-      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 21, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -849,7 +867,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Third Section - Purchase/RSVP - Slides in from right */}
-      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 22, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -908,7 +926,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Fourth Section - Data Insights - Slides in from right */}
-      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 23, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -961,7 +979,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Fifth Section - Email Marketing */}
-      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 24, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1015,7 +1033,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Sixth Section - Promotions and Discount Codes */}
-      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 25, willChange: 'transform' }}>
         {/* Noise effect overlay - Applied to entire section */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1060,7 +1078,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Seventh Section - Marketing Insights */}
-      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 26, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1114,7 +1132,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Eighth Section - Mini Portfolio */}
-      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 27, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1168,7 +1186,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Ninth Section - Discovery Channel */}
-      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ willChange: 'transform' }}>
+      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 28, willChange: 'transform' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"

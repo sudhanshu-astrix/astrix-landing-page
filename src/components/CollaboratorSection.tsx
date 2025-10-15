@@ -26,52 +26,42 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Automatic scroll + Native scrolling with auto-resume
-      let autoScrollTl: gsap.core.Timeline | null = null;
+      // Mobile: Smooth automatic scroll with manual override
+      let animationFrameId: number | null = null;
       let scrollTimeout: NodeJS.Timeout | null = null;
-      let isUserScrolling = false;
+      let isUserInteracting = false;
+      let lastScrollPos = 0;
+      let scrollVelocity = 1.2; // pixels per frame for smooth scrolling (increased from 0.5)
       const scrollContainer = section.querySelector('.scroll-container') as HTMLElement;
 
-      // Function to start auto scroll
-      const startAutoScroll = () => {
-        if (autoScrollTl) autoScrollTl.kill();
-        if (!scrollContainer) return;
-        
-        autoScrollTl = gsap.timeline({ 
-          repeat: -1,
-          defaults: {
-            force3D: true, // Hardware acceleration for smoother scroll
-          }
-        });
-        
-        const currentScrollPos = scrollContainer.scrollLeft;
+      if (!scrollContainer) return;
+
+      // Smooth automatic scroll using requestAnimationFrame
+      const animateScroll = () => {
+        if (isUserInteracting || !scrollContainer) return;
+
         const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-        const remainingDistance = maxScroll - currentScrollPos;
-        const totalDistance = maxScroll;
-        const duration = (remainingDistance / totalDistance) * 45; // 45 seconds for full scroll (faster)
-        
-        autoScrollTl.to(scrollContainer, {
-          scrollLeft: maxScroll,
-          duration: duration,
-          ease: "linear", // Smoother than "none"
-          force3D: true,
-        })
-        .to(scrollContainer, {
-          scrollLeft: 0,
-          duration: 0.5,
-          ease: "power2.inOut",
-          force3D: true,
-        });
+        const currentScroll = scrollContainer.scrollLeft;
+
+        // Smooth continuous scrolling
+        if (currentScroll >= maxScroll - 1) {
+          // Reached end, smoothly reset to start
+          scrollContainer.scrollLeft = 0;
+        } else {
+          scrollContainer.scrollLeft += scrollVelocity;
+        }
+
+        animationFrameId = requestAnimationFrame(animateScroll);
       };
 
-      // Handle user scrolling
-      const handleScroll = () => {
-        // User is scrolling
-        isUserScrolling = true;
+      // Detect user interaction (touch or scroll)
+      const handleUserInteraction = () => {
+        isUserInteracting = true;
         
-        // Pause auto-scroll
-        if (autoScrollTl) {
-          autoScrollTl.pause();
+        // Cancel automatic scrolling
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
         }
         
         // Clear existing timeout
@@ -79,27 +69,55 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           clearTimeout(scrollTimeout);
         }
         
-        // Set timeout to resume auto-scroll after user stops scrolling
+        // Resume automatic scroll after user stops interacting
         scrollTimeout = setTimeout(() => {
-          isUserScrolling = false;
-          startAutoScroll();
-        }, 1000); // Resume after 1 second of no scrolling
+          isUserInteracting = false;
+          animateScroll();
+        }, 1500); // Resume after 1.5 seconds of no interaction
       };
 
-      // Start initial auto scroll
-      startAutoScroll();
+      // Detect manual scrolling
+      const handleScroll = () => {
+        const currentScrollPos = scrollContainer.scrollLeft;
+        
+        // Check if scroll position changed by user (not by our animation)
+        // Threshold adjusted for faster scroll velocity (1.2px/frame)
+        if (Math.abs(currentScrollPos - lastScrollPos) > 3) {
+          handleUserInteraction();
+        }
+        
+        lastScrollPos = currentScrollPos;
+      };
 
-      // Add scroll event listener
-      if (scrollContainer) {
-        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-      }
+      // Detect touch events
+      const handleTouchStart = () => {
+        handleUserInteraction();
+      };
+
+      const handleTouchMove = () => {
+        handleUserInteraction();
+      };
+
+      // Add event listeners
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+      scrollContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+      // Start automatic scrolling
+      animateScroll();
 
       // Cleanup function
       return () => {
-        if (autoScrollTl) autoScrollTl.kill();
-        if (scrollTimeout) clearTimeout(scrollTimeout);
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+        }
         if (scrollContainer) {
           scrollContainer.removeEventListener('scroll', handleScroll);
+          scrollContainer.removeEventListener('touchstart', handleTouchStart);
+          scrollContainer.removeEventListener('touchmove', handleTouchMove);
         }
       };
     } else {
@@ -289,11 +307,12 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         <div 
           className="flex-1 relative h-[60vh] md:h-[80vh] w-full scroll-container overflow-x-auto md:overflow-hidden scrollbar-hide"
           style={{ 
-            scrollBehavior: 'auto', // Changed from 'smooth' for GSAP to handle smoothing
+            scrollBehavior: 'auto',
             WebkitOverflowScrolling: 'touch',
             willChange: 'scroll-position',
-            transform: 'translateZ(0)', // Hardware acceleration
+            transform: 'translateZ(0)',
             backfaceVisibility: 'hidden' as const,
+            overscrollBehaviorX: 'contain', // Prevent horizontal scroll chaining only
           }}
         >
           <div 
