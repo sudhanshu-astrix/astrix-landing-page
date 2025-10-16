@@ -18,10 +18,12 @@ export default function CollaboratorSectionMobile({
 
   // Auto-scroll logic
   const startAutoScroll = () => {
+    console.log("autoooo scrollll")
     if (autoScrollInterval) clearInterval(autoScrollInterval);
 
     const interval = setInterval(() => {
       const container = cardsRef.current;
+      console.log(container, "container autoooo scrollll")
       if (!container) return;
 
       container.scrollBy({ left: 2, behavior: "auto" });
@@ -48,17 +50,19 @@ export default function CollaboratorSectionMobile({
 
   const restartAutoScroll = () => {
     if (inactivityTimeout) clearTimeout(inactivityTimeout);
-    const timeout = setTimeout(() => startAutoScroll(), 5000);
+    const timeout = setTimeout(() => startAutoScroll(), 3000);
     setInactivityTimeout(timeout);
   };
 
   useEffect(() => {
-    startAutoScroll();
+    const timer = setTimeout(startAutoScroll, 500); 
     return () => {
+      clearTimeout(timer);
       stopAutoScroll();
       if (inactivityTimeout) clearTimeout(inactivityTimeout);
     };
   }, []);
+
 
   // Swipe gesture integration
   const handlers = useSwipeable({
@@ -239,10 +243,8 @@ export default function CollaboratorSectionMobile({
     },
   ];
 
-  const setRefs = (node: HTMLDivElement) => {
-    // Set your ref
+   const setRefs = (node: HTMLDivElement | null) => {
     cardsRef.current = node;
-    // Set the swipeable ref
     handlers.ref(node);
   };
 
@@ -265,12 +267,12 @@ export default function CollaboratorSectionMobile({
         </div>
 
         {/* Horizontal Scrolling Cards - Below title on mobile, Right side on desktop */}
-        <div className="flex-1 relative h-[40vh]   md:h-[80vh] w-full scroll-container overflow-x-auto md:overflow-hidden scrollbar-hide">
+        <div className="flex-1 relative h-[40vh]   md:h-[80vh] w-full scroll-container overflow-x-auto scrollbar-hide">
           <div
             ref={setRefs}
             // {...handlers}
             style={{
-              width: "max-content",
+              // width: "max-content",
               WebkitOverflowScrolling: "touch",
               overscrollBehaviorX: "none",
             }}
@@ -286,10 +288,11 @@ export default function CollaboratorSectionMobile({
                 }`}
                 // style={{ width: "fit-content" }}
                 style={{
-                  width: "fit-content",
+                  // width: "fit-content",
                   WebkitOverflowScrolling: "touch",
                   overscrollBehaviorX: "none",
                   touchAction: "pan-x pan-y",
+                  width: "350px",
                 }}
               >
                 <div className="relative w-full max-w-[350] overflow-hidden h-fit ">
