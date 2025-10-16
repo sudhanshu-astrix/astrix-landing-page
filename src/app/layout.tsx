@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Astrix - Omnichannel Community Building Platform",
   description: "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
+  icons: {
+    icon: '/landing_pageicon.png',
+    shortcut: '/landing_pageicon.png',
+    apple: '/landing_pageicon.png',
+  },
 };
 
 export default function RootLayout({
