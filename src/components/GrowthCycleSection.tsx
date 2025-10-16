@@ -41,7 +41,7 @@ export default function GrowthCycleSection({ className }: { className?: string }
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "center center",
-          end: isSafari && isMobile ? "+=2000" : "+=3000", // Shorter on Safari mobile
+          end: isMobile ? "+=8000" : "+=3000", // Much longer scroll distance on mobile for slower card transitions
           scrub: isSafari && isMobile ? 0.5 : true, // Less smooth but faster on Safari mobile
           pin: true,
           anticipatePin: 1,
@@ -79,29 +79,33 @@ export default function GrowthCycleSection({ className }: { className?: string }
             left: "50%",
             top: "50%",
             xPercent: -50,
-            yPercent: -50
+            yPercent: -50,
+            force3D: true, // GPU acceleration for smoother mobile animations
           });
         });
       
         // Create sequential card reveal animation - all cards follow same pattern
+        // Each card now takes much longer to animate (3 phases: slide in, hold, slide out)
         cards.forEach((card, i) => {
           const cardHeight = viewportHeight;
           
-          // All cards: slide in from below, hold, slide out to top
+          // All cards: slide in from below, hold longer, slide out to top
           tl.to(card, { 
             opacity: 1,
             y: "0px", 
-            duration: 1.0, 
-            ease: "power2.out" 
+            duration: 2.5, // Slower slide in (increased from 1.0)
+            ease: "power2.out",
+            force3D: true // GPU acceleration
           }, ">") // Start after previous card
           .to(card, { 
-            duration: 1.0 // Hold card visible
+            duration: 3.5 // Hold card visible much longer (increased from 1.0)
           })
           .to(card, { 
             opacity: 0,
             y: `-${cardHeight}px`, // Slide out to top
-            duration: 1.0, 
-            ease: "power2.in" 
+            duration: 2.0, // Slower slide out (increased from 1.0)
+            ease: "power2.in",
+            force3D: true // GPU acceleration
           }); // Slide out to make room for next card
         });
       } else {

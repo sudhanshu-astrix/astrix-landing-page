@@ -26,98 +26,126 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Smooth automatic scroll with manual override
-      let animationFrameId: number | null = null;
+      // Mobile: iOS-compatible automatic scroll with manual override
+      let scrollInterval: NodeJS.Timeout | null = null;
       let scrollTimeout: NodeJS.Timeout | null = null;
-      let isUserInteracting = false;
-      let lastScrollPos = 0;
-      let scrollVelocity = 1.2; // pixels per frame for smooth scrolling (increased from 0.5)
+      let isUserTouching = false;
+      let lastTouchTime = 0;
+      let touchStartX = 0;
       const scrollContainer = section.querySelector('.scroll-container') as HTMLElement;
 
       if (!scrollContainer) return;
 
-      // Smooth automatic scroll using requestAnimationFrame
-      const animateScroll = () => {
-        if (isUserInteracting || !scrollContainer) return;
-
-        const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-        const currentScroll = scrollContainer.scrollLeft;
-
-        // Smooth continuous scrolling
-        if (currentScroll >= maxScroll - 1) {
-          // Reached end, smoothly reset to start
-          scrollContainer.scrollLeft = 0;
-        } else {
-          scrollContainer.scrollLeft += scrollVelocity;
+      // Use setInterval for iOS Safari compatibility (more reliable than requestAnimationFrame)
+      const startAutoScroll = () => {
+        if (scrollInterval) {
+          clearInterval(scrollInterval);
         }
 
-        animationFrameId = requestAnimationFrame(animateScroll);
+        scrollInterval = setInterval(() => {
+          // Don't scroll if user is touching or recently touched
+          if (isUserTouching || Date.now() - lastTouchTime < 500) {
+            return;
+          }
+
+          const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+          const currentScroll = scrollContainer.scrollLeft;
+
+          // Smooth continuous scrolling
+          if (currentScroll >= maxScroll - 5) {
+            // Reached end, smoothly reset to start
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            // Increment scroll position (iOS Safari handles this better)
+            scrollContainer.scrollLeft = currentScroll + 1.2;
+          }
+        }, 16); // ~60fps
       };
 
-      // Detect user interaction (touch or scroll)
-      const handleUserInteraction = () => {
-        isUserInteracting = true;
+      // Handle touch start - user begins touching
+      const handleTouchStart = (e: TouchEvent) => {
+        isUserTouching = true;
+        lastTouchTime = Date.now();
+        touchStartX = e.touches[0].clientX;
         
-        // Cancel automatic scrolling
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-          animationFrameId = null;
+        // Stop auto-scroll immediately
+        if (scrollInterval) {
+          clearInterval(scrollInterval);
+          scrollInterval = null;
         }
         
-        // Clear existing timeout
+        // Clear resume timeout
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = null;
+        }
+      };
+
+      // Handle touch move - user is scrolling
+      const handleTouchMove = (e: TouchEvent) => {
+        isUserTouching = true;
+        lastTouchTime = Date.now();
+        
+        // Ensure auto-scroll is stopped
+        if (scrollInterval) {
+          clearInterval(scrollInterval);
+          scrollInterval = null;
+        }
+      };
+
+      // Handle touch end - user stopped touching
+      const handleTouchEnd = () => {
+        isUserTouching = false;
+        lastTouchTime = Date.now();
+        
+        // Resume auto-scroll after delay
         if (scrollTimeout) {
           clearTimeout(scrollTimeout);
         }
         
-        // Resume automatic scroll after user stops interacting
         scrollTimeout = setTimeout(() => {
-          isUserInteracting = false;
-          animateScroll();
-        }, 1500); // Resume after 1.5 seconds of no interaction
+          startAutoScroll();
+        }, 500);
       };
 
-      // Detect manual scrolling
-      const handleScroll = () => {
-        const currentScrollPos = scrollContainer.scrollLeft;
+      // Handle touch cancel - iOS sometimes fires this
+      const handleTouchCancel = () => {
+        isUserTouching = false;
+        lastTouchTime = Date.now();
         
-        // Check if scroll position changed by user (not by our animation)
-        // Threshold adjusted for faster scroll velocity (1.2px/frame)
-        if (Math.abs(currentScrollPos - lastScrollPos) > 3) {
-          handleUserInteraction();
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
         }
         
-        lastScrollPos = currentScrollPos;
+        scrollTimeout = setTimeout(() => {
+          startAutoScroll();
+        }, 500);
       };
 
-      // Detect touch events
-      const handleTouchStart = () => {
-        handleUserInteraction();
-      };
-
-      const handleTouchMove = () => {
-        handleUserInteraction();
-      };
-
-      // Add event listeners
-      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      // Add event listeners (non-passive for iOS touch handling)
       scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
       scrollContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+      scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
+      scrollContainer.addEventListener('touchcancel', handleTouchCancel, { passive: true });
 
-      // Start automatic scrolling
-      animateScroll();
+      // Start automatic scrolling after a short delay
+      setTimeout(() => {
+        startAutoScroll();
+      }, 500);
 
       // Cleanup function
       return () => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
+        if (scrollInterval) {
+          clearInterval(scrollInterval);
         }
         if (scrollTimeout) {
           clearTimeout(scrollTimeout);
         }
         if (scrollContainer) {
-          scrollContainer.removeEventListener('scroll', handleScroll);
           scrollContainer.removeEventListener('touchstart', handleTouchStart);
           scrollContainer.removeEventListener('touchmove', handleTouchMove);
+          scrollContainer.removeEventListener('touchend', handleTouchEnd);
+          scrollContainer.removeEventListener('touchcancel', handleTouchCancel);
         }
       };
     } else {
@@ -310,9 +338,10 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
             scrollBehavior: 'auto',
             WebkitOverflowScrolling: 'touch',
             willChange: 'scroll-position',
-            transform: 'translateZ(0)',
+            transform: 'translate3d(0, 0, 0)', // iOS Safari optimization
             backfaceVisibility: 'hidden' as const,
-            overscrollBehaviorX: 'contain', // Prevent horizontal scroll chaining only
+            overscrollBehaviorX: 'contain',
+            WebkitTransform: 'translate3d(0, 0, 0)', // iOS-specific
           }}
         >
           <div 
@@ -321,8 +350,9 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
             style={{ 
               width: "max-content",
               willChange: 'transform',
-              transform: 'translateZ(0)',
+              transform: 'translate3d(0, 0, 0)',
               backfaceVisibility: 'hidden' as const,
+              WebkitTransform: 'translate3d(0, 0, 0)', // iOS-specific
             }}
           >
             {collaborators.map((collaborator, index) => (

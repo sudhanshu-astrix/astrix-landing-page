@@ -168,49 +168,84 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         });
       };
 
-      // Split all texts into words
-      splitTextIntoWords(firstText);
-      splitTextIntoWords(secondText);
-      splitTextIntoWords(thirdText);
-      splitTextIntoWords(fourthText);
-      splitTextIntoWords(fifthText);
-      splitTextIntoWords(sixthText);
-      splitTextIntoWords(seventhText);
-      splitTextIntoWords(eighthText);
-      splitTextIntoWords(ninthText);
+      // Split all texts into words (only on desktop for performance)
+      if (!isMobile) {
+        splitTextIntoWords(firstText);
+        splitTextIntoWords(secondText);
+        splitTextIntoWords(thirdText);
+        splitTextIntoWords(fourthText);
+        splitTextIntoWords(fifthText);
+        splitTextIntoWords(sixthText);
+        splitTextIntoWords(seventhText);
+        splitTextIntoWords(eighthText);
+        splitTextIntoWords(ninthText);
+      }
 
       // Helper function to animate text with word-by-word reveal
       const animateTextReveal = (textElement: HTMLElement, labelElement?: HTMLElement, delay: number = 0.1) => {
-        const textWords = textElement.querySelectorAll('.word');
         const animTl = gsap.timeline({ delay });
         
-        animTl.to(textElement, { 
-          opacity: 1, 
-          duration: 0.2,
-          ease: "power2.out"
-        });
-        
-        if (textWords.length > 0) {
-          // Faster animations for better user experience
-          const animationDuration = isMobile ? 0.4 : 0.6;
-          const staggerAmount = isMobile ? 0.02 : 0.04;
+        if (isMobile) {
+          // Mobile: Simple slide-up fade-in, no word-by-word for better performance
+          // Set initial state - optimized for all mobile browsers (iOS Safari, Chrome Android, etc.)
+          gsap.set(textElement, { 
+            y: 20, 
+            opacity: 0,
+            force3D: true, // Force GPU acceleration for smoother animation across all browsers
+          });
           
-          animTl.to(textWords, {
-            opacity: 1,
+          animTl.to(textElement, { 
             y: 0,
-            duration: animationDuration,
-            stagger: staggerAmount,
+            opacity: 1, 
+            duration: 0.4,
+            ease: "power1.out", // Slight easing for smooth movement
+            force3D: true, // Ensure GPU acceleration during animation
+            clearProps: "transform" // Clear transform after animation for better browser compatibility
+          });
+          
+          if (labelElement) {
+            gsap.set(labelElement, { 
+              y: 15, 
+              opacity: 0,
+              force3D: true
+            });
+            animTl.to(labelElement, {
+              opacity: 1,
+              y: 0,
+              duration: 0.3,
+              ease: "power1.out",
+              force3D: true,
+              clearProps: "transform"
+            }, "<0.1");
+          }
+        } else {
+          // Desktop: Full word-by-word animation
+          const textWords = textElement.querySelectorAll('.word');
+          
+          animTl.to(textElement, { 
+            opacity: 1, 
+            duration: 0.2,
             ease: "power2.out"
-          }, "-=0.1");
-        }
-        
-        if (labelElement) {
-          animTl.to(labelElement, {
-            opacity: 1,
-            y: 0,
-            duration: isMobile ? 0.3 : 0.4,
-            ease: "power2.out"
-          }, "-=0.5");
+          });
+          
+          if (textWords.length > 0) {
+            animTl.to(textWords, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.04,
+              ease: "power2.out"
+            }, "-=0.1");
+          }
+          
+          if (labelElement) {
+            animTl.to(labelElement, {
+              opacity: 1,
+              y: 0,
+              duration: 0.4,
+              ease: "power2.out"
+            }, "-=0.5");
+          }
         }
         
         return animTl;
@@ -225,32 +260,40 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           trigger: section,
           start: "top top",
           end: () => {
-            // Safari mobile gets even shorter distance for better performance
-            if (isSafari && isMobile) return "+=6000";
-            if (isMobile) return "+=8000";
+            // Much shorter distance on mobile for better performance
+            if (isMobile) return "+=4000"; // Reduced from 6000/8000
             return "+=12000";
           },
-          scrub: isSafari && isMobile ? 0.3 : (isMobile ? 0.5 : 1.5), // Extra fast on Safari mobile
+          scrub: isMobile ? 0.1 : 1.5, // Much lower scrub on mobile for instant response
           pin: true,
           anticipatePin: 1,
-          invalidateOnRefresh: true, // Recalculate on resize
-          pinSpacing: true, // Ensure proper spacing
-          fastScrollEnd: isSafari, // Safari-specific optimization
+          invalidateOnRefresh: true,
+          pinSpacing: true,
+          fastScrollEnd: isSafari,
+          // Mobile-specific optimizations
+          ...(isMobile && {
+            refreshPriority: -1, // Lower priority for mobile
+          }),
         },
       });
 
       // Phase 0: Toolkit section slides out, First Section (CreateEvent) slides in
+      // Simplified animations for mobile
+      const slideDuration = isMobile ? 0.5 : 0.8; // Faster on mobile
+      const slideEase = isMobile ? "none" : "power2.inOut"; // Simpler easing on mobile
+      
       if (isMobile) {
         tl.to(toolkitSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true, // GPU acceleration
         });
       } else {
         tl.to(toolkitSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         });
       }
       
@@ -258,27 +301,29 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       if (isMobile) {
         tl.to(firstSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true, // GPU acceleration
         }, "<");
       } else {
         tl.to(firstSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "<");
       }
 
       // Show Distribute label when first section appears
+      const labelDuration = isMobile ? 0.2 : 0.3;
       tl.to(distributeLabel, { 
         opacity: 1, 
-        duration: 0.3,
-        ease: "power2.out"
+        duration: labelDuration,
+        ease: "none"
       }, "<")
       .to(".distribute-mobile", { 
         opacity: 1, 
-        duration: 0.3,
-        ease: "power2.out"
+        duration: labelDuration,
+        ease: "none"
       }, "<");
 
       // Phase 1: Auto-trigger first section text animation (CreateEvent)
@@ -287,288 +332,324 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }, [], 0);
 
       // Phase 2: Slide to second section (Issue Tickets)
-      tl.add("secondSection", "+=0.8");
+      const sectionDelay = isMobile ? "+=0.5" : "+=0.8";
+      tl.add("secondSection", sectionDelay);
       if (isMobile) {
         tl.to(firstSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "secondSection")
         .to(secondSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "secondSection");
       } else {
         tl.to(firstSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "secondSection")
         .to(secondSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "secondSection");
       }
       
-      // Auto-trigger text animation when section is 90% visible
+      // Auto-trigger text animation when section is visible
+      const textTrigger = isMobile ? "secondSection+=0.4" : "secondSection+=0.72";
       tl.call(() => {
         animateTextReveal(secondText);
-      }, [], "secondSection+=0.72");
+      }, [], textTrigger);
 
       // Phase 3: Slide to third section (Purchase/RSVP)
-      tl.add("thirdSection", "+=0.8");
+      tl.add("thirdSection", sectionDelay);
       if (isMobile) {
         tl.to(secondSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "thirdSection")
         .to(thirdSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "thirdSection");
       } else {
         tl.to(secondSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "thirdSection")
         .to(thirdSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "thirdSection");
       }
       
-      // Auto-trigger text animation when section is 90% visible
+      // Auto-trigger text animation when section is visible
       tl.call(() => {
         animateTextReveal(thirdText);
-      }, [], "thirdSection+=0.72");
+      }, [], isMobile ? "thirdSection+=0.4" : "thirdSection+=0.72");
 
       // Phase 4: Slide to fourth section (Data Insights) & label change
-      tl.add("fourthSection", "+=0.8");
+      tl.add("fourthSection", sectionDelay);
       if (isMobile) {
         tl.to(thirdSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "fourthSection")
         .to(fourthSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "fourthSection");
       } else {
         tl.to(thirdSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "fourthSection")
         .to(fourthSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase
         }, "fourthSection");
       }
       
-      // Label change animation (faster)
+      // Label change animation
       tl.to(distributeLabel, { 
         opacity: 0, 
-        duration: 0.3 
+        duration: labelDuration,
+        ease: "none"
       }, "fourthSection")
       .to(retargetLabel, { 
         opacity: 1, 
-        duration: 0.3 
-      }, "fourthSection+=0.3")
+        duration: labelDuration,
+        ease: "none"
+      }, isMobile ? "fourthSection+=0.2" : "fourthSection+=0.3")
       .to(".distribute-mobile", { 
         opacity: 0, 
-        duration: 0.3 
+        duration: labelDuration,
+        ease: "none"
       }, "fourthSection")
       .to(".retarget-mobile", { 
         opacity: 1, 
-        duration: 0.3 
-      }, "fourthSection+=0.3");
+        duration: labelDuration,
+        ease: "none"
+      }, isMobile ? "fourthSection+=0.2" : "fourthSection+=0.3");
 
-      // Auto-trigger text animation when section is 90% visible
+      // Auto-trigger text animation when section is visible
       tl.call(() => {
         animateTextReveal(fourthText, dataInsights);
-      }, [], "fourthSection+=0.72");
+      }, [], isMobile ? "fourthSection+=0.4" : "fourthSection+=0.72");
 
       // Phase 5: Slide to fifth section (Email Marketing)
-      tl.add("fifthSection", "+=0.8");
+      tl.add("fifthSection", sectionDelay);
       if (isMobile) {
         tl.to(fourthSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "fifthSection")
         .to(fifthSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "fifthSection");
       } else {
         tl.to(fourthSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "fifthSection")
         .to(fifthSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "fifthSection");
       }
 
       // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(fifthText, emailMarketing);
-      }, [], "fifthSection+=0.72");
+      }, [], isMobile ? "fifthSection+=0.4" : "fifthSection+=0.72");
 
       // Phase 6: Slide to sixth section (Promotions)
-      tl.add("sixthSection", "+=0.8");
+      tl.add("sixthSection", sectionDelay);
       if (isMobile) {
         tl.to(fifthSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "sixthSection")
         .to(sixthSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "sixthSection");
       } else {
         tl.to(fifthSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "sixthSection")
         .to(sixthSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "sixthSection");
       }
 
       // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(sixthText, promotions);
-      }, [], "sixthSection+=0.72");
+      }, [], isMobile ? "sixthSection+=0.4" : "sixthSection+=0.72");
 
       // Phase 7: Slide to seventh section (Marketing Insights)
-      tl.add("seventhSection", "+=0.8");
+      tl.add("seventhSection", sectionDelay);
       if (isMobile) {
         tl.to(sixthSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "seventhSection")
         .to(seventhSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "seventhSection");
       } else {
         tl.to(sixthSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "seventhSection")
         .to(seventhSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "seventhSection");
       }
 
       // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(seventhText, marketingInsights);
-      }, [], "seventhSection+=0.72");
+      }, [], isMobile ? "seventhSection+=0.4" : "seventhSection+=0.72");
 
       // Phase 8: Slide to eighth section (Mini Portfolio) & label change
-      tl.add("eighthSection", "+=0.8");
+      tl.add("eighthSection", sectionDelay);
       if (isMobile) {
         tl.to(seventhSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "eighthSection")
         .to(eighthSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "eighthSection");
       } else {
         tl.to(seventhSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "eighthSection")
         .to(eighthSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "eighthSection");
       }
       
-      // Label change animation (faster)
+      // Label change animation
       tl.to(retargetLabel, { 
         opacity: 0, 
-        duration: 0.3 
+        duration: labelDuration,
+        ease: "none"
       }, "eighthSection")
       .to(discoverLabel, { 
         opacity: 1, 
-        duration: 0.3 
-      }, "eighthSection+=0.3")
+        duration: labelDuration,
+        ease: "none"
+      }, isMobile ? "eighthSection+=0.2" : "eighthSection+=0.3")
       .to(".retarget-mobile", { 
         opacity: 0, 
-        duration: 0.3 
+        duration: labelDuration,
+        ease: "none"
       }, "eighthSection")
       .to(".discover-mobile", { 
         opacity: 1, 
-        duration: 0.3 
-      }, "eighthSection+=0.3");
+        duration: labelDuration,
+        ease: "none"
+      }, isMobile ? "eighthSection+=0.2" : "eighthSection+=0.3");
 
       // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(eighthText, miniPortfolio);
-      }, [], "eighthSection+=0.72");
+      }, [], isMobile ? "eighthSection+=0.4" : "eighthSection+=0.72");
 
       // Phase 9: Slide to ninth section (Discovery Channel)
-      tl.add("ninthSection", "+=0.8");
+      tl.add("ninthSection", sectionDelay);
       if (isMobile) {
         tl.to(eighthSection, {
           y: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "ninthSection")
         .to(ninthSection, {
           y: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "ninthSection");
       } else {
         tl.to(eighthSection, {
           x: "-100%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "ninthSection")
         .to(ninthSection, {
           x: "0%",
-          duration: 0.8,
-          ease: "power2.inOut"
+          duration: slideDuration,
+          ease: slideEase,
+          force3D: true,
         }, "ninthSection");
       }
 
       // Auto-trigger text animation when section is 90% visible
       tl.call(() => {
         animateTextReveal(ninthText, discoveryChannel);
-      }, [], "ninthSection+=0.72");
+      }, [], isMobile ? "ninthSection+=0.4" : "ninthSection+=0.72");
 
         }, section);
 
@@ -670,7 +751,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }}
     >
       {/* Toolkit Section - Slides in from right first */}
-      <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden" style={{ zIndex: 10, willChange: 'transform' }}>
+      <div ref={toolkitSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden" style={{ zIndex: 10, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         <div className="w-full flex flex-col justify-between relative">
           {/* Top Content */}
           <div className="flex flex-col md:flex-row w-full h-fit mt-5 md:mt-10">
@@ -781,7 +862,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* First Section - Create Event - Slides in from right */}
-      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 20, willChange: 'transform' }}>
+      <div ref={firstSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 20, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -824,7 +905,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Second Section - Issue Tickets - Slides in from right */}
-      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 21, willChange: 'transform' }}>
+      <div ref={secondSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 21, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -853,13 +934,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               </p>
             </div>
           </div>
-          <div className="w-full md:w-1/2 z-100 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+          <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className='w-full h-full relative'>
               <Image 
-                src="/Assets/Images/Toolkit/Ticket.gif"
+                src="/Assets/Images/Toolkit/Issue_Ticket.gif"
                 alt="Issue Tickets Background" 
                 fill 
-                className="object-cover" 
+                className="object-contain" 
               />
             </div>
           </div>
@@ -867,7 +948,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Third Section - Purchase/RSVP - Slides in from right */}
-      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 22, willChange: 'transform' }}>
+      <div ref={thirdSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 22, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -926,7 +1007,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Fourth Section - Data Insights - Slides in from right */}
-      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 23, willChange: 'transform' }}>
+      <div ref={fourthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 23, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -979,7 +1060,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Fifth Section - Email Marketing */}
-      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 24, willChange: 'transform' }}>
+      <div ref={fifthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 24, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1033,7 +1114,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Sixth Section - Promotions and Discount Codes */}
-      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 25, willChange: 'transform' }}>
+      <div ref={sixthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 25, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay - Applied to entire section */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1078,7 +1159,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Seventh Section - Marketing Insights */}
-      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 26, willChange: 'transform' }}>
+      <div ref={seventhSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 26, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1125,14 +1206,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className='w-full h-full -bottom-5 z-10 relative'>
-              <Image src="/Assets/Images/Toolkit/Temp/marketing_analytics.png" alt="marketing insights dashboard" fill className="object-contain md:object-cover" />
+              <Image src="/Assets/Images/Toolkit/Temp/marketing_analytics.png" alt="marketing insights dashboard" fill className="object-contain" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Eighth Section - Mini Portfolio */}
-      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 27, willChange: 'transform' }}>
+      <div ref={eighthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 27, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
@@ -1186,7 +1267,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       </div>
 
       {/* Ninth Section - Discovery Channel */}
-      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 28, willChange: 'transform' }}>
+      <div ref={ninthSectionRef} className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden" style={{ zIndex: 28, willChange: 'transform', transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
         {/* Noise effect overlay */}
         <Image
           src="/Assets/Images/NoiseEffectBg.svg"
