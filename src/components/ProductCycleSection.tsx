@@ -891,7 +891,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               </p>
             </div>
           </div>
-          <div className="w-full md:w-1/2 z-100 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+          <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className='w-full h-full relative'>
               <Image 
                 src="/Assets/Images/Toolkit/Create_Event.gif"
