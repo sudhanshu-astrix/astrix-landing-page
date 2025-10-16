@@ -279,6 +279,42 @@ img, picture {
   backface-visibility: hidden;
 }
 
+/* iOS-specific fixes for better compatibility */
+@supports (-webkit-touch-callout: none) {
+  /* Safari iOS specific styles */
+  
+  /* Fix for iOS viewport height - account for address bar */
+  html {
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Fix for sections using vh units */
+  section {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Remove 300ms tap delay on iOS */
+  a, button, input, textarea, select {
+    touch-action: manipulation;
+  }
+  
+  /* Fix for input zoom issue on iOS */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevent zoom on focus */
+  }
+  
+  /* Fix for fixed/sticky positioning on iOS */
+  .fixed, .sticky {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
 /* Reduce animation complexity on Safari mobile */
 @media (max-width: 767px) {
   @supports (-webkit-touch-callout: none) {
@@ -290,6 +326,17 @@ img, picture {
     /* Disable hover effects on mobile Safari for better performance */
     *:hover {
       transition-duration: 0s !important;
+    }
+    
+    /* Prevent text size adjustment on orientation change */
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    
+    /* Optimize scrolling performance */
+    * {
+      -webkit-overflow-scrolling: touch;
     }
   }
 }

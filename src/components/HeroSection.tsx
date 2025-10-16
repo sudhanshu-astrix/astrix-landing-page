@@ -8,6 +8,50 @@ export default function HeroSection({ className }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
+  // Handle contact navigation - smooth scroll to contact section
+  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const contactSection = document.getElementById('contact');
+    if (!contactSection) return;
+    
+    // Close mobile menu if open
+    setIsMenuOpen(false);
+    
+    // Import GSAP modules dynamically
+    if (typeof window !== 'undefined') {
+      Promise.all([
+        import('gsap/ScrollTrigger'),
+        import('gsap/ScrollSmoother')
+      ]).then(([{ ScrollTrigger }, { ScrollSmoother }]) => {
+        // Get the ScrollSmoother instance
+        const smoother = ScrollSmoother.get();
+        
+        // Temporarily disable all ScrollTriggers to prevent conflicts
+        const triggers = ScrollTrigger.getAll();
+        triggers.forEach(trigger => trigger.disable());
+        
+        if (smoother) {
+          // Use ScrollSmoother's scrollTo for smooth navigation
+          smoother.scrollTo(contactSection, true, "top top");
+        } else {
+          // Fallback: calculate position and use native scroll
+          const y = contactSection.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+        
+        // Re-enable ScrollTriggers after scroll completes
+        setTimeout(() => {
+          triggers.forEach(trigger => trigger.enable());
+          ScrollTrigger.refresh();
+        }, 1200);
+      }).catch(() => {
+        // Fallback to simple scroll if GSAP not available
+        const y = contactSection.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      });
+    }
+  };
+
   useEffect(() => {
     // Scroll to top on page reload/load for all devices
     window.scrollTo(0, 0);
@@ -148,6 +192,7 @@ export default function HeroSection({ className }: { className?: string }) {
           loop
           muted
           playsInline
+          webkit-playsinline="true"
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
           style={{
@@ -160,6 +205,7 @@ export default function HeroSection({ className }: { className?: string }) {
           disablePictureInPicture
           disableRemotePlayback
           x-webkit-airplay="deny"
+          autoPlay={false}
         >
           <source src="/Assets/Images/HeroSection.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -190,7 +236,7 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
           <button className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"><p className="leading-none mt-0.5">ABOUT</p></button>
           <button className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"><p className="leading-none mt-0.5">PRICING</p></button>
-          <a href="#contact" className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+          <a href="#contact" onClick={handleContactClick} className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
           <p className="leading-none mt-0.5">CONTACT</p>
           </a>
         </div>
@@ -220,7 +266,7 @@ export default function HeroSection({ className }: { className?: string }) {
             <a href="https://app.astrix.live" target="_blank" rel="noopener noreferrer" className="w-fit px-5 h-[30px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none">
               <p className="leading-none mt-0.5">GET STARTED</p>
             </a>
-            <a href="#contact" className="w-fit flex items-center justify-center px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none">
+            <a href="#contact" onClick={handleContactClick} className="w-fit flex items-center justify-center px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none">
               <p className="leading-none mt-0.5">BOOK A DEMO</p>
             </a>
           </div>
@@ -233,10 +279,12 @@ export default function HeroSection({ className }: { className?: string }) {
             loop
             muted
             playsInline
+            webkit-playsinline="true"
             preload="auto"
             disablePictureInPicture
             disableRemotePlayback
             x-webkit-airplay="deny"
+            autoPlay={false}
             style={{
               position: "absolute",
               top: 0,
@@ -324,7 +372,7 @@ export default function HeroSection({ className }: { className?: string }) {
             <a 
               href="#contact" 
               className="text-white text-xs font-nohemi400 hover:text-[#CCD0D7] transition-colors"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={handleContactClick}
             >
               CONTACT US
             </a>

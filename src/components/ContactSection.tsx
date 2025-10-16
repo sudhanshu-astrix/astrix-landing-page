@@ -21,7 +21,10 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="First Name"
                     type="text"
-                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400"
+                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400 text-base"
+                    autoComplete="given-name"
+                    autoCorrect="off"
+                    autoCapitalize="words"
                   />
                 </div>
                 <div>
@@ -29,7 +32,10 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="Last Name"
                     type="text"
-                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400"
+                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400 text-base"
+                    autoComplete="family-name"
+                    autoCorrect="off"
+                    autoCapitalize="words"
                   />
                 </div>
                 <div>
@@ -37,7 +43,11 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="Email"
                     type="email"
-                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400"
+                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400 text-base"
+                    autoComplete="email"
+                    autoCorrect="off"
+                    autoCapitalize="none"
+                    inputMode="email"
                   />
                 </div>
                 <div>
@@ -45,7 +55,10 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="Phone Number"
                     type="tel"
-                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400"
+                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400 text-base"
+                    autoComplete="tel"
+                    autoCorrect="off"
+                    inputMode="tel"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -53,7 +66,10 @@ export default function ContactSection({ className }: { className?: string }) {
                   <textarea
                     placeholder="Message"
                     rows={1}
-                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400 resize-none"
+                    className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi400 resize-none text-base"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="sentences"
                   />
                 </div>
               </div>

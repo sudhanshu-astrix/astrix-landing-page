@@ -44,22 +44,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const discoverLabelRef = useRef<HTMLSpanElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
 
-  // Preload critical images for better performance
-  useEffect(() => {
-    const imagesToPreload = [
-      '/Assets/Images/Toolkit/Creation.gif',
-      '/Assets/Images/Toolkit/Ticket.gif',
-      '/Assets/Images/Toolkit/Data.gif',
-      '/Assets/Images/Star.svg',
-      '/Assets/Images/NoiseEffectBg.svg',
-    ];
-
-    imagesToPreload.forEach((src) => {
-      const img = document.createElement('img');
-      img.src = src;
-    });
-  }, []);
-
   useEffect(() => {
     const section = sectionRef.current;
     const firstText = firstTextRef.current;
@@ -948,7 +932,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 src="/Assets/Images/Toolkit/Create_Event.gif"
                 alt="Create Event Background" 
                 fill 
-                className="object-contain" 
+                className="object-contain md:object-cover" 
               />
             </div>
           </div>

@@ -26,33 +26,31 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: Auto-scroll with touch and scroll detection for manual override
+      // Mobile: iOS-optimized auto-scroll with proper manual scroll detection
       let autoScrollInterval: NodeJS.Timeout | null = null;
-      let resumeTimeout: NodeJS.Timeout | null = null;
-      let lastScrollLeft = 0;
-      let isAutoScrolling = false;
-      let isTouching = false; // Track if user is actively touching
       let userScrollTimeout: NodeJS.Timeout | null = null;
+      let lastScrollLeft = 0;
+      let lastScrollTime = Date.now();
+      let isUserInteracting = false;
       
       const scrollContainer = section.querySelector('.scroll-container') as HTMLElement;
       if (!scrollContainer) return;
 
-      // Auto-scroll function - only runs when NOT touching
+      // Detect iOS for special handling
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      // Auto-scroll function
       const startAutoScroll = () => {
         if (autoScrollInterval) {
           clearInterval(autoScrollInterval);
         }
 
         autoScrollInterval = setInterval(() => {
-          // Don't auto-scroll if user is touching
-          if (isTouching) return;
+          // Don't auto-scroll if user is interacting
+          if (isUserInteracting) return;
           
           const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
           const currentScroll = scrollContainer.scrollLeft;
-
-          // Mark that we're auto-scrolling
-          isAutoScrolling = true;
-          lastScrollLeft = currentScroll + 2;
 
           // Auto-scroll or loop back
           if (currentScroll >= maxScroll - 5) {
@@ -60,12 +58,10 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
             lastScrollLeft = 0;
           } else {
             scrollContainer.scrollLeft = currentScroll + 2;
+            lastScrollLeft = currentScroll + 2;
           }
-
-          // Reset flag after a short delay
-          setTimeout(() => {
-            isAutoScrolling = false;
-          }, 50);
+          
+          lastScrollTime = Date.now();
         }, 16); // ~60fps
       };
 
@@ -75,38 +71,45 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           clearInterval(autoScrollInterval);
           autoScrollInterval = null;
         }
-        if (resumeTimeout) {
-          clearTimeout(resumeTimeout);
-          resumeTimeout = null;
+      };
+
+      // iOS-specific: Use pointer events for better compatibility
+      const handlePointerDown = (e: PointerEvent) => {
+        // Only handle touch pointers, not mouse
+        if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+          isUserInteracting = true;
+          stopAutoScroll();
         }
       };
 
-      // Handle touch start - user is touching
-      const handleTouchStart = () => {
-        isTouching = true;
-        stopAutoScroll();
-      };
-
-      // Handle touch end - user stopped touching
-      const handleTouchEnd = () => {
-        isTouching = false;
-        
-        // Resume auto-scroll after delay
-        if (userScrollTimeout) {
-          clearTimeout(userScrollTimeout);
+      const handlePointerUp = (e: PointerEvent) => {
+        if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+          isUserInteracting = false;
+          
+          // Resume auto-scroll after delay
+          if (userScrollTimeout) {
+            clearTimeout(userScrollTimeout);
+          }
+          userScrollTimeout = setTimeout(() => {
+            startAutoScroll();
+          }, 1500); // Longer delay for iOS momentum scrolling
         }
-        userScrollTimeout = setTimeout(() => {
-          startAutoScroll();
-        }, 1000);
       };
 
-      // Detect manual scroll via scroll event (backup detection)
+      // Scroll event to detect manual scrolling (works on both iOS and Android)
       const handleScroll = () => {
         const currentScroll = scrollContainer.scrollLeft;
+        const scrollDelta = Math.abs(currentScroll - lastScrollLeft);
+        const timeDelta = Date.now() - lastScrollTime;
         
-        // If scroll position changed unexpectedly (not by auto-scroll), user is manually scrolling
-        if (!isAutoScrolling && Math.abs(currentScroll - lastScrollLeft) > 5) {
-          // Stop auto-scroll
+        // Detect fast scrolling (user-initiated) vs slow scrolling (auto-scroll)
+        // Auto-scroll: 2px every 16ms = ~125px/s
+        // User scroll: Usually much faster, especially on iOS with momentum
+        const scrollSpeed = scrollDelta / (timeDelta || 1) * 1000; // px/s
+        
+        // If scrolling faster than auto-scroll or scrolling backwards
+        if (scrollSpeed > 150 || currentScroll < lastScrollLeft) {
+          isUserInteracting = true;
           stopAutoScroll();
           
           // Clear existing timeout
@@ -116,19 +119,45 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           
           // Resume auto-scroll after user stops scrolling
           userScrollTimeout = setTimeout(() => {
+            isUserInteracting = false;
             startAutoScroll();
-          }, 1000); // Resume after 1 second of no manual scrolling
+          }, 1500); // Longer delay for iOS momentum scrolling
         }
         
         lastScrollLeft = currentScroll;
+        lastScrollTime = Date.now();
       };
 
-      // Add touch event listeners for Safari compatibility
-      scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
-      scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
-      scrollContainer.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      // Android: Use touch events
+      const handleTouchStart = () => {
+        isUserInteracting = true;
+        stopAutoScroll();
+      };
+
+      const handleTouchEnd = () => {
+        isUserInteracting = false;
+        if (userScrollTimeout) {
+          clearTimeout(userScrollTimeout);
+        }
+        userScrollTimeout = setTimeout(() => {
+          startAutoScroll();
+        }, 1000);
+      };
+
+      // Use both pointer events (modern, iOS-friendly) and touch events (fallback)
+      if (isIOS) {
+        // iOS: Prefer pointer events
+        scrollContainer.addEventListener('pointerdown', handlePointerDown as EventListener, { passive: true });
+        scrollContainer.addEventListener('pointerup', handlePointerUp as EventListener, { passive: true });
+        scrollContainer.addEventListener('pointercancel', handlePointerUp as EventListener, { passive: true });
+      } else {
+        // Android: Use touch events
+        scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+        scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
+        scrollContainer.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      }
       
-      // Listen to scroll events (backup)
+      // Scroll event works on both platforms
       scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
 
       // Start auto-scroll immediately
@@ -141,9 +170,16 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         if (userScrollTimeout) {
           clearTimeout(userScrollTimeout);
         }
-        scrollContainer.removeEventListener('touchstart', handleTouchStart);
-        scrollContainer.removeEventListener('touchend', handleTouchEnd);
-        scrollContainer.removeEventListener('touchcancel', handleTouchEnd);
+        
+        if (isIOS) {
+          scrollContainer.removeEventListener('pointerdown', handlePointerDown as EventListener);
+          scrollContainer.removeEventListener('pointerup', handlePointerUp as EventListener);
+          scrollContainer.removeEventListener('pointercancel', handlePointerUp as EventListener);
+        } else {
+          scrollContainer.removeEventListener('touchstart', handleTouchStart);
+          scrollContainer.removeEventListener('touchend', handleTouchEnd);
+          scrollContainer.removeEventListener('touchcancel', handleTouchEnd);
+        }
         scrollContainer.removeEventListener('scroll', handleScroll);
       };
     } else {
@@ -335,6 +371,7 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           style={{ 
             WebkitOverflowScrolling: 'touch',
             overscrollBehaviorX: 'none',
+            touchAction: 'pan-x pan-y', // Allow both horizontal and vertical native scrolling
           }}
         >
           <div 
