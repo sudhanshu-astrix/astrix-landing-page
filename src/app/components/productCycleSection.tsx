@@ -70,7 +70,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     function handleMouseMove(e: MouseEvent) {
       const minWidth = 250;
       const maxWidth = window.innerWidth;
-      let newWidth = Math.max(minWidth, Math.min(e.clientX, maxWidth));
+      const newWidth = Math.max(minWidth, Math.min(e.clientX, maxWidth));
       setLineWidth(newWidth);
     }
     
@@ -931,7 +931,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <section className="h-screen w-full bg-[#0B0B0B] flex flex-col justify-between relative overflow-hidden">
           <div className="flex flex-col w-full h-fit mt-5">
             <h2 className="text-white text-2xl ml-5 w-[70%] font-switzer font-[400] leading-tight">
-              If your community had an HQ, it'd probably be here. Discover, distribute, and nudge fans back when it counts.
+              If your community had an HQ, it&apos;d probably be here. Discover, distribute, and nudge fans back when it counts.
             </h2>
             <div className="w-full h-fit relative">
               <div className="w-fit h-[55vh] absolute right-0">
@@ -1166,7 +1166,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   See the full story with live analytics - track revenue, reach, contacts and performance.
                 </h2>
                 <p className="text-md w-3/4 text-left font-switzer font-[300] text-gray-600 italic animate-text">
-                  Know what's working, fix what's not, and maximise every campaign.
+                  Know what&apos;s working, fix what&apos;s not, and maximise every campaign.
                 </p>
               </div>
               <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>MARKETING INSIGHTS</p>
@@ -1192,7 +1192,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-4 mt-2'>
                 <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists.
+                  First step to build your community, keep your fans updated on what&apos;s next with a gallery, collections, upcoming events and embedded playlists.
                 </h2>
                 <p className="text-md w-4/5 text-right font-switzer font-[300] text-gray-600 italic animate-text">
                   Share your page and ask fans to subscribe, so you get direct access to their emails for future updates.
@@ -1291,7 +1291,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="flex flex-col md:flex-row w-full h-fit mt-5 md:mt-10">
             <h2 className="text-white text-2xl sm:text-4xl md:text-4xl ml-5 md:ml-10 lg:text-[44px] w-[70%] md:w-[100%] font-switzer font-[400] leading-tight md:leading-tight">
               If your community had an HQ,
-              it'd probably be here. Discover,
+              it&apos;d probably be here. Discover,
               distribute, and nudge fans
               back when it counts.
             </h2>
@@ -1697,7 +1697,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                     <span className="word-by-word">See the full story with live analytics - track revenue, reach, contacts and performance.</span>
                   </h2>
                   <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer font-[300] text-gray-600 italic mb-4 md:mb-8">
-                    <span className="word-by-word">Know what's working, fix what's not, and maximise every campaign.</span>
+                    <span className="word-by-word">Know what&apos;s working, fix what&apos;s not, and maximise every campaign.</span>
                   </p>
                 </div>
               </div>
@@ -1748,7 +1748,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div ref={eighthTextRef} className='w-full flex flex-col items-end relative h-full pt-16 md:pt-0'>
                 <div className="w-full flex flex-col items-start md:items-end h-[50%] gap-6 md:gap-10 justify-between">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer font-[400] text-[#363636] leading-tight mb-3 md:mb-6 w-full">
-                    <span className="word-by-word">First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists.</span>
+                    <span className="word-by-word">First step to build your community, keep your fans updated on what&apos;s next with a gallery, collections, upcoming events and embedded playlists.</span>
                   </h2>
                   <p className="text-xs sm:text-sm md:text-xl w-full md:w-2/3 text-left font-switzer font-[300] text-gray-600 italic mb-4 md:mb-8">
                     <span className="word-by-word">Share your page and ask fans to subscribe, so you get direct access to their emails for future updates.</span>
