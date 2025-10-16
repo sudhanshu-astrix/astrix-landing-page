@@ -51,17 +51,34 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
           const currentScroll = scrollContainer.scrollLeft;
 
-          // Smooth continuous scrolling
+          // Smooth continuous scrolling with increased speed
           if (currentScroll >= maxScroll - 5) {
             // Reached end, smoothly reset to start
             scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
           } else {
-            // Increment scroll position (iOS Safari handles this better)
-            scrollContainer.scrollLeft = currentScroll + 1.2;
+            // Increment scroll position with faster speed
+            scrollContainer.scrollLeft = currentScroll + 2;
           }
         }, 16); // ~60fps
       };
 
+      // Track if user is actively scrolling
+      let lastScrollLeft = scrollContainer.scrollLeft;
+      
+      // Handle scroll event - detect user scrolling
+      const handleScroll = () => {
+        const currentScrollLeft = scrollContainer.scrollLeft;
+        // If scroll position changed but we're not auto-scrolling, user is manually scrolling
+        if (Math.abs(currentScrollLeft - lastScrollLeft) > 0) {
+          lastTouchTime = Date.now();
+          if (scrollInterval) {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+          }
+        }
+        lastScrollLeft = currentScrollLeft;
+      };
+      
       // Handle touch start - user begins touching
       const handleTouchStart = (e: TouchEvent) => {
         isUserTouching = true;
@@ -122,7 +139,8 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
         }, 500);
       };
 
-      // Add event listeners (non-passive for iOS touch handling)
+      // Add event listeners
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
       scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
       scrollContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
       scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
@@ -142,6 +160,7 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
           clearTimeout(scrollTimeout);
         }
         if (scrollContainer) {
+          scrollContainer.removeEventListener('scroll', handleScroll);
           scrollContainer.removeEventListener('touchstart', handleTouchStart);
           scrollContainer.removeEventListener('touchmove', handleTouchMove);
           scrollContainer.removeEventListener('touchend', handleTouchEnd);
@@ -342,6 +361,7 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
             backfaceVisibility: 'hidden' as const,
             overscrollBehaviorX: 'contain',
             WebkitTransform: 'translate3d(0, 0, 0)', // iOS-specific
+            touchAction: 'pan-x', // Allow horizontal scrolling on touch
           }}
         >
           <div 

@@ -15,7 +15,7 @@ export default function HeroSection({ className }: { className?: string }) {
     const isMobile = window.innerWidth < 768;
     
     if (isMobile && videoRef.current && mobileVideoRef.current) {
-      // Mobile: Play both videos with shared source for better sync
+      // Mobile: Aggressive video playback for all browsers including Safari/Opera Mini
       const backgroundVideo = videoRef.current;
       const mobileVideo = mobileVideoRef.current;
       
@@ -23,66 +23,94 @@ export default function HeroSection({ className }: { className?: string }) {
       backgroundVideo.playbackRate = 1.0;
       mobileVideo.playbackRate = 1.0;
       
-      let hasStarted = false;
+      // Force load videos
+      backgroundVideo.load();
+      mobileVideo.load();
       
-      const playBothVideos = () => {
+      let hasStarted = false;
+      let retryCount = 0;
+      const maxRetries = 5;
+      
+      const attemptPlay = () => {
         if (hasStarted) return;
-        hasStarted = true;
         
-        // Start both from beginning
+        // Set video time
         backgroundVideo.currentTime = 0;
         mobileVideo.currentTime = 0;
         
-        // Play both videos
-        const playPromises = [
-          backgroundVideo.play().catch((error) => {
-            console.log("Background video autoplay failed:", error);
-          }),
-          mobileVideo.play().catch((error) => {
-            console.log("Mobile video autoplay failed:", error);
-          })
-        ];
+        // Attempt to play both videos
+        const bgPlayPromise = backgroundVideo.play();
+        const mobilePlayPromise = mobileVideo.play();
         
-        // Fallback for autoplay restrictions
-        Promise.all(playPromises).catch(() => {
-          document.addEventListener('touchstart', () => {
-            backgroundVideo.play().catch(e => console.log("BG retry failed:", e));
-            mobileVideo.play().catch(e => console.log("Mobile retry failed:", e));
-          }, { once: true });
-        });
-      };
-      
-      // Wait for both videos to be ready
-      let bgReady = false;
-      let mobileReady = false;
-      
-      const checkAndPlay = () => {
-        if (bgReady && mobileReady && !hasStarted) {
-          playBothVideos();
+        if (bgPlayPromise !== undefined) {
+          bgPlayPromise.then(() => {
+            console.log("Background video playing");
+            hasStarted = true;
+          }).catch((error) => {
+            console.log("Background video autoplay blocked:", error);
+            // Retry or wait for user interaction
+            if (retryCount < maxRetries) {
+              retryCount++;
+              setTimeout(attemptPlay, 500);
+            }
+          });
+        }
+        
+        if (mobilePlayPromise !== undefined) {
+          mobilePlayPromise.then(() => {
+            console.log("Mobile video playing");
+            hasStarted = true;
+          }).catch((error) => {
+            console.log("Mobile video autoplay blocked:", error);
+            // Retry or wait for user interaction
+            if (retryCount < maxRetries) {
+              retryCount++;
+              setTimeout(attemptPlay, 500);
+            }
+          });
         }
       };
       
-      const handleBgReady = () => {
-        bgReady = true;
-        checkAndPlay();
+      // Try multiple events for maximum compatibility
+      const tryPlayOnEvent = () => {
+        if (!hasStarted) {
+          attemptPlay();
+        }
       };
       
-      const handleMobileReady = () => {
-        mobileReady = true;
-        checkAndPlay();
+      // Attempt play immediately
+      if (backgroundVideo.readyState >= 2 || mobileVideo.readyState >= 2) {
+        attemptPlay();
+      }
+      
+      // Add multiple event listeners for better compatibility
+      backgroundVideo.addEventListener('loadedmetadata', tryPlayOnEvent);
+      backgroundVideo.addEventListener('canplay', tryPlayOnEvent);
+      backgroundVideo.addEventListener('canplaythrough', tryPlayOnEvent);
+      
+      mobileVideo.addEventListener('loadedmetadata', tryPlayOnEvent);
+      mobileVideo.addEventListener('canplay', tryPlayOnEvent);
+      mobileVideo.addEventListener('canplaythrough', tryPlayOnEvent);
+      
+      // User interaction fallback for autoplay restrictions
+      const handleUserInteraction = () => {
+        if (!hasStarted) {
+          attemptPlay();
+        }
       };
       
-      backgroundVideo.addEventListener('canplay', handleBgReady, { once: true });
-      mobileVideo.addEventListener('canplay', handleMobileReady, { once: true });
-      
-      // Check if already ready
-      if (backgroundVideo.readyState >= 2) bgReady = true;
-      if (mobileVideo.readyState >= 2) mobileReady = true;
-      checkAndPlay();
+      document.addEventListener('touchstart', handleUserInteraction, { once: true });
+      document.addEventListener('click', handleUserInteraction, { once: true });
       
       return () => {
-        backgroundVideo.removeEventListener('canplay', handleBgReady);
-        mobileVideo.removeEventListener('canplay', handleMobileReady);
+        backgroundVideo.removeEventListener('loadedmetadata', tryPlayOnEvent);
+        backgroundVideo.removeEventListener('canplay', tryPlayOnEvent);
+        backgroundVideo.removeEventListener('canplaythrough', tryPlayOnEvent);
+        mobileVideo.removeEventListener('loadedmetadata', tryPlayOnEvent);
+        mobileVideo.removeEventListener('canplay', tryPlayOnEvent);
+        mobileVideo.removeEventListener('canplaythrough', tryPlayOnEvent);
+        document.removeEventListener('touchstart', handleUserInteraction);
+        document.removeEventListener('click', handleUserInteraction);
       };
     } else if (!isMobile && videoRef.current) {
       // Desktop: play the background video
