@@ -1,12 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --font-switzer: var(--font-switzer);
+  --font-nohemi: var(--font-nohemi);
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -14,181 +19,6 @@
     --foreground: #ededed;
   }
 }
-
-@font-face {
-  font-family: "NohemiLight";
-  src: url("/Fonts/Nohemi/Nohemi-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "NohemiExtraLight";
-  src: url("/Fonts/Nohemi/Nohemi-ExtraLight.ttf") format("truetype");
-  font-weight: 200;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "NohemiRegular";
-  src: url("/Fonts/Nohemi/Nohemi-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "NohemiBold";
-  src: url("/Fonts/Nohemi/Nohemi-Bold.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-@font-face {
-  font-family: "NohemiExtraBold";
-  src: url("/Fonts/Nohemi/Nohemi-ExtraBold.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerThin";
-  src: url("/Fonts/Switzer/Switzer-Thin.ttf") format("truetype");
-  font-weight: 100;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerThinItalic";
-  src: url("/Fonts/Switzer/Switzer-ThinItalic.ttf") format("truetype");
-  font-weight: 100;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerExtralight";
-  src: url("/Fonts/Switzer/Switzer-Extralight.ttf") format("truetype");
-  font-weight: 200;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerExtralightItalic";
-  src: url("/Fonts/Switzer/Switzer-ExtralightItalic.ttf") format("truetype");
-  font-weight: 200;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerLight";
-  src: url("/Fonts/Switzer/Switzer-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerLightItalic";
-  src: url("/Fonts/Switzer/Switzer-LightItalic.ttf") format("truetype");
-  font-weight: 300;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerRegular";
-  src: url("/Fonts/Switzer/Switzer-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerItalic";
-  src: url("/Fonts/Switzer/Switzer-Italic.ttf") format("truetype");
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerMedium";
-  src: url("/Fonts/Switzer/Switzer-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerMediumItalic";
-  src: url("/Fonts/Switzer/Switzer-MediumItalic.ttf") format("truetype");
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerSemibold";
-  src: url("/Fonts/Switzer/Switzer-Semibold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerSemiboldItalic";
-  src: url("/Fonts/Switzer/Switzer-SemiboldItalic.ttf") format("truetype");
-  font-weight: 600;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerBold";
-  src: url("/Fonts/Switzer/Switzer-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerBoldItalic";
-  src: url("/Fonts/Switzer/Switzer-BoldItalic.ttf") format("truetype");
-  font-weight: 700;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerExtrabold";
-  src: url("/Fonts/Switzer/Switzer-Extrabold.ttf") format("truetype");
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerExtraboldItalic";
-  src: url("/Fonts/Switzer/Switzer-ExtraboldItalic.ttf") format("truetype");
-  font-weight: 800;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerBlack";
-  src: url("/Fonts/Switzer/Switzer-Black.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerBlackItalic";
-  src: url("/Fonts/Switzer/Switzer-BlackItalic.ttf") format("truetype");
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "SwitzerVariable";
-  src: url("/Fonts/Switzer/Switzer-Variable.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "SwitzerVariableItalic";
-  src: url("/Fonts/Switzer/Switzer-VariableItalic.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: italic;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -196,18 +26,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "NohemiRegular", Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
-}
-
-/* Hide scrollbar for mobile card scroll */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .instrument-serif-regular {
@@ -220,42 +39,4 @@ body {
   font-family: "Instrument Serif", serif;
   font-weight: 400;
   font-style: italic;
-}
-
-
-
-.laptopWrapper {
-  perspective: 1100px;
-  display: inline-block;
-}
-
-.laptop {
-  position: relative;
-}
-
-/* .laptop img {
-  display: block;
-  width: 100%;
-  height: 100%;
-} */
-
-.laptopScreen {
-  /* position: absolute;
-  width: 60%;
-  height: 36%; */
-  overflow: hidden;
-  /* top: 29%;
-  left: 15%; */
-  transform-origin: center;
-  transform-style: preserve-3d;
-  perspective: 1200px;
-}
-
-.laptopApp {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  display: block;
-  transform-origin: top center;
-  transform-style: preserve-3d;
 }

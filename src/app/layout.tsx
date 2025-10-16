@@ -1,20 +1,129 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const switzer = localFont({
+  src: [
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Regular.ttf",
+      weight: "400",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-ThinItalic.ttf",
+      weight: "100",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Extralight.ttf",
+      weight: "200",
+    },
+    // {
+    //   path: "../../public/Switzer/Switzer-ExtralightItalic.ttf",
+    //   weight: "200",
+    //   style: "italic",
+    // },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Light.ttf",
+      weight: "300",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-LightItalic.ttf",
+      weight: "300",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Medium.ttf",
+      weight: "500",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-MediumItalic.ttf",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Semibold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-SemiboldItalic.ttf",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-BoldItalic.ttf",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Extrabold.ttf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-ExtraboldItalic.ttf",
+      weight: "800",
+      style: "italic",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-Black.ttf",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../../public/Fonts/Switzer/Switzer-BlackItalic.ttf",
+      weight: "900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-switzer",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const nohemi = localFont({
+  src: [
+    {
+      path: "../../public/Fonts/Nohemi/Nohemi-Regular.ttf",
+      weight: "400",
+    },
+    {
+      path: "../../public/Fonts/Nohemi/Nohemi-Light.ttf",
+      weight: "300",
+    },
+    {
+      path: "../../public/Fonts/Nohemi/Nohemi-ExtraLight.ttf",
+      weight: "200",
+    },
+    {
+      path: "../../public/Fonts/Nohemi/Nohemi-Bold.ttf",
+      weight: "500",
+    },
+    {
+      path: "../../public/Fonts/Nohemi/Nohemi-ExtraBold.ttf",
+      weight: "600",
+    },
+  ],
+  variable: "--font-nohemi",
 });
 
 export const metadata: Metadata = {
   title: "Astrix - Omnichannel Community Building Platform",
-  description: "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
+  description:
+    "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
+  icons: {
+    icon: "/landing_pageicon.png",
+    shortcut: "/landing_pageicon.png",
+    apple: "/landing_pageicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -24,17 +133,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${switzer.variable} ${nohemi.variable}  antialiased`}>
         {children}
       </body>
     </html>
