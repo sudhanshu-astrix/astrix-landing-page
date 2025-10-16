@@ -279,14 +279,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       // We have 10 major sections
       // Optimize for mobile performance - removed snap for smoother, more natural scrolling
       // Extra optimization for Safari and low-performance browsers to prevent lag
+      // Mobile: Add initial hold on toolkit section before allowing slides
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: () => {
             // Much shorter distance on mobile/low-performance for better performance
-            if (isLowPerformance) return "+=3000"; // Even shorter for Opera Mini
-            if (isMobile) return "+=4000";
+            // Added extra distance for initial toolkit hold on mobile
+            if (isLowPerformance) return "+=3500"; // Even shorter for Opera Mini
+            if (isMobile) return "+=5000"; // Increased to accommodate toolkit hold
             return "+=12000";
           },
           scrub: isLowPerformance ? 0.05 : (isMobile ? 0.1 : 1.5), // Near-instant for low-performance browsers
@@ -308,6 +310,12 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           }),
         },
       });
+
+      // Mobile: Add a significant hold/pause on the toolkit section before any slides
+      if (isMobile) {
+        // Hold toolkit section for a long duration (20% of timeline)
+        tl.to({}, { duration: 1.0 }); // Empty animation to create a hold
+      }
 
       // Phase 0: Toolkit section slides out, First Section (CreateEvent) slides in
       // Simplified animations for mobile and low-performance browsers

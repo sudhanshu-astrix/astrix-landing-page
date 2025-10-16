@@ -26,146 +26,125 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
-      // Mobile: iOS-compatible automatic scroll with manual override
-      let scrollInterval: NodeJS.Timeout | null = null;
-      let scrollTimeout: NodeJS.Timeout | null = null;
-      let isUserTouching = false;
-      let lastTouchTime = 0;
-      let touchStartX = 0;
+      // Mobile: Auto-scroll with touch and scroll detection for manual override
+      let autoScrollInterval: NodeJS.Timeout | null = null;
+      let resumeTimeout: NodeJS.Timeout | null = null;
+      let lastScrollLeft = 0;
+      let isAutoScrolling = false;
+      let isTouching = false; // Track if user is actively touching
+      let userScrollTimeout: NodeJS.Timeout | null = null;
+      
       const scrollContainer = section.querySelector('.scroll-container') as HTMLElement;
-
       if (!scrollContainer) return;
 
-      // Use setInterval for iOS Safari compatibility (more reliable than requestAnimationFrame)
+      // Auto-scroll function - only runs when NOT touching
       const startAutoScroll = () => {
-        if (scrollInterval) {
-          clearInterval(scrollInterval);
+        if (autoScrollInterval) {
+          clearInterval(autoScrollInterval);
         }
 
-        scrollInterval = setInterval(() => {
-          // Don't scroll if user is touching or recently touched
-          if (isUserTouching || Date.now() - lastTouchTime < 500) {
-            return;
-          }
-
+        autoScrollInterval = setInterval(() => {
+          // Don't auto-scroll if user is touching
+          if (isTouching) return;
+          
           const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
           const currentScroll = scrollContainer.scrollLeft;
 
-          // Smooth continuous scrolling with increased speed
+          // Mark that we're auto-scrolling
+          isAutoScrolling = true;
+          lastScrollLeft = currentScroll + 2;
+
+          // Auto-scroll or loop back
           if (currentScroll >= maxScroll - 5) {
-            // Reached end, smoothly reset to start
-            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+            scrollContainer.scrollLeft = 0;
+            lastScrollLeft = 0;
           } else {
-            // Increment scroll position with faster speed
             scrollContainer.scrollLeft = currentScroll + 2;
           }
+
+          // Reset flag after a short delay
+          setTimeout(() => {
+            isAutoScrolling = false;
+          }, 50);
         }, 16); // ~60fps
       };
 
-      // Track if user is actively scrolling
-      let lastScrollLeft = scrollContainer.scrollLeft;
-      
-      // Handle scroll event - detect user scrolling
-      const handleScroll = () => {
-        const currentScrollLeft = scrollContainer.scrollLeft;
-        // If scroll position changed but we're not auto-scrolling, user is manually scrolling
-        if (Math.abs(currentScrollLeft - lastScrollLeft) > 0) {
-          lastTouchTime = Date.now();
-          if (scrollInterval) {
-            clearInterval(scrollInterval);
-            scrollInterval = null;
-          }
+      // Stop auto-scroll
+      const stopAutoScroll = () => {
+        if (autoScrollInterval) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
         }
-        lastScrollLeft = currentScrollLeft;
-      };
-      
-      // Handle touch start - user begins touching
-      const handleTouchStart = (e: TouchEvent) => {
-        isUserTouching = true;
-        lastTouchTime = Date.now();
-        touchStartX = e.touches[0].clientX;
-        
-        // Stop auto-scroll immediately
-        if (scrollInterval) {
-          clearInterval(scrollInterval);
-          scrollInterval = null;
-        }
-        
-        // Clear resume timeout
-        if (scrollTimeout) {
-          clearTimeout(scrollTimeout);
-          scrollTimeout = null;
+        if (resumeTimeout) {
+          clearTimeout(resumeTimeout);
+          resumeTimeout = null;
         }
       };
 
-      // Handle touch move - user is scrolling
-      const handleTouchMove = (e: TouchEvent) => {
-        isUserTouching = true;
-        lastTouchTime = Date.now();
-        
-        // Ensure auto-scroll is stopped
-        if (scrollInterval) {
-          clearInterval(scrollInterval);
-          scrollInterval = null;
-        }
+      // Handle touch start - user is touching
+      const handleTouchStart = () => {
+        isTouching = true;
+        stopAutoScroll();
       };
 
       // Handle touch end - user stopped touching
       const handleTouchEnd = () => {
-        isUserTouching = false;
-        lastTouchTime = Date.now();
+        isTouching = false;
         
         // Resume auto-scroll after delay
-        if (scrollTimeout) {
-          clearTimeout(scrollTimeout);
+        if (userScrollTimeout) {
+          clearTimeout(userScrollTimeout);
         }
-        
-        scrollTimeout = setTimeout(() => {
+        userScrollTimeout = setTimeout(() => {
           startAutoScroll();
-        }, 500);
+        }, 1000);
       };
 
-      // Handle touch cancel - iOS sometimes fires this
-      const handleTouchCancel = () => {
-        isUserTouching = false;
-        lastTouchTime = Date.now();
+      // Detect manual scroll via scroll event (backup detection)
+      const handleScroll = () => {
+        const currentScroll = scrollContainer.scrollLeft;
         
-        if (scrollTimeout) {
-          clearTimeout(scrollTimeout);
+        // If scroll position changed unexpectedly (not by auto-scroll), user is manually scrolling
+        if (!isAutoScrolling && Math.abs(currentScroll - lastScrollLeft) > 5) {
+          // Stop auto-scroll
+          stopAutoScroll();
+          
+          // Clear existing timeout
+          if (userScrollTimeout) {
+            clearTimeout(userScrollTimeout);
+          }
+          
+          // Resume auto-scroll after user stops scrolling
+          userScrollTimeout = setTimeout(() => {
+            startAutoScroll();
+          }, 1000); // Resume after 1 second of no manual scrolling
         }
         
-        scrollTimeout = setTimeout(() => {
-          startAutoScroll();
-        }, 500);
+        lastScrollLeft = currentScroll;
       };
 
-      // Add event listeners
-      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      // Add touch event listeners for Safari compatibility
       scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
-      scrollContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
       scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
-      scrollContainer.addEventListener('touchcancel', handleTouchCancel, { passive: true });
+      scrollContainer.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      
+      // Listen to scroll events (backup)
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
 
-      // Start automatic scrolling after a short delay
-      setTimeout(() => {
-        startAutoScroll();
-      }, 500);
+      // Start auto-scroll immediately
+      lastScrollLeft = scrollContainer.scrollLeft;
+      startAutoScroll();
 
-      // Cleanup function
+      // Cleanup
       return () => {
-        if (scrollInterval) {
-          clearInterval(scrollInterval);
+        stopAutoScroll();
+        if (userScrollTimeout) {
+          clearTimeout(userScrollTimeout);
         }
-        if (scrollTimeout) {
-          clearTimeout(scrollTimeout);
-        }
-        if (scrollContainer) {
-          scrollContainer.removeEventListener('scroll', handleScroll);
-          scrollContainer.removeEventListener('touchstart', handleTouchStart);
-          scrollContainer.removeEventListener('touchmove', handleTouchMove);
-          scrollContainer.removeEventListener('touchend', handleTouchEnd);
-          scrollContainer.removeEventListener('touchcancel', handleTouchCancel);
-        }
+        scrollContainer.removeEventListener('touchstart', handleTouchStart);
+        scrollContainer.removeEventListener('touchend', handleTouchEnd);
+        scrollContainer.removeEventListener('touchcancel', handleTouchEnd);
+        scrollContainer.removeEventListener('scroll', handleScroll);
       };
     } else {
       // Desktop: ScrollTrigger animation
@@ -210,14 +189,14 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
       random: Math.floor(Math.random() * 2)
     },
     {
-      title: "Flipside",
+      title: "Flipside Vol.1",
       description: "Ticketing partner for Flipside Vol.1 — packed out Nehru Place Social with 600+ people for a lineup featuring Collesttye, Ghildiyal, ZerøKaata, The Seige and Dhanji.",
       category: "Event Organisers",
       image: "/Assets/Images/Slider/Slide2.svg",
       random: Math.floor(Math.random() * 2)
     },
     {
-      title: "Music Collaboration",
+      title: "Muzzle",
       description: "Collaborated for Muzzle’s debut EP, October Baby launch party at Depot48, Delhi – his first ever India pop-out.",
       category: "Artists",
       image: "/Assets/Images/Slider/Slide3.svg",
@@ -231,7 +210,7 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
       random: Math.floor(Math.random() * 2)
     },
     {
-      title: "Dohraj",
+      title: "Dohnraj",
       description: "Ticketing partner for a show featuring Dee En, Dohnraj & The Peculiars and Fringe Mechanics at the multidisciplinary space – Mool, New Delhi.",
       category: "Artists",
       image: "/Assets/Images/Slider/Slide5.svg",
@@ -294,8 +273,8 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
       random: Math.floor(Math.random() * 2)
     },
     {
-      title: "Blue Diamond",
-      description: "SUBVERSE at Odella Green Park was an underground takeover – with Maurya, Blud Diamond Collective, and Rasa.",
+      title: "Blood Diamond",
+      description: "SUBVERSE at Odella Green Park was an underground takeover – with Maurya, Blood Diamond Collective, and Rasa.",
       category: "Event Organisers",
       image: "/Assets/Images/Slider/Slide14.svg",
       random: Math.floor(Math.random() * 2)
@@ -315,7 +294,7 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
       random: Math.floor(Math.random() * 2)
     },
     {
-      title: "Pursue Hard Seltzer",
+      title: "&Friends",
       description: "Curated by Prithvi, &Friends Vol.4 landed on Friendship Day at Khar Social. Karaoke, cyphers, tattoos, and collabs with Superkicks + Extra Butter made it a full-circle celebration.",
       category: "Event Organisers",
       image: "/Assets/Images/Slider/Slide17.svg",
@@ -352,16 +331,10 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
 
         {/* Horizontal Scrolling Cards - Below title on mobile, Right side on desktop */}
         <div 
-          className="flex-1 relative h-[60vh] md:h-[80vh] w-full scroll-container overflow-x-auto md:overflow-hidden scrollbar-hide"
+          className="flex-1 relative h-[60vh] md:h-[80vh] w-full scroll-container overflow-x-scroll md:overflow-hidden scrollbar-hide"
           style={{ 
-            scrollBehavior: 'auto',
             WebkitOverflowScrolling: 'touch',
-            willChange: 'scroll-position',
-            transform: 'translate3d(0, 0, 0)', // iOS Safari optimization
-            backfaceVisibility: 'hidden' as const,
-            overscrollBehaviorX: 'contain',
-            WebkitTransform: 'translate3d(0, 0, 0)', // iOS-specific
-            touchAction: 'pan-x', // Allow horizontal scrolling on touch
+            overscrollBehaviorX: 'none',
           }}
         >
           <div 
@@ -369,10 +342,6 @@ export default function CollaboratorSection({ className }: CollaboratorSectionPr
             className={`flex gap-12 h-full bg-[#0A0A0A]`}
             style={{ 
               width: "max-content",
-              willChange: 'transform',
-              transform: 'translate3d(0, 0, 0)',
-              backfaceVisibility: 'hidden' as const,
-              WebkitTransform: 'translate3d(0, 0, 0)', // iOS-specific
             }}
           >
             {collaborators.map((collaborator, index) => (

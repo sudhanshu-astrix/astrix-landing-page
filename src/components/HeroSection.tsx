@@ -149,7 +149,6 @@ export default function HeroSection({ className }: { className?: string }) {
           muted
           playsInline
           preload="auto"
-          poster="/Assets/Images/HeroImage.png"
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectFit: 'cover',

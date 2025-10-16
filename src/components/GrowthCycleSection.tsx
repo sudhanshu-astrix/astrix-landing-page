@@ -41,11 +41,15 @@ export default function GrowthCycleSection({ className }: { className?: string }
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "center center",
-          end: isMobile ? "+=8000" : "+=3000", // Much longer scroll distance on mobile for slower card transitions
+          end: isMobile ? "+=6000" : "+=3000", // Reduced from 8000 to 6000 for better control
           scrub: isSafari && isMobile ? 0.5 : true, // Less smooth but faster on Safari mobile
           pin: true,
           anticipatePin: 1,
           fastScrollEnd: isSafari, // Safari-specific optimization
+          onLeave: () => {
+            // Ensure smooth transition when leaving section
+            ScrollTrigger.refresh();
+          },
         },
       });
 
@@ -85,25 +89,25 @@ export default function GrowthCycleSection({ className }: { className?: string }
         });
       
         // Create sequential card reveal animation - all cards follow same pattern
-        // Each card now takes much longer to animate (3 phases: slide in, hold, slide out)
+        // Adjusted timing for smoother, controlled transitions (6000 scroll distance)
         cards.forEach((card, i) => {
           const cardHeight = viewportHeight;
           
-          // All cards: slide in from below, hold longer, slide out to top
+          // All cards: slide in from below, hold, slide out to top
           tl.to(card, { 
             opacity: 1,
             y: "0px", 
-            duration: 2.5, // Slower slide in (increased from 1.0)
+            duration: 2.0, // Balanced slide in timing
             ease: "power2.out",
             force3D: true // GPU acceleration
           }, ">") // Start after previous card
           .to(card, { 
-            duration: 3.5 // Hold card visible much longer (increased from 1.0)
+            duration: 2.5 // Hold card visible (balanced timing)
           })
           .to(card, { 
             opacity: 0,
             y: `-${cardHeight}px`, // Slide out to top
-            duration: 2.0, // Slower slide out (increased from 1.0)
+            duration: 1.5, // Smooth slide out
             ease: "power2.in",
             force3D: true // GPU acceleration
           }); // Slide out to make room for next card

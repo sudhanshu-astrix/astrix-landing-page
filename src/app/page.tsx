@@ -100,16 +100,32 @@ export default function Home() {
         e.preventDefault();
         const contactSection = document.getElementById('contact');
         if (contactSection && smootherRef.current) {
+          // Kill all ScrollTriggers temporarily to avoid conflicts with pinned sections
+          const triggers = ScrollTrigger.getAll();
+          triggers.forEach(trigger => trigger.disable());
+          
           // Use ScrollSmoother's scrollTo method for smooth scrolling
-          smootherRef.current.scrollTo(contactSection, true, "top 0%");
+          smootherRef.current.scrollTo(contactSection, true, "top top");
+          
+          // Re-enable ScrollTriggers after scroll completes
+          setTimeout(() => {
+            triggers.forEach(trigger => trigger.enable());
+            ScrollTrigger.refresh();
+          }, 1000);
         }
       }
     };
 
-    // Add click listeners to all anchor links
-    document.querySelectorAll('a[href="#contact"]').forEach(link => {
-      link.addEventListener('click', handleAnchorClick);
-    });
+    // Add click listeners to all anchor links after a delay to ensure DOM is ready
+    const setupAnchorLinks = () => {
+      document.querySelectorAll('a[href="#contact"]').forEach(link => {
+        link.addEventListener('click', handleAnchorClick);
+      });
+    };
+    
+    // Setup immediately and after a delay to catch dynamically rendered links
+    setupAnchorLinks();
+    setTimeout(setupAnchorLinks, 500);
 
     // Cleanup
     return () => {
