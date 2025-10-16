@@ -99,6 +99,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
     // Detect Safari for optimization
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    // Detect Opera Mini and low-performance browsers
+    const isOperaMini = /Opera Mini/i.test(navigator.userAgent);
+    const isLowPerformance = isOperaMini || /Android.*Chrome\/[1-5][0-9]\./i.test(navigator.userAgent);
 
     // Add a small delay to ensure DOM is fully ready, especially on mobile
     const setupAnimation = () => {
@@ -185,38 +189,58 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       const animateTextReveal = (textElement: HTMLElement, labelElement?: HTMLElement, delay: number = 0.1) => {
         const animTl = gsap.timeline({ delay });
         
-        if (isMobile) {
-          // Mobile: Simple slide-up fade-in, no word-by-word for better performance
-          // Set initial state - optimized for all mobile browsers (iOS Safari, Chrome Android, etc.)
-          gsap.set(textElement, { 
-            y: 20, 
-            opacity: 0,
-            force3D: true, // Force GPU acceleration for smoother animation across all browsers
-          });
-          
-          animTl.to(textElement, { 
-            y: 0,
-            opacity: 1, 
-            duration: 0.4,
-            ease: "power1.out", // Slight easing for smooth movement
-            force3D: true, // Ensure GPU acceleration during animation
-            clearProps: "transform" // Clear transform after animation for better browser compatibility
-          });
-          
-          if (labelElement) {
-            gsap.set(labelElement, { 
-              y: 15, 
-              opacity: 0,
-              force3D: true
+        if (isMobile || isLowPerformance) {
+          // Mobile/Low-performance: Simple fade-in, no transforms for maximum performance
+          // Even more optimized for Opera Mini and low-performance browsers
+          if (isLowPerformance) {
+            // Instant fade-in for low-performance browsers
+            gsap.set(textElement, { opacity: 0 });
+            animTl.to(textElement, { 
+              opacity: 1, 
+              duration: 0.2,
+              ease: "none"
             });
-            animTl.to(labelElement, {
-              opacity: 1,
+            
+            if (labelElement) {
+              gsap.set(labelElement, { opacity: 0 });
+              animTl.to(labelElement, {
+                opacity: 1,
+                duration: 0.1,
+                ease: "none"
+              }, "<");
+            }
+          } else {
+            // Mobile: Simple slide-up fade-in
+            gsap.set(textElement, { 
+              y: 20, 
+              opacity: 0,
+              force3D: true,
+            });
+            
+            animTl.to(textElement, { 
               y: 0,
-              duration: 0.3,
+              opacity: 1, 
+              duration: 0.4,
               ease: "power1.out",
               force3D: true,
               clearProps: "transform"
-            }, "<0.1");
+            });
+            
+            if (labelElement) {
+              gsap.set(labelElement, { 
+                y: 15, 
+                opacity: 0,
+                force3D: true
+              });
+              animTl.to(labelElement, {
+                opacity: 1,
+                y: 0,
+                duration: 0.3,
+                ease: "power1.out",
+                force3D: true,
+                clearProps: "transform"
+              }, "<0.1");
+            }
           }
         } else {
           // Desktop: Full word-by-word animation
@@ -254,33 +278,41 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       // Create timeline with ScrollTrigger
       // We have 10 major sections
       // Optimize for mobile performance - removed snap for smoother, more natural scrolling
-      // Extra optimization for Safari to prevent lag
+      // Extra optimization for Safari and low-performance browsers to prevent lag
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
           end: () => {
-            // Much shorter distance on mobile for better performance
-            if (isMobile) return "+=4000"; // Reduced from 6000/8000
+            // Much shorter distance on mobile/low-performance for better performance
+            if (isLowPerformance) return "+=3000"; // Even shorter for Opera Mini
+            if (isMobile) return "+=4000";
             return "+=12000";
           },
-          scrub: isMobile ? 0.1 : 1.5, // Much lower scrub on mobile for instant response
+          scrub: isLowPerformance ? 0.05 : (isMobile ? 0.1 : 1.5), // Near-instant for low-performance browsers
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           pinSpacing: true,
-          fastScrollEnd: isSafari,
+          fastScrollEnd: isSafari || isLowPerformance,
+          // Prevent layout shifts
+          pinReparent: false,
           // Mobile-specific optimizations
           ...(isMobile && {
             refreshPriority: -1, // Lower priority for mobile
+          }),
+          // Low-performance browser optimizations
+          ...(isLowPerformance && {
+            markers: false,
+            toggleActions: "play none none none",
           }),
         },
       });
 
       // Phase 0: Toolkit section slides out, First Section (CreateEvent) slides in
-      // Simplified animations for mobile
-      const slideDuration = isMobile ? 0.5 : 0.8; // Faster on mobile
-      const slideEase = isMobile ? "none" : "power2.inOut"; // Simpler easing on mobile
+      // Simplified animations for mobile and low-performance browsers
+      const slideDuration = isLowPerformance ? 0.3 : (isMobile ? 0.5 : 0.8); // Even faster for low-performance
+      const slideEase = (isLowPerformance || isMobile) ? "none" : "power2.inOut"; // Simpler easing on mobile/low-performance
       
       if (isMobile) {
         tl.to(toolkitSection, {
@@ -314,7 +346,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       }
 
       // Show Distribute label when first section appears
-      const labelDuration = isMobile ? 0.2 : 0.3;
+      const labelDuration = isLowPerformance ? 0.1 : (isMobile ? 0.2 : 0.3);
       tl.to(distributeLabel, { 
         opacity: 1, 
         duration: labelDuration,
@@ -748,6 +780,17 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         transform: 'translateZ(0)', // Force GPU acceleration
         backfaceVisibility: 'hidden',
         perspective: 1000,
+        position: 'relative',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100vh',
+        minHeight: '100vh',
+        maxHeight: '100vh',
+        overflow: 'hidden',
+        willChange: 'transform',
+        WebkitBackfaceVisibility: 'hidden',
+        WebkitTransform: 'translateZ(0)',
       }}
     >
       {/* Toolkit Section - Slides in from right first */}
