@@ -7,7 +7,7 @@ export default function TeaserSection({ className }: { className?: string }) {
     >
       <div className="w-full mx-auto px-6 md:px-10">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="instrument-serif-regular text-4xl sm:text-5xl md:text-6xl text-white/90 leading-tight">
+          <h3 className="font-instrument-serif font-[400] text-4xl sm:text-5xl md:text-6xl text-white/90 leading-tight">
             Spoiler: You are <br />{" "}
             <strong className="italic">already here</strong>
           </h3>
