@@ -409,13 +409,13 @@ export default function CollaboratorSectionWeb({
         className || ""
       }`}
     >
-      <div className="w-full mx-auto px-8 flex flex-col md:flex-row gap-8 md:gap-20 items-start md:items-center h-full">
+      <div className="w-full mx-auto px-8 flex gap-[152px] items-start md:items-center h-full">
         {/* Section Title - Top on mobile, Left on desktop */}
         <div className="flex-shrink-0 md:w-fit pt-8 md:pt-0 w-full">
-          <h2 className="text-4xl instrument-serif-regular md:text-3xl lg:text-7xl text-[#F0E9B2] leading-tight">
+          <h2 className="text-[32px] font-instrument-serif font-[400] md:text-3xl lg:text-7xl text-[#F0E9B2] leading-tight">
             Collaborators
           </h2>
-          <p className="text-xs md:text-xl text-[#949494] md:text-[#E4E4E4] font-nohemi font-[300] md:font-nohemi md:font-[400] mt-2 text-right">
+          <p className="text-[20px]  text-[#949494] md:text-[#E4E4E4] font-nohemi font-[300]  mt-2 text-right">
             2024-25
           </p>
         </div>
@@ -431,7 +431,7 @@ export default function CollaboratorSectionWeb({
         >
           <div
             ref={cardsRef}
-            className={`flex gap-12 h-full bg-[#0A0A0A]`}
+            className={`flex gap-[200px] justify-start px-12 h-full bg-[#0A0A0A]`}
             style={{
               width: "max-content",
             }}
@@ -440,11 +440,10 @@ export default function CollaboratorSectionWeb({
               <div
                 key={index}
                 className={`flex-shrink-0 cursor-pointer bg-transparent flex ${
-                  collaborator?.random === 0
+                  collaborator?.random % 2 === 0
                     ? "items-center"
-                    : collaborator?.random === 1
-                    ? "items-start"
-                    : "items-end"
+                    : "items-start"
+                 
                 }`}
                 style={{ width: "fit-content" }}
               >

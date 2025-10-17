@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"); */
 
 :root {
   --background: #ffffff;
@@ -11,6 +12,7 @@
 
   --font-switzer: var(--font-switzer);
   --font-nohemi: var(--font-nohemi);
+  --font-instrument-serif: var(--font-instrument-serif);
 }
 
 @media (prefers-color-scheme: dark) {

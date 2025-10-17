@@ -209,7 +209,7 @@ export default function HeroSection({ className }: { className?: string }) {
       </div>
 
       <nav className="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full">
-        <div className="flex items-center gap-2 w-[100%] max-w-[80px] h-[30px] relative">
+        <div className="flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative">
           <Image
             src="/Assets/Icons/LogoIcon.png"
             alt="Astrix Logo"
@@ -219,27 +219,27 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <button className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
-            <p className="leading-none mt-0.5">ABOUT</p>
+          <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">ABOUT</p>
           </button>
-          <button className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
-            <p className="leading-none mt-0.5">PRICING</p>
+          <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">PRICING</p>
           </button>
           <Link
             href="#contact"
             onClick={() => handleNavClick("contact")}
-            className="w-fit px-5 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+            className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
           >
-            <p className="leading-none mt-0.5">CONTACT</p>
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">CONTACT</p>
           </Link>
         </div>
         <Link
           href="https://app.astrix.live"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:inline-flex w-fit px-5 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+          className="hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
         >
-          <p className="leading-none mt-0.5">GET STARTED</p>
+          <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">GET STARTED</p>
         </Link>
 
         <button
@@ -262,9 +262,9 @@ export default function HeroSection({ className }: { className?: string }) {
         </button>
       </nav>
 
-      <div className="relative z-10 bottom-30 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0">
+      <div className="relative z-10 bottom-40 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0">
         <div className="text-center w-full h-fit max-w-full md:max-w-[80%] flex flex-col justify-around gap-10 md:gap-14">
-          <h1 className="text-2xl md:text-6xl lg:text-7xl font-nohemi font-[400] text-white leading-tight">
+          <h1 className="text-2xl md:text-[72px] font-nohemi font-[400] text-white leading-[100%]">
             An omnichannel platform
             <br />
             <span className="ml-10 md:ml-28">for optimizing community-</span>
@@ -277,23 +277,23 @@ export default function HeroSection({ className }: { className?: string }) {
               href="https://app.astrix.live"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-fit px-5 h-[30px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none"
+              className="w-fit px-3 md:px-5 py-[10px] md:py-[14px] h-[30px] md:h-[40px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5">GET STARTED</p>
+              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">GET STARTED</p>
             </Link>
             <Link
               href="#contact"
               onClick={() => handleNavClick("contact")}
-              className="w-fit flex items-center justify-center px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none"
+              className="w-fit flex items-center justify-center px-3 md:px-5 py-[10px] md:py-[14px]  h-[30px] md:h-[40px]   rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5">BOOK A DEMO</p>
+              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">BOOK A DEMO</p>
             </Link>
           </div>
         </div>
         <div className="relative w-full h-[30vh] md:hidden z-30">
           <video
             ref={mobileVideoRef}
-            src="/Assets/Images/HeroSection.mp4"
+            src="/Assets/Images/HeroSectionMobile.webm"
             className="object-cover w-full h-full"
             loop
             muted

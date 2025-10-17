@@ -903,7 +903,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-fit h-[55vh] absolute right-0">
                 <div className="relative w-full h-[100%] aspect-square -right-16">
                   <Image src={"/Assets/Images/Star.svg"} alt="toolkit star" fill className="object-contain" />
-                  <h3 className="absolute top-[38%] left-[10%] text-[40px] leading-none text-[#F0E9B2] instrument-serif-regular">
+                  <h3 className="absolute top-[38%] left-[10%] text-[40px] leading-none text-[#F0E9B2] font-instrument-serif font-[400]">
                     Your Toolkit
                   </h3>
                   <div className="absolute animate-pulse rotate-[90deg] md:rotate-0 w-[60px] md:w-[80px] h-[60px] md:h-[80px] top-[34.5%] md:top-[34.5%] right-[24%] md:right-[25%] transition-all duration-300 hover:scale-[1.1]">
@@ -947,7 +947,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           
           {/* Label with horizontal line */}
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Distribute</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Distribute</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -984,7 +984,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Distribute</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Distribute</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1021,7 +1021,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Distribute</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Distribute</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1058,7 +1058,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Retarget</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Retarget</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1095,7 +1095,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Retarget</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Retarget</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1132,7 +1132,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Retarget</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Retarget</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1169,7 +1169,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Retarget</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Retarget</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1206,7 +1206,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Discover</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Discover</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1243,7 +1243,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>  
           
           <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] instrument-serif-regular text-4xl tracking-wider px-8">Discover</h2>
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">Discover</h2>
             <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
           </div>
           
@@ -1319,7 +1319,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                     fill
                     className="object-contain"
                   />
-                  <h3 className="absolute top-[38%] md:top-[38%] lg:top-[38%] left-[10%] md:left-[18%] text-[40px] md:text-[40px] leading-none text-[#F0E9B2] instrument-serif-regular">
+                  <h3 className="absolute top-[38%] md:top-[38%] lg:top-[38%] left-[10%] md:left-[18%] text-[40px] md:text-[40px] leading-none text-[#F0E9B2] font-instrument-serif font-[400]">
                     Your Toolkit
                   </h3>
                   <div className="absolute animate-pulse rotate-[90deg] md:rotate-0 w-[60px] md:w-[80px] h-[60px] md:h-[80px] top-[34.5%] md:top-[34.5%] right-[24%] md:right-[25%] transition-all duration-300 hover:scale-[1.1]">
@@ -1378,14 +1378,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </div>
         
         {/* Labels - Desktop: rotated, Mobile: horizontal at top */}
-        <div className="absolute left-0 bottom-40 -rotate-90 text-[#363636] instrument-serif-regular text-4xl tracking-wider z-50 hidden md:block">
+        <div className="absolute left-0 bottom-40 -rotate-90 text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider z-50 hidden md:block">
           <span ref={distributeLabelRef} className="absolute top-10 -left-16">Distribute</span>
           <span ref={retargetLabelRef} className="absolute top-10 -left-16 opacity-0">Retarget</span>
           <span ref={discoverLabelRef} className="absolute top-10 -left-16 opacity-0">Discover</span>
         </div>
         
         {/* Mobile Labels - Horizontal at top */}
-        <div className="absolute top-6 left-8 text-[#363636] instrument-serif-regular text-4xl tracking-wider z-50 md:hidden">
+        <div className="absolute top-6 left-8 text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider z-50 md:hidden">
           <span className="block absolute top-0 left-0 distribute-mobile">Distribute</span>
           <span className="block opacity-0 absolute top-0 left-0 retarget-mobile">Retarget</span>
           <span className="block opacity-0 absolute top-0 left-0 discover-mobile">Discover</span>
