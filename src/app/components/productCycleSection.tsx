@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, useInView } from 'framer-motion';
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -13,9 +14,86 @@ interface ProductCycleSectionProps {
   className?: string;
 }
 
+// Animated Text Component for Mobile - Word by Word Animation
+const AnimatedText = ({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) => {
+  const ref = useRef<HTMLHeadingElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.9 });
+  
+  const words = text.split(' ');
+  
+  return (
+    <h2 ref={ref} className={className}>
+      {words.map((word, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0, y: "1.5em" }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.5em" }}
+          transition={{
+            duration: 0.6,
+            delay: delay + index * 0.05,
+            ease: [0.25, 0.1, 0.25, 1]
+          }}
+          style={{ display: 'inline-block', marginRight: '0.25em' }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </h2>
+  );
+};
+
+// Animated Paragraph Component for Mobile
+const AnimatedParagraph = ({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) => {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.9 });
+  
+  const words = text.split(' ');
+  
+  return (
+    <p ref={ref} className={className}>
+      {words.map((word, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0, y: "1.5em" }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.5em" }}
+          transition={{
+            duration: 0.6,
+            delay: delay + index * 0.05,
+            ease: [0.25, 0.1, 0.25, 1]
+          }}
+          style={{ display: 'inline-block', marginRight: '0.25em' }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </p>
+  );
+};
+
+// Animated Action Text Component for Mobile
+const AnimatedAction = ({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) => {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.9 });
+  
+  return (
+    <motion.p
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0, y: "1.5em" }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.5em" }}
+      transition={{
+        duration: 0.8,
+        delay: delay,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+    >
+      {text}
+    </motion.p>
+  );
+};
+
 const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
-  const [currentLabel, setCurrentLabel] = useState('Distribute');
   
   const sectionRef = useRef<HTMLDivElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
@@ -78,120 +156,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isMobile]);
 
-  // Mobile: Scroll-based label detection and text animations using Intersection Observer
-  useEffect(() => {
-    if (!isMobile) return;
-
-    const sections = [
-      { ref: firstSectionRef, label: 'Distribute' },
-      { ref: secondSectionRef, label: 'Distribute' },
-      { ref: thirdSectionRef, label: 'Distribute' },
-      { ref: fourthSectionRef, label: 'Retarget' },
-      { ref: fifthSectionRef, label: 'Retarget' },
-      { ref: sixthSectionRef, label: 'Retarget' },
-      { ref: seventhSectionRef, label: 'Retarget' },
-      { ref: eighthSectionRef, label: 'Discover' },
-      { ref: ninthSectionRef, label: 'Discover' },
-    ];
-
-    // Label change observer
-    const labelObserverOptions = {
-      root: null,
-      rootMargin: '-50% 0px -50% 0px', // Trigger when section is in middle of viewport
-      threshold: 0,
-    };
-
-    const labelObserverCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const section = sections.find(s => s.ref.current === entry.target);
-          if (section) {
-            setCurrentLabel(section.label);
-          }
-        }
-      });
-    };
-
-    const labelObserver = new IntersectionObserver(labelObserverCallback, labelObserverOptions);
-
-    // Text animation observer
-    const animationObserverOptions = {
-      root: null,
-      rootMargin: '0px', // No margin
-      threshold: 0.9, // Trigger when section is 90% visible
-    };
-
-    const animationObserverCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.9) {
-          const section = entry.target as HTMLElement;
-          
-          // Animate text content with stagger
-          const textElements = section.querySelectorAll('.animate-text.will-animate');
-          textElements.forEach((element, index) => {
-            setTimeout(() => {
-              element.classList.add('text-visible');
-            }, index * 150); // Stagger animations by 150ms
-          });
-
-          // Animate action text after all text elements
-          const actionElements = section.querySelectorAll('.animate-action.will-animate');
-          actionElements.forEach((element) => {
-            setTimeout(() => {
-              element.classList.add('text-visible');
-            }, textElements.length * 150 + 200); // After all text elements
-          });
-        }
-      });
-    };
-
-    const animationObserver = new IntersectionObserver(animationObserverCallback, animationObserverOptions);
-
-    sections.forEach((section, index) => {
-      if (section.ref.current) {
-        labelObserver.observe(section.ref.current);
-        animationObserver.observe(section.ref.current);
-        
-        const sectionElement = section.ref.current as HTMLElement;
-        const textElements = sectionElement.querySelectorAll('.animate-text');
-        const actionElements = sectionElement.querySelectorAll('.animate-action');
-        
-        // Check if section is currently in viewport (90% visible)
-        const rect = section.ref.current.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const sectionHeight = rect.height;
-        const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
-        const visibilityRatio = visibleHeight / sectionHeight;
-        
-        if (visibilityRatio >= 0.9) {
-          // Section is already 90%+ visible - show immediately without animation
-          textElements.forEach((element) => {
-            element.classList.remove('will-animate');
-          });
-          actionElements.forEach((element) => {
-            element.classList.remove('will-animate');
-          });
-        } else {
-          // Section not yet visible - mark for animation
-          textElements.forEach((element) => {
-            element.classList.add('will-animate');
-          });
-          actionElements.forEach((element) => {
-            element.classList.add('will-animate');
-          });
-        }
-      }
-    });
-
-    return () => {
-      sections.forEach(section => {
-        if (section.ref.current) {
-          labelObserver.unobserve(section.ref.current);
-          animationObserver.unobserve(section.ref.current);
-        }
-      });
-    };
-  }, [isMobile]);
+  // Mobile: Text animations are now handled by framer-motion components
+  // No need for IntersectionObserver anymore
 
   // Desktop: GSAP ScrollTrigger animation
   useEffect(() => {
@@ -976,7 +942,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 1: Create Event */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative gap-0">
+        <section ref={firstSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative gap-0">
           <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover z-0" style={{ mixBlendMode: "multiply" }} />
           
           {/* Label with horizontal line */}
@@ -988,14 +954,22 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full h-full flex flex-col z-10 pt-20">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-6'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Host anything from standard events to multi-day festivals and tours.
-                </h2>
-                <p className="text-md w-full text-right font-switzer font-[300] text-gray-600 italic animate-text">
-                  Add multiple time slots, customise ticket formats, and launch instantly.
-                </p>
+                <AnimatedText 
+                  text="Host anything from standard events to multi-day festivals and tours."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Add multiple time slots, customise ticket formats, and launch instantly."
+                  className="text-md w-full text-right font-switzer font-[500] text-[#363636] italic"
+                  delay={0.4}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>Create Event</p>
+              <AnimatedAction 
+                text="Create Event"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.8}
+              />
             </div>
             <div className="w-full h-1/2 relative">
               <Image src="/Assets/Images/Toolkit/Create_Event.gif" alt="Create Event" fill className="object-cover" />
@@ -1004,7 +978,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 2: Issue Tickets */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={secondSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
           <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1017,14 +991,22 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full h-full flex flex-col z-10 pt-20">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-8'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information.
-                </h2>
-                <p className="text-md w-full text-right font-switzer font-[300] text-gray-600 italic animate-text">
-                  tickets are issued and stored on blockchain, making it impossible to forge or duplicate.
-                </p>
+                <AnimatedText 
+                  text="Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="tickets are issued and stored on blockchain, making it impossible to forge or duplicate."
+                  className="text-md w-3/4 text-left font-switzer font-[500] text-[#363636] italic"
+                  delay={0.5}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>Issue Tickets</p>
+              <AnimatedAction 
+                text="Issue Tickets"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.9}
+              />
             </div>
             <div className="w-full h-1/2 relative bg-transparent">
               <Image src="/Assets/Images/Toolkit/Issue_Ticket.gif" alt="Issue Tickets" fill className="object-cover" />
@@ -1033,7 +1015,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 3: Purchase/RSVP */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={thirdSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1049,20 +1031,28 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-4'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Give your fans a seamless way to book their tickets – apply discounts, confirm instantly.
-                </h2>
-                <p className="text-md w-2/3 text-left font-switzer font-[300] text-gray-600 italic animate-text">
-                  Flexible phases, codes, and RSVPs designed for every event format.
-                </p>
+                <AnimatedText 
+                  text="Give your fans a seamless way to book their tickets – apply discounts, confirm instantly."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Flexible phases, codes, and RSVPs designed for every event format."
+                  className="text-md w-2/3 text-left font-switzer font-[500] text-[#363636] italic"
+                  delay={0.4}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>Purchase/RSVP</p>
+              <AnimatedAction 
+                text="Purchase/RSVP"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.8}
+              />
             </div>
           </div>
         </section>
 
         {/* Section 4: Data Insights */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={fourthSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1074,15 +1064,23 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           
           <div className="h-full w-full flex flex-col z-10 pt-20">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
-              <div className='w-full flex flex-col items-end justify-center gap-4 mt-4'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Own your data and make data-driven decisions.
-                </h2>
-                <p className="text-md w-3/4 text-left font-switzer font-[300] text-gray-600 italic animate-text">
-                  Unlock actionable insights on every event - from ticket sales to demographics and traffic sources.
-                </p>
+              <div className='w-full flex flex-col items-end justify-center gap-8 mt-4'>
+                <AnimatedText 
+                  text="Own your data and make data-driven decisions."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Unlock actionable insights on every event - from ticket sales to demographics and traffic sources."
+                  className="text-md w-3/4 text-left font-switzer font-[500] text-[#363636] italic"
+                  delay={0.3}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>DATA INSIGHTS</p>
+              <AnimatedAction 
+                text="DATA INSIGHTS"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.7}
+              />
             </div>
             <div className="w-full h-1/2 relative">
               <Image src="/Assets/Images/Toolkit/Data_Insights.gif" alt="Data Insights" fill className="object-cover" />
@@ -1091,7 +1089,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 5: Email Marketing */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={fifthSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1104,14 +1102,22 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-20">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-6 mt-4'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard.
-                </h2>
-                <p className="text-md w-3/4 text-left font-switzer font-[300] text-gray-600 italic animate-text">
-                  Reach fans where they are with data-backed precision.
-                </p>
+                <AnimatedText 
+                  text="Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Reach fans where they are with data-backed precision."
+                  className="text-md w-3/4 text-left font-switzer font-[500] text-[#363636] italic"
+                  delay={0.5}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>EMAIL MARKETING</p>
+              <AnimatedAction 
+                text="EMAIL MARKETING"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.9}
+              />
             </div>
             <div className="w-full h-1/2 relative">
               <Image src="/Assets/Images/Toolkit/Email_Marketing.gif" alt="Email Marketing" fill className="object-cover" />
@@ -1120,7 +1126,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 6: Promotions */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={sixthSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1136,20 +1142,28 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-6 mt-4'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Set up exclusive promoter codes and custom discounts in seconds.
-                </h2>
-                <p className="text-md w-4/5 text-right font-switzer font-[300] text-gray-600 italic animate-text">
-                  Boost sales, empower superfans, and simplify campaign tracking.
-                </p>
+                <AnimatedText 
+                  text="Set up exclusive promoter codes and custom discounts in seconds."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Boost sales, empower superfans, and simplify campaign tracking."
+                  className="text-md w-4/5 text-right font-switzer font-[500] text-[#363636] italic"
+                  delay={0.4}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>PROMOTIONS AND DISCOUNT CODES</p>
+              <AnimatedAction 
+                text="PROMOTIONS AND DISCOUNT CODES"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.8}
+              />
             </div>
           </div>
         </section>
 
         {/* Section 7: Marketing Insights */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={seventhSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1162,14 +1176,22 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-20">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-6 mt-4'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  See the full story with live analytics - track revenue, reach, contacts and performance.
-                </h2>
-                <p className="text-md w-3/4 text-left font-switzer font-[300] text-gray-600 italic animate-text">
-                  Know what&apos;s working, fix what&apos;s not, and maximise every campaign.
-                </p>
+                <AnimatedText 
+                  text="See the full story with live analytics - track revenue, reach, contacts and performance."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Know what's working, fix what's not, and maximise every campaign."
+                  className="text-md w-3/4 text-left font-switzer font-[500] text-[#363636] italic"
+                  delay={0.5}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>MARKETING INSIGHTS</p>
+              <AnimatedAction 
+                text="MARKETING INSIGHTS"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.9}
+              />
             </div>
             <div className="w-full h-1/2 relative">
               <Image src="/Assets/Images/Toolkit/Temp/marketing_analytics.png" alt="Marketing Insights" fill className="object-contain" />
@@ -1178,7 +1200,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 8: Mini Portfolio */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={eighthSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1191,14 +1213,22 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-20">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-4 mt-2'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  First step to build your community, keep your fans updated on what&apos;s next with a gallery, collections, upcoming events and embedded playlists.
-                </h2>
-                <p className="text-md w-4/5 text-right font-switzer font-[300] text-gray-600 italic animate-text">
-                  Share your page and ask fans to subscribe, so you get direct access to their emails for future updates.
-                </p>
+                <AnimatedText 
+                  text="First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists."
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Share your page and ask fans to subscribe, so you get direct access to their emails for future updates."
+                  className="text-md w-full text-right font-switzer font-[500] text-[#363636] italic"
+                  delay={0.5}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>MINI PORTFOLIO</p>
+              <AnimatedAction 
+                text="MINI PORTFOLIO"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.9}
+              />
             </div>
             <div className="w-full h-1/2 relative">
               <Image src="/Assets/Images/Toolkit/Temp/profile.png" alt="Mini Portfolio" fill className="object-cover" />
@@ -1207,7 +1237,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         </section>
 
         {/* Section 9: Discovery Channel */}
-        <section className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
+        <section ref={ninthSectionRef} className="h-screen w-full bg-[#EBE4D4] flex flex-col relative">
         <div className='absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]'>
             <Image src="/Assets/Images/NoiseEffectBg.svg" alt="noise" fill className="pointer-events-none object-cover" style={{ mixBlendMode: "multiply" }} />
           </div>  
@@ -1223,41 +1253,26 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className='w-full flex flex-col items-end justify-center gap-8 mt-4'>
-                <h2 className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full animate-text">
-                  Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar
-                </h2>
-                <p className="text-md w-3/4 text-left font-switzer font-[300] text-gray-600 italic animate-text">
-                  Empower superfans, boost ticket sales, with frictionless campaign tools.
-                </p>
+                <AnimatedText 
+                  text="Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar"
+                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  delay={0}
+                />
+                <AnimatedParagraph 
+                  text="Empower superfans, boost ticket sales, with frictionless campaign tools."
+                  className="text-md w-3/4 text-left font-switzer font-[500] text-[#363636] italic"
+                  delay={0.5}
+                />
               </div>
-              <p className='text-xl font-nohemi font-[400] text-[#363636] text-right animate-action mb-4'>DISCOVERY CHANNEL</p>
+              <AnimatedAction 
+                text="DISCOVERY CHANNEL"
+                className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
+                delay={0.9}
+              />
             </div>
           </div>
         </section>
 
-        {/* Mobile Text Animation Styles */}
-        <style jsx global>{`
-          @media (max-width: 767px) {
-            .animate-text,
-            .animate-action {
-              opacity: 1;
-              transform: translateY(0);
-            }
-            
-            .animate-text.will-animate,
-            .animate-action.will-animate {
-              opacity: 0;
-              transform: translateY(1.5em); /* Start from line-height */
-              transition: opacity 1.5s ease-out, transform 1.5s ease-out;
-            }
-            
-            .animate-text.will-animate.text-visible,
-            .animate-action.will-animate.text-visible {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}</style>
       </>
     );
   }
