@@ -217,9 +217,9 @@ export default function GrowthCycleSection({
               {/* Distribution Tools Card */}
               <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
-                  <div className="relative w-24 h-24 border-red-500 shadow-lg sm:w-24 sm:h-24 md:w-18 md:h-18 rounded-full flex items-center justify-center">
+                  <div className="relative w-24 h-24 border-red-500 shadow-lg sm:w-24 sm:h-24 md:w-24 md:h-24 rounded-full flex items-center justify-center">
                     <Image
-                      src={"/Assets/Icons/Distribute.svg"}
+                      src={"/Assets/Icons/distribution.png"}
                       alt="distribute"
                       fill
                     />
@@ -237,9 +237,9 @@ export default function GrowthCycleSection({
               {/* Data Insights Card */}
               <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
-                  <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-18 md:h-18 rounded-full flex items-center justify-center">
+                  <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-24 md:h-24 rounded-full flex items-center justify-center">
                     <Image
-                      src={"/Assets/Icons/Insight.svg"}
+                      src={"/Assets/Icons/data.png"}
                       alt="insight"
                       fill
                     />
@@ -256,8 +256,8 @@ export default function GrowthCycleSection({
               {/* Third Spaces Card */}
               <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
-                  <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-18 md:h-18 rounded-full flex items-center justify-center">
-                    <Image src={"/Assets/Icons/Space.svg"} alt="space" fill />
+                  <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-24 md:h-24 rounded-full flex items-center justify-center">
+                    <Image src={"/Assets/Icons/third.png"} alt="space" fill />
                   </div>
                   <h3 className="text-4xl sm:text-3xl md:text-3xl font-nohemi font-[500] text-[#E4E4E4] instrument-serif-regular">
                     Third <br /> Spaces
