@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Instrument_Serif } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
+import { Instrument_Serif } from "next/font/google";
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
@@ -141,6 +142,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${switzer.variable} ${nohemi.variable} ${instrumentSerif.variable}  antialiased`}>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-3XRZVZBTNJ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3XRZVZBTNJ');
+          `}
+        </Script>
+        
         {children}
       </body>
     </html>
