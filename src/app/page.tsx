@@ -10,11 +10,17 @@ import GrowthCycleSection from "./components/growthCycleSection";
 import ProductCycleSection from "./components/productCycleSection";
 
 export default function Home() {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  // const isMobile = useMediaQuery({ maxWidth: 767 });
   return (
     <div className="w-full min-h-screen">
       <HeroSection />
-      {isMobile ? <CollaboratorSectionMobile /> : <CollaboratorSectionWeb />}
+      <div className="md:hidden block">
+        <CollaboratorSectionMobile />
+      </div>
+      <div className="hidden md:block">
+        <CollaboratorSectionWeb />
+      </div>
+
       <GrowthCycleSection />
       <ProductCycleSection />
       <ContactSection />

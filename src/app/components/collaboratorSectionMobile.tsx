@@ -251,23 +251,23 @@ export default function CollaboratorSectionMobile({
   return (
     <section
       ref={sectionRef}
-      className={`h-screen bg-[#0A0A0A] flex flex-col md:flex-row items-start md:items-center overflow-hidden ${
+      className={`h-screen bg-[#0A0A0A] flex flex-col md:flex-row items-start md:items-center pt-[140px] overflow-hidden ${
         className || ""
       }`}
     >
-      <div className="w-full mx-auto px-8 flex flex-col md:flex-row gap-8 md:gap-20 items-start md:items-center h-full">
+      <div className="w-full mx-auto px-4 flex flex-col gap-8  items-start  h-full">
         {/* Section Title - Top on mobile, Left on desktop */}
-        <div className="flex-shrink-0 md:w-fit pt-8 md:pt-0 w-full">
-          <h2 className="text-4xl instrument-serif-regular md:text-3xl lg:text-7xl text-[#F0E9B2] leading-tight">
+        <div className="flex-shrink-0 md:w-fit pt-1  w-full">
+          <h2 className="text-4xl font-instrument-serif font-[400]  text-[#F0E9B2] leading-[100%]">
             Collaborators
           </h2>
-          <p className="text-xs md:text-xl text-[#949494] md:text-[#E4E4E4] font-nohemi font-[300] md:font-nohemi md:font-[400] mt-2 text-right">
+          <p className="text-xs  text-[#949494] md:text-[#E4E4E4] font-nohemi font-[300]  mt-2 text-right">
             2024-25
           </p>
         </div>
 
         {/* Horizontal Scrolling Cards - Below title on mobile, Right side on desktop */}
-        <div className="flex-1 relative h-[40vh]   md:h-[80vh] w-full scroll-container overflow-x-auto scrollbar-hide">
+        <div className="flex-1 relative h-[40vh]  w-full max-w-full  overflow-x-auto scrollbar-hide">
           <div
             ref={setRefs}
             // {...handlers}
@@ -276,15 +276,15 @@ export default function CollaboratorSectionMobile({
               WebkitOverflowScrolling: "touch",
               overscrollBehaviorX: "none",
             }}
-            className={`flex gap-12 h-full bg-[#0A0A0A]   `}
+            className={`flex justify-start gap-[52px] h-full bg-[#0A0A0A]   `}
           >
             {collaborators.map((collaborator, index) => (
               <div
                 key={index}
                 className={`flex-shrink-0 cursor-pointer bg-transparent  flex ${
                   collaborator?.random % 2 === 0
-                    ? "items-center"
-                    : "items-start"
+                    ? "items-start"
+                    : "items-center"
                 }`}
                 // style={{ width: "fit-content" }}
                 style={{
@@ -292,10 +292,10 @@ export default function CollaboratorSectionMobile({
                   WebkitOverflowScrolling: "touch",
                   overscrollBehaviorX: "none",
                   touchAction: "pan-x pan-y",
-                  width: "350px",
+                  width: "260px",
                 }}
               >
-                <div className="relative w-full max-w-[350] overflow-hidden h-fit ">
+                <div className="relative w-full max-w-[260] overflow-hidden h-fit ">
                   {/* Image - Maintain original aspect ratio */}
                   <div className=" w-full  h-full ">
                     <img
@@ -306,14 +306,14 @@ export default function CollaboratorSectionMobile({
                   </div>
 
                   {/* Content */}
-                  <div className="space-y-3 pl-4 border-l-[0.5px] border-[#E4E4E4] pt-6">
-                    <h3 className="text-lg md:text-3xl font-nohemi font-[300] text-[#E4E4E4] leading-tight">
+                  <div className="space-y-3 pl-5 border-l-[0.5px] border-[#E4E4E4] pt-8">
+                    <h3 className="text-base md:text-3xl font-nohemi font-[400] text-[#E4E4E4] leading-tight">
                       {collaborator.title}
                     </h3>
-                    <p className="text-xs md:text-[10px] text-[#9C9C9C] font-switzer font-[400] break-words leading-relaxed max-w-[350px]">
+                    <p className="text-xs text-[#9C9C9C] font-switzer font-[400] break-words leading-relaxed max-w-[350px]">
                       {collaborator.description}
                     </p>
-                    <div className="text-[12px] md:text-[8px] text-[#E4E4E4] font-nohemi font-[400] tracking-wider">
+                    <div className="text-xs  text-[#E4E4E4] font-nohemi font-[400] tracking-wider">
                       {collaborator.category}
                     </div>
                   </div>
