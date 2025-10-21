@@ -3,7 +3,6 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion, useInView } from "framer-motion";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -14,7 +13,7 @@ interface ProductCycleSectionProps {
   className?: string;
 }
 
-// Animated Text Component for Mobile - Word by Word Animation
+// Animated Text Component for Mobile - Word by Word Animation with CSS
 const AnimatedText = ({
   text,
   className = "",
@@ -25,32 +24,55 @@ const AnimatedText = ({
   delay?: number;
 }) => {
   const ref = useRef<HTMLHeadingElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.9 });
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { threshold: 0.9, rootMargin: "0px" }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
 
   const words = text.split(" ");
 
   return (
     <h2 ref={ref} className={className}>
       {words.map((word, index) => (
-        <motion.span
+        <span
           key={index}
-          initial={{ opacity: 0, y: "1.5em" }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.5em" }}
-          transition={{
-            duration: 0.6,
-            delay: delay + index * 0.05,
-            ease: [0.25, 0.1, 0.25, 1],
+          className="animated-word"
+          style={{
+            display: "inline-block",
+            marginRight: "0.25em",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
+            transition: `opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s`,
+            willChange: "opacity, transform",
           }}
-          style={{ display: "inline-block", marginRight: "0.25em" }}
         >
           {word}
-        </motion.span>
+        </span>
       ))}
     </h2>
   );
 };
 
-// Animated Paragraph Component for Mobile
+// Animated Paragraph Component for Mobile with CSS
 const AnimatedParagraph = ({
   text,
   className = "",
@@ -61,32 +83,55 @@ const AnimatedParagraph = ({
   delay?: number;
 }) => {
   const ref = useRef<HTMLParagraphElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.9 });
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { threshold: 0.9, rootMargin: "0px" }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
 
   const words = text.split(" ");
 
   return (
     <p ref={ref} className={className}>
       {words.map((word, index) => (
-        <motion.span
+        <span
           key={index}
-          initial={{ opacity: 0, y: "1.5em" }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.5em" }}
-          transition={{
-            duration: 0.6,
-            delay: delay + index * 0.05,
-            ease: [0.25, 0.1, 0.25, 1],
+          className="animated-word"
+          style={{
+            display: "inline-block",
+            marginRight: "0.25em",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
+            transition: `opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s`,
+            willChange: "opacity, transform",
           }}
-          style={{ display: "inline-block", marginRight: "0.25em" }}
         >
           {word}
-        </motion.span>
+        </span>
       ))}
     </p>
   );
 };
 
-// Animated Action Text Component for Mobile
+// Animated Action Text Component for Mobile with CSS
 const AnimatedAction = ({
   text,
   className = "",
@@ -97,27 +142,49 @@ const AnimatedAction = ({
   delay?: number;
 }) => {
   const ref = useRef<HTMLParagraphElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.9 });
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { threshold: 0.9, rootMargin: "0px" }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
 
   return (
-    <motion.p
+    <p
       ref={ref}
       className={className}
-      initial={{ opacity: 0, y: "1.5em" }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: "1.5em" }}
-      transition={{
-        duration: 0.8,
-        delay: delay,
-        ease: [0.25, 0.1, 0.25, 1],
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
+        transition: `opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s, transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s`,
+        willChange: "opacity, transform",
       }}
     >
       {text}
-    </motion.p>
+    </p>
   );
 };
 
 const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [stickyLabel, setStickyLabel] = useState("Distribute");
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
@@ -164,6 +231,51 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Mobile: Track visible section to update sticky label
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const sections = [
+      { ref: firstSectionRef, label: "Distribute" },
+      { ref: secondSectionRef, label: "Distribute" },
+      { ref: thirdSectionRef, label: "Distribute" },
+      { ref: fourthSectionRef, label: "Retarget" },
+      { ref: fifthSectionRef, label: "Retarget" },
+      { ref: sixthSectionRef, label: "Retarget" },
+      { ref: seventhSectionRef, label: "Retarget" },
+      { ref: eighthSectionRef, label: "Discover" },
+      { ref: ninthSectionRef, label: "Discover" },
+    ];
+
+    const observerOptions = {
+      threshold: 0.5, // Trigger when 50% of section is visible
+      rootMargin: "-20% 0px -20% 0px", // Account for sticky header
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const section = sections.find((s) => s.ref.current === entry.target);
+          if (section) {
+            setStickyLabel(section.label);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((section) => {
+      if (section.ref.current) {
+        observer.observe(section.ref.current);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMobile]);
 
   // Desktop interactive line mouse move handler
   useEffect(() => {
@@ -1302,6 +1414,23 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
         </section>
 
+        {/* Sticky Label - Starts here and sticks to top on scroll */}
+        <div className="sticky top-0 left-0 w-full z-50 bg-[#EBE4D4]">
+          <Image
+            src="/Assets/Images/NoiseEffectBg.svg"
+            alt="noise"
+            fill
+            className="pointer-events-none object-cover absolute inset-0"
+            style={{ mixBlendMode: "multiply" }}
+          />
+          <div className="pt-6 relative z-10">
+            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8 transition-all duration-300">
+              {stickyLabel}
+            </h2>
+            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
+          </div>
+        </div>
+
         {/* Section 1: Create Event */}
         <section
           ref={firstSectionRef}
@@ -1315,15 +1444,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             style={{ mixBlendMode: "multiply" }}
           />
 
-          {/* Label with horizontal line */}
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Distribute
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="w-full h-full flex flex-col z-10 pt-20">
+          <div className="w-full h-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6">
                 <AnimatedText
@@ -1344,7 +1465,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
                   src="/Assets/Images/Toolkit/webm/create-event.webm"
                   type="video/webm"
@@ -1370,14 +1491,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Distribute
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="w-full h-full flex flex-col z-10 pt-20">
+          <div className="w-full h-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-8">
                 <AnimatedText
@@ -1398,7 +1512,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative bg-transparent">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-contain">
                 <source
                   src="/Assets/Images/Toolkit/webm/issue_ticket.webm"
                   type="video/webm"
@@ -1424,16 +1538,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Distribute
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 relative order-2">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
                   src="/Assets/Images/Toolkit/webm/Purchase.webm"
                   type="video/webm"
@@ -1478,14 +1585,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Retarget
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
                 <AnimatedText
@@ -1506,7 +1606,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
                   src="/Assets/Images/Toolkit/webm/data_insights.webm"
                   type="video/webm"
@@ -1532,14 +1632,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Retarget
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
@@ -1560,7 +1653,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
                   src="/Assets/Images/Toolkit/webm/email-mark.webm"
                   type="video/webm"
@@ -1586,16 +1679,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Retarget
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 relative order-2">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
                   src="/Assets/Images/Toolkit/webm/promotions.webm"
                   type="video/webm"
@@ -1640,14 +1726,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Retarget
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
@@ -1668,9 +1747,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/Temp/webm/marketing-insights.webm"
+                  src="/Assets/Images/Toolkit/webm/marketing-insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1694,14 +1773,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Discover
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-4 mt-2">
                 <AnimatedText
@@ -1722,12 +1794,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <Image
-                src="/Assets/Images/Toolkit/Temp/profile.png"
-                alt="Mini Portfolio"
-                fill
-                className="object-cover"
-              />
+              <video autoPlay muted playsInline loop className="w-full h-full object-contain">
+                <source
+                  src="/Assets/Images/Toolkit/webm/mini-portfolio.webm"
+                  type="video/webm"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </section>
@@ -1747,21 +1820,15 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="absolute top-6 left-0 w-full z-20">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8">
-              Discover
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
-          </div>
-
-          <div className="h-full w-full flex flex-col z-10 pt-20">
+          <div className="h-full w-full flex flex-col z-10 pt-8">
             <div className="w-full h-1/2 relative order-2">
-              <Image
-                src="/Assets/Images/Toolkit/Temp/home pic.png"
-                alt="Discovery Channel"
-                fill
-                className="object-cover"
-              />
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
+                <source
+                  src="/Assets/Images/Toolkit/webm/home.webm"
+                  type="video/webm"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
