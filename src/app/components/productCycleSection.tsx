@@ -1414,28 +1414,30 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
         </section>
 
-        {/* Sticky Label - Starts here and sticks to top on scroll */}
-        <div className="sticky top-0 left-0 w-full z-50 bg-[#EBE4D4]">
-          <Image
-            src="/Assets/Images/NoiseEffectBg.svg"
-            alt="noise"
-            fill
-            className="pointer-events-none object-cover absolute inset-0"
-            style={{ mixBlendMode: "multiply" }}
-          />
-          <div className="pt-6 relative z-10">
-            <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8 transition-all duration-300">
-              {stickyLabel}
-            </h2>
-            <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
+          {/* Container for sticky label and all sections */}
+          <div className="relative">
+            {/* Sticky Label - Starts here and sticks to top on scroll */}
+            <div className="sticky top-0 left-0 w-full z-50 bg-[#EBE4D4]">
+            <Image
+              src="/Assets/Images/NoiseEffectBg.svg"
+              alt="noise"
+              fill
+              className="pointer-events-none object-cover absolute inset-0"
+              style={{ mixBlendMode: "multiply" }}
+            />
+            <div className="pt-6 relative z-10">
+              <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8 transition-all duration-300">
+                {stickyLabel}
+              </h2>
+              <div className="w-full h-[0.5px] bg-[#363636] mt-2"></div>
+            </div>
           </div>
-        </div>
 
-        {/* Section 1: Create Event */}
-        <section
-          ref={firstSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative gap-0"
-        >
+          {/* Section 1: Create Event */}
+          <section
+            ref={firstSectionRef}
+            className="h-screen w-full bg-[#EBE4D4] flex flex-col relative gap-0 snap-section"
+          >
           <Image
             src="/Assets/Images/NoiseEffectBg.svg"
             alt="noise"
@@ -1444,7 +1446,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             style={{ mixBlendMode: "multiply" }}
           />
 
-          <div className="w-full h-full flex flex-col z-10 pt-8">
+          <div className="w-full h-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6">
                 <AnimatedText
@@ -1467,7 +1469,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-1/2 relative">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/create-event.webm"
+                  src="/Assets/Images/Toolkit/Temp/Create_Event.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1479,7 +1481,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 2: Issue Tickets */}
         <section
           ref={secondSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1491,7 +1493,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="w-full h-full flex flex-col z-10 pt-8">
+          <div className="w-full h-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-8">
                 <AnimatedText
@@ -1512,9 +1514,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative bg-transparent">
-              <video autoPlay muted playsInline loop className="w-full h-full object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/issue_ticket.webm"
+                  src="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1526,7 +1528,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 3: Purchase/RSVP */}
         <section
           ref={thirdSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1538,11 +1540,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/Purchase.webm"
+                  src="/Assets/Images/Toolkit/Temp/Purchase.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1573,7 +1575,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 4: Data Insights */}
         <section
           ref={fourthSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1585,7 +1587,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
                 <AnimatedText
@@ -1608,7 +1610,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-1/2 relative">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/data_insights.webm"
+                  src="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1620,7 +1622,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 5: Email Marketing */}
         <section
           ref={fifthSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1632,7 +1634,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
@@ -1655,7 +1657,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-1/2 relative">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/email-mark.webm"
+                  src="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1667,7 +1669,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 6: Promotions */}
         <section
           ref={sixthSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1679,11 +1681,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/promotions.webm"
+                  src="/Assets/Images/Toolkit/Temp/Promotions.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1714,7 +1716,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 7: Marketing Insights */}
         <section
           ref={seventhSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1726,7 +1728,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
@@ -1749,7 +1751,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-1/2 relative">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/marketing-insights.webm"
+                  src="/Assets/Images/Toolkit/webm/Marketing-Insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1761,7 +1763,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 8: Mini Portfolio */}
         <section
           ref={eighthSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1773,7 +1775,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-4 mt-2">
                 <AnimatedText
@@ -1794,9 +1796,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/mini-portfolio.webm"
+                  src="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1808,7 +1810,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section 9: Discovery Channel */}
         <section
           ref={ninthSectionRef}
-          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative"
+          className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
           <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
             <Image
@@ -1820,11 +1822,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
           </div>
 
-          <div className="h-full w-full flex flex-col z-10 pt-8">
+          <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/home.webm"
+                  src="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -1851,6 +1853,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
           </div>
         </section>
+</div>
       </>
     );
   }
@@ -2082,9 +2085,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/create-event.webm"
+                  src="/Assets/Images/Toolkit/Temp/Create_Event.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2146,9 +2149,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/issue_ticket.webm"
+                  src="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2185,21 +2188,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           {/* Left Half - Visual Content (Smartphone Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full">
             <div className="relative w-full h-full top-0 left-0">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/Purchase.webm"
+                  src="/Assets/Images/Toolkit/Temp/Purchase.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
               </video>
-              <div className="absolute md:left-[45%] md:top-[40%] left-[35%] top-[30%] w-80 h-80 md:w-120 md:h-120">
-                <Image
-                  src="/Assets/Images/Toolkit/Distribute_PurchaseTicket1.svg"
-                  alt="smartphone with event booking app"
-                  fill
-                  className="object-contain"
-                />
-              </div>
             </div>
           </div>
 
@@ -2307,9 +2302,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full relative z-10">
-              <video autoPlay muted playsInline loop className="object-contain">
+              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
                 <source
-                  src="/Assets/Images/Toolkit/webm/data_insights.webm"
+                  src="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2388,10 +2383,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               className="pointer-events-none select-none object-cover z-0"
               style={{ mixBlendMode: "multiply" }}
             />
-            <div className="w-full h-full md:h-[80%] z-10 relative top-0 left-0">
-              <video autoPlay muted playsInline loop className="object-contain">
+            <div className="w-full h-full z-10 relative top-0 left-0">
+              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
                 <source
-                  src="/Assets/Images/Toolkit/webm/email-mark.webm"
+                  src="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2427,10 +2422,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Visual Content (Laptop Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full md:order-1">
-            <div className="mx-4 md:mx-24 w-full h-full overflow-hidden relative md:left-20 left-4 -bottom-10">
-              <video autoPlay muted playsInline loop className="object-contain">
+            <div className="w-full h-full overflow-hidden relative">
+              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
                 <source
-                  src="/Assets/Images/Toolkit/webm/promotions.webm"
+                  src="/Assets/Images/Toolkit/Temp/Promotions.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2545,10 +2540,10 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               className="pointer-events-none select-none object-cover z-0"
               style={{ mixBlendMode: "multiply" }}
             />
-            <div className="w-full h-full -bottom-5 z-10 relative">
-              <video autoPlay muted playsInline loop className="object-contain">
+            <div className="w-full h-full z-10 relative">
+              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
                 <source
-                  src="/Assets/Images/Toolkit/Temp/webm/marketing-insights.webm"
+                  src="/Assets/Images/Toolkit/webm/Marketing-Insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2630,12 +2625,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full z-10 relative">
-              <Image
-                src="/Assets/Images/Toolkit/Temp/profile.png"
-                alt="mini portfolio mobile app"
-                fill
-                className="object-cover"
-              />
+              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
+                <source
+                  src="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
+                  type="video/webm"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
@@ -2675,13 +2671,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               className="pointer-events-none select-none object-cover z-0"
               style={{ mixBlendMode: "multiply" }}
             />
-            <div className="w-full h-full z-10 relative ">
-              <Image
-                src="/Assets/Images/Toolkit/Temp/home pic.png"
-                alt="discovery channel mobile app"
-                fill
-                className="object-cover"
-              />
+            <div className="w-full h-full z-10 relative">
+              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
+                <source
+                  src="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
+                  type="video/webm"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
 

@@ -31,6 +31,27 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+  /* Mobile scroll snap behavior */
+  @media (max-width: 767px) {
+    /* Apply scroll snap to the page - but only product cycle sections will snap */
+    html {
+      scroll-snap-type: y proximity;
+      scroll-behavior: smooth;
+    }
+    
+    /* Snap sections - only applied to product cycle sections */
+    .snap-section {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+  
+  /* Sticky positioning support */
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
+
 .instrument-serif-regular {
   font-family: "Instrument Serif", serif;
   font-weight: 400;

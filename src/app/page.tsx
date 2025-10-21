@@ -3,7 +3,6 @@ import HeroSection from "./components/heroSection";
 import ContactSection from "./components/contactSection";
 import TeaserSection from "./components/teaserSection";
 import FooterSection from "./components/footerSection";
-import { useMediaQuery } from "react-responsive";
 import CollaboratorSectionMobile from "./components/collaboratorSectionMobile";
 import CollaboratorSectionWeb from "./components/collaboratoSectionWeb";
 import GrowthCycleSection from "./components/growthCycleSection";
