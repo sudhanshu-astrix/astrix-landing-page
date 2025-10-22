@@ -1751,7 +1751,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-1/2 relative">
               <video autoPlay muted playsInline loop className="w-full h-full object-cover">
                 <source
-                  src="/Assets/Images/Toolkit/webm/Marketing-Insights.webm"
+                  src="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
@@ -2543,7 +2543,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             <div className="w-full h-full z-10 relative">
               <video autoPlay muted playsInline loop className="object-cover w-full h-full">
                 <source
-                  src="/Assets/Images/Toolkit/webm/Marketing-Insights.webm"
+                  src="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
                   type="video/webm"
                 />
                 Your browser does not support the video tag.
