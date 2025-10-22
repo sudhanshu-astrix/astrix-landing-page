@@ -1476,7 +1476,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Create_Event.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Create_Event.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Create_Event.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1523,7 +1523,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative bg-transparent">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Issue_Tickets.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Issue_Tickets.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1551,7 +1551,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Purchase.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Purchase.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Purchase.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1617,7 +1617,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Data_Insights.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Data_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1664,7 +1664,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Email_Marketing.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Email_Marketing.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1692,7 +1692,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Promotions.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Promotions.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Promotions.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1758,7 +1758,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Marketing_Insights.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Marketing_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -1805,7 +1805,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Mini_Portfolio.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Mini_Portfolio.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-contain"
@@ -1833,7 +1833,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Discovery_Channel.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Discovery_Channel.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -2068,7 +2068,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Create_Event.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Create_Event.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Create_Event.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -2127,7 +2127,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Issue_Tickets.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Issue_Tickets.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -2161,7 +2161,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full">
             <div className="relative w-full h-full top-0 left-0">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Purchase.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Purchase.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Purchase.webm"
                 isIOS={isIOS}
                 className="w-full h-full object-cover"
@@ -2270,7 +2270,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full relative z-10">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Data_Insights.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Data_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                 isIOS={isIOS}
                 className="object-cover w-full h-full"
@@ -2347,7 +2347,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative top-0 left-0">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Email_Marketing.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Email_Marketing.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                 isIOS={isIOS}
                 className="object-cover w-full h-full"
@@ -2381,7 +2381,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full md:order-1">
             <div className="w-full h-full overflow-hidden relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Promotions.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Promotions.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Promotions.webm"
                 isIOS={isIOS}
                 className="object-cover w-full h-full"
@@ -2494,7 +2494,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Marketing_Insights.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Marketing_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
                 isIOS={isIOS}
                 className="object-cover w-full h-full"
@@ -2573,7 +2573,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Mini_Portfolio.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Mini_Portfolio.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
                 isIOS={isIOS}
                 className="object-cover w-full h-full"
@@ -2615,7 +2615,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative">
               <MediaComponent
-                gifSrc="/Assets/Images/Toolkit/Gifs/Discovery_Channel.mp4"
+                gifSrc="https://astrix.blob.core.windows.net/cdn/landing-site/Discovery_Channel.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
                 isIOS={isIOS}
                 className="object-cover w-full h-full"
