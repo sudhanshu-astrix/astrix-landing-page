@@ -1777,7 +1777,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 px-8 flex flex-col justify-between">
-              <div className="w-full flex flex-col items-end justify-center gap-4 mt-2">
+              <div className="w-full flex flex-col items-end justify-center gap-4">
                 <AnimatedText
                   text="First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists."
                   className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
@@ -1796,7 +1796,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
+              <video autoPlay muted playsInline loop className="w-full h-full object-contain">
                 <source
                   src="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
                   type="video/webm"
