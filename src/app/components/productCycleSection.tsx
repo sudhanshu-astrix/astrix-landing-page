@@ -592,29 +592,35 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           // Create timeline with ScrollTrigger
           // We have 10 major sections
-          // Optimize for mobile performance - removed snap for smoother, more natural scrolling
-          // Extra optimization for Safari and low-performance browsers to prevent lag
+          // Mobile: Constant scroll speed - one scroll = one section, regardless of scroll velocity
+          // Desktop: Normal velocity-based scrolling
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: section,
               start: "top top",
               end: () => {
-                // Much longer distance on mobile for controlled one-section-at-a-time scrolling
+                // Much longer distance on mobile for very slow, controlled scrolling
                 if (isLowPerformance) return "+=3000"; // Even shorter for Opera Mini
-                if (isMobile) return "+=18000"; // Much longer scroll distance for controlled mobile scrolling
+                if (isMobile) return "+=50000"; // Extremely long distance = very slow scrolling
                 return "+=12000";
               },
-              scrub: isLowPerformance ? 0.05 : isMobile ? 1.8 : 1.5, // Slower scrub for controlled mobile scrolling
+              scrub: isLowPerformance ? 0.05 : isMobile ? 5 : 1.5, // Higher scrub value = slower, more controlled
               pin: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,
               pinSpacing: true,
-              fastScrollEnd: isSafari || isLowPerformance,
+              fastScrollEnd: false, // Disable for consistent mobile behavior
               // Prevent layout shifts
               pinReparent: false,
-              // Mobile-specific optimizations
+              // Mobile-specific optimizations for constant speed
               ...(isMobile && {
-                refreshPriority: -1, // Lower priority for mobile
+                refreshPriority: -1,
+                snap: {
+                  snapTo: "labelsDirectional", // Snap to nearest section
+                  duration: { min: 0.3, max: 0.5 }, // Slightly slower snap for smoother feel
+                  delay: 0.15, // Slightly longer delay before snapping
+                  ease: "power1.inOut",
+                },
               }),
               // Low-performance browser optimizations
               ...(isLowPerformance && {
@@ -629,6 +635,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           const slideDuration = isLowPerformance ? 0.3 : isMobile ? 0.5 : 0.8; // Even faster for low-performance
           const slideEase =
             isLowPerformance || isMobile ? "none" : "power2.inOut"; // Simpler easing on mobile/low-performance
+
+          // Add label for toolkit section (for snap)
+          tl.addLabel("toolkit");
 
           if (isMobile) {
             tl.to(toolkitSection, {
@@ -689,6 +698,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 1: Auto-trigger first section text animation (CreateEvent)
+          tl.addLabel("firstSection"); // Add label for snap
           tl.call(
             () => {
               animateTextReveal(firstText);
@@ -751,6 +761,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 3: Slide to third section (Purchase/RSVP)
+          tl.addLabel("thirdSection"); // Add label for snap
           tl.add("thirdSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -800,6 +811,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 4: Slide to fourth section (Data Insights) & label change
+          tl.addLabel("fourthSection"); // Add label for snap
           tl.add("fourthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -887,6 +899,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 5: Slide to fifth section (Email Marketing)
+          tl.addLabel("fifthSection"); // Add label for snap
           tl.add("fifthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -936,6 +949,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 6: Slide to sixth section (Promotions)
+          tl.addLabel("sixthSection"); // Add label for snap
           tl.add("sixthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -985,6 +999,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 7: Slide to seventh section (Marketing Insights)
+          tl.addLabel("seventhSection"); // Add label for snap
           tl.add("seventhSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -1034,6 +1049,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 8: Slide to eighth section (Mini Portfolio) & label change
+          tl.addLabel("eighthSection"); // Add label for snap
           tl.add("eighthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -1121,6 +1137,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 9: Slide to ninth section (Discovery Channel)
+          tl.addLabel("ninthSection"); // Add label for snap
           tl.add("ninthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -1443,7 +1460,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-6">
                 <AnimatedText
                   text="Host anything from standard events to multi-day festivals and tours."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1489,7 +1506,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-8">
                 <AnimatedText
                   text="Issue paid tickets or RSVPs, limit quantities to prevent scalping, and add surveys to collect additional information."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1543,7 +1560,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-4">
                 <AnimatedText
                   text="Give your fans a seamless way to book their tickets – apply discounts, confirm instantly."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1581,7 +1598,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
                 <AnimatedText
                   text="Own your data and make data-driven decisions."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1627,7 +1644,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
                   text="Send targeted email and SMS campaigns directly to attendees, or import contacts from your dashboard."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1681,7 +1698,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
                   text="Set up exclusive promoter codes and custom discounts in seconds."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1719,7 +1736,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
                 <AnimatedText
                   text="See the full story with live analytics - track revenue, reach, contacts and performance."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1765,7 +1782,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-4">
                 <AnimatedText
                   text="First step to build your community, keep your fans updated on what's next with a gallery, collections, upcoming events and embedded playlists."
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph
@@ -1819,7 +1836,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
                 <AnimatedText
                   text="Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar"
-                  className="text-2xl font-switzer font-[400] text-[#363636] leading-tight w-full"
+                  className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
                   delay={0}
                 />
                 <AnimatedParagraph

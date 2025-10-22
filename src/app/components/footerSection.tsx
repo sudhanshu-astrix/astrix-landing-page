@@ -42,8 +42,8 @@ export default function FooterSection({ className }: { className?: string }) {
 
         {/* Bottom row */}
         <div className="mt-8 flex md:flex-row flex-col-reverse gap-8 items-center justify-between">
-          <p className="text-sm font-nohemi font-[300] text-[#939CAA]">
-            © 2025 Eventide. All rights reserved.
+          <p className="text-sm font-nohemi font-[300] mb-10 text-[#939CAA]">
+            © 2025 Astrix. All rights reserved.
           </p>
 
           {/* Socials pill */}

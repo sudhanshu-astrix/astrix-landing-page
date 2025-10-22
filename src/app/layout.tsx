@@ -157,16 +157,13 @@ export default function RootLayout({
           type="video/mp4"
           media="(max-width: 767px)"
         />
-        <link
-          rel="prefetch"
-          href="/Assets/Images/HeroSectionMobile.webm"
-          as="video"
-          type="video/webm"
-          media="(min-width: 768px)"
-        />
         {/* DNS prefetch for Google Analytics */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+        {/* Preconnect to Azure Blob Storage */}
+        <link rel="preconnect" href="https://astrix.blob.core.windows.net" />
+        <link rel="dns-prefetch" href="https://astrix.blob.core.windows.net" />
       </head>
       <body className={`${switzer.variable} ${nohemi.variable} ${instrumentSerif.variable}  antialiased`}>
         {/* Google Analytics */}
