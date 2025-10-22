@@ -18,11 +18,13 @@ export default function HeroSection({ className }: { className?: string }) {
 
     // Detect iOS and mobile
     const checkIOS = () => {
-      return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      return (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+      );
     };
     const checkMobile = window.innerWidth < 768;
-    
+
     setIsIOS(checkIOS());
     setIsMobile(checkMobile);
 
@@ -168,12 +170,12 @@ export default function HeroSection({ className }: { className?: string }) {
     if (el) {
       el.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: isMobile ? "center" : "end",
       });
     }
 
     // Re-enable pinning after a short delay (once scroll completes)
-    setTimeout(() => enableScrollPinning(), 1200);
+    setTimeout(() => enableScrollPinning(), 3000);
   };
 
   return (
@@ -206,9 +208,15 @@ export default function HeroSection({ className }: { className?: string }) {
         >
           {/* Mobile iOS uses mp4, Mobile Android and Desktop use webm */}
           {isMobile && isIOS ? (
-            <source src="/Assets/Images/HeroSectionMobile.mp4" type="video/mp4" />
+            <source
+              src="/Assets/Images/HeroSectionMobile.mp4"
+              type="video/mp4"
+            />
           ) : (
-            <source src="/Assets/Images/HeroSectionMobile.webm" type="video/webm" />
+            <source
+              src="/Assets/Images/HeroSectionMobile.webm"
+              type="video/webm"
+            />
           )}
           Your browser does not support the video tag.
         </video>
@@ -239,17 +247,23 @@ export default function HeroSection({ className }: { className?: string }) {
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
           <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
-            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">ABOUT</p>
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+              ABOUT
+            </p>
           </button>
           <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
-            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">PRICING</p>
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+              PRICING
+            </p>
           </button>
           <Link
             href="#contact"
             onClick={() => handleNavClick("contact")}
             className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
           >
-            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">CONTACT</p>
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+              CONTACT
+            </p>
           </Link>
         </div>
         <Link
@@ -258,7 +272,9 @@ export default function HeroSection({ className }: { className?: string }) {
           rel="noopener noreferrer"
           className="hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
         >
-          <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">GET STARTED</p>
+          <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+            GET STARTED
+          </p>
         </Link>
 
         <button
@@ -298,14 +314,18 @@ export default function HeroSection({ className }: { className?: string }) {
               rel="noopener noreferrer"
               className="w-fit px-3 md:px-5 py-[10px] md:py-[14px] h-[30px] md:h-[40px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">GET STARTED</p>
+              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">
+                GET STARTED
+              </p>
             </Link>
             <Link
               href="#contact"
               onClick={() => handleNavClick("contact")}
               className="w-fit flex items-center justify-center px-3 md:px-5 py-[10px] md:py-[14px]  h-[30px] md:h-[40px]   rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">BOOK A DEMO</p>
+              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">
+                BOOK A DEMO
+              </p>
             </Link>
           </div>
         </div>
@@ -335,9 +355,15 @@ export default function HeroSection({ className }: { className?: string }) {
           >
             {/* iOS mobile uses mp4, Android mobile uses webm */}
             {isIOS ? (
-              <source src="/Assets/Images/HeroSectionMobile.mp4" type="video/mp4" />
+              <source
+                src="/Assets/Images/HeroSectionMobile.mp4"
+                type="video/mp4"
+              />
             ) : (
-              <source src="/Assets/Images/HeroSectionMobile.webm" type="video/webm" />
+              <source
+                src="/Assets/Images/HeroSectionMobile.webm"
+                type="video/webm"
+              />
             )}
             Your browser does not support the video tag.
           </video>
