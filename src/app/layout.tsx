@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import { Instrument_Serif } from "next/font/google";
+import { Toaster, toast } from "sonner";
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
@@ -141,7 +142,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${switzer.variable} ${nohemi.variable} ${instrumentSerif.variable}  antialiased`}>
+      <body
+        className={`${switzer.variable} ${nohemi.variable} ${instrumentSerif.variable}  antialiased`}
+      >
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-3XRZVZBTNJ"
@@ -155,7 +158,7 @@ export default function RootLayout({
             gtag('config', 'G-3XRZVZBTNJ');
           `}
         </Script>
-        
+        <Toaster position="top-center" richColors />
         {children}
       </body>
     </html>
