@@ -192,7 +192,7 @@ export default function HeroSection({ className }: { className?: string }) {
           x-webkit-airplay="deny"
           autoPlay={false}
         >
-          <source src="/Assets/Images/HeroSectionMobile.webm" type="video/webm" />
+          <source src="/Assets/Images/HeroSection.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
@@ -293,7 +293,7 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="relative w-full h-[30vh] md:hidden z-30">
           <video
             ref={mobileVideoRef}
-            src="/Assets/Images/HeroSectionMobile.webm"
+            src="/Assets/Images/HeroSection.mp4"
             className="object-cover w-full h-full"
             loop
             muted
