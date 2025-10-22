@@ -62,7 +62,6 @@ const AnimatedText = ({
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
             transition: `opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s`,
-            willChange: "opacity, transform",
           }}
         >
           {word}
@@ -121,7 +120,6 @@ const AnimatedParagraph = ({
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
             transition: `opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s`,
-            willChange: "opacity, transform",
           }}
         >
           {word}
@@ -174,7 +172,6 @@ const AnimatedAction = ({
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
         transition: `opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s, transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s`,
-        willChange: "opacity, transform",
       }}
     >
       {text}
@@ -498,7 +495,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 gsap.set(textElement, {
                   y: 20,
                   opacity: 0,
-                  force3D: true,
                 });
 
                 animTl.to(textElement, {
@@ -514,7 +510,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   gsap.set(labelElement, {
                     y: 15,
                     opacity: 0,
-                    force3D: true,
                   });
                   animTl.to(
                     labelElement,
@@ -523,7 +518,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                       y: 0,
                       duration: 0.3,
                       ease: "power1.out",
-                      force3D: true,
                       clearProps: "transform",
                     },
                     "<0.1"
@@ -616,8 +610,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               y: "-100%",
               duration: slideDuration,
               ease: slideEase,
-              force3D: true, // GPU acceleration
-            });
+                });
           } else {
             tl.to(toolkitSection, {
               x: "-100%",
@@ -689,7 +682,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "secondSection"
             ).to(
@@ -698,7 +690,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "secondSection"
             );
@@ -743,7 +734,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "thirdSection"
             ).to(
@@ -752,7 +742,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "thirdSection"
             );
@@ -794,7 +783,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "fourthSection"
             ).to(
@@ -803,7 +791,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "fourthSection"
             );
@@ -883,7 +870,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "fifthSection"
             ).to(
@@ -892,7 +878,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "fifthSection"
             );
@@ -903,7 +888,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "fifthSection"
             ).to(
@@ -912,7 +896,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "fifthSection"
             );
@@ -936,7 +919,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "sixthSection"
             ).to(
@@ -945,7 +927,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "sixthSection"
             );
@@ -956,7 +937,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "sixthSection"
             ).to(
@@ -965,7 +945,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "sixthSection"
             );
@@ -989,7 +968,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "seventhSection"
             ).to(
@@ -998,7 +976,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "seventhSection"
             );
@@ -1009,7 +986,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "seventhSection"
             ).to(
@@ -1018,7 +994,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "seventhSection"
             );
@@ -1042,7 +1017,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "eighthSection"
             ).to(
@@ -1051,7 +1025,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "eighthSection"
             );
@@ -1062,7 +1035,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "eighthSection"
             ).to(
@@ -1071,7 +1043,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "eighthSection"
             );
@@ -1133,7 +1104,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "ninthSection"
             ).to(
@@ -1142,7 +1112,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 y: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "ninthSection"
             );
@@ -1153,7 +1122,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "-100%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "ninthSection"
             ).to(
@@ -1162,7 +1130,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 x: "0%",
                 duration: slideDuration,
                 ease: slideEase,
-                force3D: true,
               },
               "ninthSection"
             );
@@ -1865,22 +1832,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       className={`${
         className || ""
       } w-full h-screen flex relative overflow-hidden`}
-      style={{
-        transform: "translateZ(0)", // Force GPU acceleration
-        backfaceVisibility: "hidden",
-        perspective: 1000,
-        position: "relative",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100vh",
-        minHeight: "100vh",
-        maxHeight: "100vh",
-        overflow: "hidden",
-        willChange: "transform",
-        WebkitBackfaceVisibility: "hidden",
-        WebkitTransform: "translateZ(0)",
-      }}
     >
       {/* Toolkit Section - Slides in from right first */}
       <div
@@ -1888,11 +1839,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden"
         style={{
           zIndex: 10,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         <div className="w-full flex flex-col justify-between relative">
@@ -2039,11 +1985,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 20,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2103,11 +2044,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 21,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2167,11 +2103,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 22,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2239,11 +2170,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 23,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2320,11 +2246,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 24,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2402,11 +2323,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 25,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay - Applied to entire section */}
@@ -2476,11 +2392,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 26,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2559,11 +2470,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 27,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
@@ -2643,11 +2549,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 28,
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-          WebkitTransform: "translate3d(0, 0, 0)",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* Noise effect overlay */}
