@@ -7,6 +7,8 @@ import { useState, useEffect, useRef } from "react";
 
 export default function HeroSection({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -14,7 +16,17 @@ export default function HeroSection({ className }: { className?: string }) {
     // Scroll to top on page reload/load for all devices
     window.scrollTo(0, 0);
 
-    const isMobile = window.innerWidth < 768;
+    // Detect iOS and mobile
+    const checkIOS = () => {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    };
+    const checkMobile = window.innerWidth < 768;
+    
+    setIsIOS(checkIOS());
+    setIsMobile(checkMobile);
+
+    const isMobile = checkMobile;
 
     if (isMobile && videoRef.current && mobileVideoRef.current) {
       // Mobile: Aggressive video playback for all browsers including Safari/Opera Mini
@@ -192,7 +204,12 @@ export default function HeroSection({ className }: { className?: string }) {
           x-webkit-airplay="deny"
           autoPlay={false}
         >
-          <source src="/Assets/Images/HeroSection.mp4" type="video/mp4" />
+          {/* Mobile iOS uses mp4, Mobile Android and Desktop use webm */}
+          {isMobile && isIOS ? (
+            <source src="/Assets/Images/HeroSectionMobile.mp4" type="video/mp4" />
+          ) : (
+            <source src="/Assets/Images/HeroSectionMobile.webm" type="video/webm" />
+          )}
           Your browser does not support the video tag.
         </video>
 
@@ -293,7 +310,6 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="relative w-full h-[30vh] md:hidden z-30">
           <video
             ref={mobileVideoRef}
-            src="/Assets/Images/HeroSection.mp4"
             className="object-cover w-full h-full"
             loop
             muted
@@ -314,7 +330,15 @@ export default function HeroSection({ className }: { className?: string }) {
               backfaceVisibility: "hidden" as const,
               WebkitBackfaceVisibility: "hidden" as const,
             }}
-          />
+          >
+            {/* iOS mobile uses mp4, Android mobile uses webm */}
+            {isIOS ? (
+              <source src="/Assets/Images/HeroSectionMobile.mp4" type="video/mp4" />
+            ) : (
+              <source src="/Assets/Images/HeroSectionMobile.webm" type="video/webm" />
+            )}
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
 
