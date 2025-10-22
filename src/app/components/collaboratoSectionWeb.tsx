@@ -304,6 +304,7 @@ export default function CollaboratorSectionWeb({
                       alt={collaborator?.title}
                       width={350}
                       height={400}
+                      loading={index < 2 ? "eager" : "lazy"}
                       className="w-auto h-auto max-w-none transition-transform group-hover:scale-105"
                       style={{
                         width: "auto",
