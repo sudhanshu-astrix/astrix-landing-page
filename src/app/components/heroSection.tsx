@@ -209,7 +209,7 @@ export default function HeroSection({ className }: { className?: string }) {
           {/* Mobile iOS uses mp4, Mobile Android and Desktop use webm */}
           {isMobile && isIOS ? (
             <source
-              src="/Assets/Images/HeroSectionMobileCompressed.mp4"
+              src="/Assets/Images/HeroSectionMobile.mp4"
               type="video/mp4"
             />
           ) : (
@@ -356,7 +356,7 @@ export default function HeroSection({ className }: { className?: string }) {
             {/* iOS mobile uses mp4, Android mobile uses webm */}
             {isIOS ? (
               <source
-                src="/Assets/Images/HeroSectionMobileCompressed.mp4"
+                src="/Assets/Images/HeroSectionMobile.mp4"
                 type="video/mp4"
               />
             ) : (
