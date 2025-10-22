@@ -179,8 +179,43 @@ const AnimatedAction = ({
   );
 };
 
+// Media Component - Renders GIF for iOS, webm for others
+const MediaComponent = ({
+  gifSrc,
+  webmSrc,
+  isIOS,
+  className = "",
+  alt = "media content",
+}: {
+  gifSrc: string;
+  webmSrc: string;
+  isIOS: boolean;
+  className?: string;
+  alt?: string;
+}) => {
+  if (isIOS) {
+    return (
+      <Image
+        src={gifSrc}
+        alt={alt}
+        fill
+        className={className}
+        unoptimized
+      />
+    );
+  }
+
+  return (
+    <video autoPlay muted playsInline loop className={className}>
+      <source src={webmSrc} type="video/webm" />
+      Your browser does not support the video tag.
+    </video>
+  );
+};
+
 const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
   const [stickyLabel, setStickyLabel] = useState("Distribute");
 
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -219,10 +254,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const [lineWidth, setLineWidth] = useState(250);
   const lineRef = useRef<HTMLDivElement>(null);
 
-  // Detect mobile on mount
+  // Detect mobile and iOS on mount
   useEffect(() => {
     const checkMobile = () => window.innerWidth < 768;
+    const checkIOS = () => {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    };
+    
     setIsMobile(checkMobile());
+    setIsIOS(checkIOS());
 
     const handleResize = () => setIsMobile(checkMobile());
     window.addEventListener("resize", handleResize);
@@ -1434,13 +1475,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Create_Event.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Create_Event.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Create_Event.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Create Event"
+              />
             </div>
           </div>
         </section>
@@ -1481,13 +1522,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative bg-transparent">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Issue_Tickets.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Issue Tickets"
+              />
             </div>
           </div>
         </section>
@@ -1509,13 +1550,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Purchase.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Purchase.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Purchase.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Purchase/RSVP"
+              />
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-4">
@@ -1575,13 +1616,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Data_Insights.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Data Insights"
+              />
             </div>
           </div>
         </section>
@@ -1622,13 +1663,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Email_Marketing.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Email Marketing"
+              />
             </div>
           </div>
         </section>
@@ -1650,13 +1691,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Promotions.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Promotions.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Promotions.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Promotions"
+              />
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-6 mt-4">
@@ -1716,13 +1757,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Marketing_Insights.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Marketing Insights"
+              />
             </div>
           </div>
         </section>
@@ -1763,13 +1804,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-contain">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Mini_Portfolio.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-contain"
+                alt="Mini Portfolio"
+              />
             </div>
           </div>
         </section>
@@ -1791,13 +1832,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Discovery_Channel.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Discovery Channel"
+              />
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
@@ -2026,13 +2067,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Create_Event.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Create_Event.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Create_Event.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Create Event"
+              />
             </div>
           </div>
         </div>
@@ -2085,13 +2126,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Issue_Tickets.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Issue Tickets"
+              />
             </div>
           </div>
         </div>
@@ -2119,13 +2160,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           {/* Left Half - Visual Content (Smartphone Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full">
             <div className="relative w-full h-full top-0 left-0">
-              <video autoPlay muted playsInline loop className="w-full h-full object-cover">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Purchase.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Purchase.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Purchase.webm"
+                isIOS={isIOS}
+                className="w-full h-full object-cover"
+                alt="Purchase/RSVP"
+              />
             </div>
           </div>
 
@@ -2228,13 +2269,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full relative z-10">
-              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Data_Insights.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
+                isIOS={isIOS}
+                className="object-cover w-full h-full"
+                alt="Data Insights"
+              />
             </div>
           </div>
         </div>
@@ -2305,13 +2346,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full z-10 relative top-0 left-0">
-              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Email_Marketing.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
+                isIOS={isIOS}
+                className="object-cover w-full h-full"
+                alt="Email Marketing"
+              />
             </div>
           </div>
         </div>
@@ -2339,13 +2380,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           {/* Left Half - Visual Content (Laptop Image) */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full md:order-1">
             <div className="w-full h-full overflow-hidden relative">
-              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Promotions.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Promotions.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Promotions.webm"
+                isIOS={isIOS}
+                className="object-cover w-full h-full"
+                alt="Promotions"
+              />
             </div>
           </div>
           {/* Right Half - Text Content */}
@@ -2452,13 +2493,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full z-10 relative">
-              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Marketing_Insights.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
+                isIOS={isIOS}
+                className="object-cover w-full h-full"
+                alt="Marketing Insights"
+              />
             </div>
           </div>
         </div>
@@ -2531,13 +2572,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full z-10 relative">
-              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Mini_Portfolio.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
+                isIOS={isIOS}
+                className="object-cover w-full h-full"
+                alt="Mini Portfolio"
+              />
             </div>
           </div>
         </div>
@@ -2573,13 +2614,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="w-full h-full z-10 relative">
-              <video autoPlay muted playsInline loop className="object-cover w-full h-full">
-                <source
-                  src="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
-                  type="video/webm"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <MediaComponent
+                gifSrc="/Assets/Images/Toolkit/Gifs/Discovery_Channel.gif"
+                webmSrc="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
+                isIOS={isIOS}
+                className="object-cover w-full h-full"
+                alt="Discovery Channel"
+              />
             </div>
           </div>
 
