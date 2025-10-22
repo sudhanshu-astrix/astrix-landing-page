@@ -13,7 +13,7 @@ interface ProductCycleSectionProps {
   className?: string;
 }
 
-// Animated Text Component for Mobile - Word by Word Animation with CSS
+// Optimized Animated Text Component - Reduced threshold, earlier trigger, disconnect after use
 const AnimatedText = ({
   text,
   className = "",
@@ -35,10 +35,11 @@ const AnimatedText = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
+            observer.disconnect(); // Disconnect immediately after triggering
           }
         });
       },
-      { threshold: 0.9, rootMargin: "0px" }
+      { threshold: 0.1, rootMargin: "100px 0px" } // Much earlier trigger
     );
 
     observer.observe(element);
@@ -61,7 +62,8 @@ const AnimatedText = ({
             marginRight: "0.25em",
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
-            transition: `opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s`,
+            transition: `opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.03}s, transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.03}s`,
+            willChange: isVisible ? "auto" : "opacity, transform",
           }}
         >
           {word}
@@ -71,7 +73,7 @@ const AnimatedText = ({
   );
 };
 
-// Animated Paragraph Component for Mobile with CSS
+// Optimized Animated Paragraph Component - Faster, earlier trigger
 const AnimatedParagraph = ({
   text,
   className = "",
@@ -93,10 +95,11 @@ const AnimatedParagraph = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
+            observer.disconnect(); // Disconnect immediately after triggering
           }
         });
       },
-      { threshold: 0.9, rootMargin: "0px" }
+      { threshold: 0.1, rootMargin: "100px 0px" } // Much earlier trigger
     );
 
     observer.observe(element);
@@ -119,7 +122,8 @@ const AnimatedParagraph = ({
             marginRight: "0.25em",
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
-            transition: `opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.05}s`,
+            transition: `opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.03}s, transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay + index * 0.03}s`,
+            willChange: isVisible ? "auto" : "opacity, transform",
           }}
         >
           {word}
@@ -129,7 +133,7 @@ const AnimatedParagraph = ({
   );
 };
 
-// Animated Action Text Component for Mobile with CSS
+// Optimized Animated Action Text Component - Faster, earlier trigger
 const AnimatedAction = ({
   text,
   className = "",
@@ -151,10 +155,11 @@ const AnimatedAction = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
+            observer.disconnect(); // Disconnect immediately after triggering
           }
         });
       },
-      { threshold: 0.9, rootMargin: "0px" }
+      { threshold: 0.1, rootMargin: "100px 0px" } // Much earlier trigger
     );
 
     observer.observe(element);
@@ -171,7 +176,8 @@ const AnimatedAction = ({
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "translateY(0)" : "translateY(1.5em)",
-        transition: `opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s, transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s`,
+        transition: `opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s, transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s`,
+        willChange: isVisible ? "auto" : "opacity, transform",
       }}
     >
       {text}
@@ -179,7 +185,7 @@ const AnimatedAction = ({
   );
 };
 
-// Media Component - Renders MP4 for mobile, webm for desktop
+// Optimized Media Component - Lazy loads videos with IntersectionObserver
 const MediaComponent = ({
   mp4Src,
   webmSrc,
@@ -1380,6 +1386,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                     alt="toolkit star"
                     fill
                     className="object-contain"
+                    priority
+                    loading="eager"
                   />
                   <h3 className="absolute top-[38%] left-[10%] text-[40px] leading-none text-[#F0E9B2] font-instrument-serif font-[400]">
                     Your Toolkit
@@ -1390,6 +1398,8 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                       alt="arrow"
                       fill
                       className="object-contain"
+                      priority
+                      loading="eager"
                     />
                   </div>
                 </div>
@@ -1462,6 +1472,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover absolute inset-0 opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
             <div className="pt-6 relative z-10">
               <h2 className="text-[#363636] font-instrument-serif font-[400] text-4xl tracking-wider px-8 transition-all duration-300">
@@ -1482,6 +1493,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             fill
             className="pointer-events-none object-cover z-0 opacity-60"
             style={{ mixBlendMode: "multiply" }}
+            loading="lazy"
           />
 
           <div className="w-full h-full flex flex-col z-10 pt-24">
@@ -1527,6 +1539,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1573,6 +1586,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1619,6 +1633,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1665,6 +1680,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1711,6 +1727,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1757,6 +1774,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1803,6 +1821,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
@@ -1849,6 +1868,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fill
               className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
+              loading="lazy"
             />
           </div>
 
