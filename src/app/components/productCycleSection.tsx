@@ -185,7 +185,19 @@ const AnimatedAction = ({
   );
 };
 
-// Optimized Media Component - Lazy loads videos with IntersectionObserver
+// Global video manager to ensure only one video plays at a time
+let currentPlayingVideo: HTMLVideoElement | null = null;
+
+const pauseAllVideos = () => {
+  const allVideos = document.querySelectorAll('video');
+  allVideos.forEach(video => {
+    if (video !== currentPlayingVideo && !video.paused) {
+      video.pause();
+    }
+  });
+};
+
+// iOS Safari Optimized Media Component - Single video playback management
 const MediaComponent = ({
   mp4Src,
   webmSrc,
@@ -197,12 +209,147 @@ const MediaComponent = ({
   isMobile: boolean;
   className?: string;
 }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isOldIOS, setIsOldIOS] = useState(false);
+
+  // Detect iOS and handle video loading
+  useEffect(() => {
+    const userAgent = navigator.userAgent;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(userAgent);
+    const isOldIOSVersion = /OS [1-9]_|OS 10_|OS 11_/.test(userAgent);
+    setIsIOS(isIOSDevice);
+    setIsOldIOS(isOldIOSVersion);
+    
+    // For iOS devices, load videos with a small delay to prevent memory pressure
+    if (isIOSDevice) {
+      const timeout = setTimeout(() => {
+        setShouldLoad(true);
+      }, isOldIOSVersion ? 1000 : 500); // Longer delay for old iOS
+      
+      return () => clearTimeout(timeout);
+    } else {
+      // Non-iOS devices load immediately
+      setShouldLoad(true);
+    }
+  }, []);
+
+  // Handle video autoplay with single video management
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldLoad) return;
+
+    const handleCanPlay = () => {
+      if (video && !isPlaying) {
+        // Pause all other videos first
+        pauseAllVideos();
+        
+        // For old iOS, add delay to prevent memory pressure
+        if (isOldIOS) {
+          setTimeout(() => {
+            video.play().catch(() => {
+              console.log("Video autoplay blocked on old iOS");
+            });
+            setIsPlaying(true);
+            currentPlayingVideo = video;
+          }, 300);
+        } else {
+          // Modern devices can play immediately
+          video.play().catch(() => {
+            console.log("Video autoplay blocked");
+          });
+          setIsPlaying(true);
+          currentPlayingVideo = video;
+        }
+      }
+    };
+
+    const handleError = (e: Event) => {
+      console.log("Video error:", e);
+    };
+
+    // Add event listeners
+    video.addEventListener("canplay", handleCanPlay);
+    video.addEventListener("error", handleError);
+
+    return () => {
+      video.removeEventListener("canplay", handleCanPlay);
+      video.removeEventListener("error", handleError);
+    };
+  }, [shouldLoad, isPlaying, isOldIOS]);
+
+  // Single video playback management - only play when in viewport
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Video is in viewport - pause all others and play this one
+            pauseAllVideos();
+            if (!isPlaying && shouldLoad) {
+              video.play().catch(() => {
+                console.log("Video autoplay blocked");
+              });
+              setIsPlaying(true);
+              currentPlayingVideo = video;
+            }
+          } else {
+            // Video is out of viewport - pause this one
+            if (isPlaying) {
+              video.pause();
+              setIsPlaying(false);
+              if (currentPlayingVideo === video) {
+                currentPlayingVideo = null;
+              }
+            }
+          }
+        });
+      },
+      { threshold: 0.5 } // Play when 50% of video is visible
+    );
+
+    observer.observe(video);
+
+    return () => observer.disconnect();
+  }, [isPlaying, shouldLoad]);
+
   return (
-    <video autoPlay muted playsInline loop className={className}>
-      {isMobile ? (
-        <source src={mp4Src} type="video/mp4" />
-      ) : (
-        <source src={webmSrc} type="video/webm" />
+    <video
+      ref={videoRef}
+      muted
+      playsInline
+      loop
+      className={className}
+      preload="none"
+      poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+      style={{
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
+        // iOS Safari specific optimizations
+        ...(isIOS && {
+          WebkitPlaysinline: true,
+          // Reduce GPU usage on old iOS
+          ...(isOldIOS && {
+            willChange: 'auto',
+            transform: 'translateZ(0)',
+          })
+        })
+      } as React.CSSProperties}
+    >
+      {shouldLoad && (
+        <>
+          {isMobile ? (
+            <source src={mp4Src} type="video/mp4" />
+          ) : (
+            <source src={webmSrc} type="video/webm" />
+          )}
+        </>
       )}
       Your browser does not support the video tag.
     </video>

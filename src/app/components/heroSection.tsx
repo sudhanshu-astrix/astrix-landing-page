@@ -29,9 +29,11 @@ export default function HeroSection({ className }: { className?: string }) {
     setIsMobile(checkMobile);
 
     const isMobile = checkMobile;
+    const isIOSDevice = checkIOS();
+    const isOldIOS = /OS [1-9]_|OS 10_|OS 11_/.test(navigator.userAgent);
 
     if (isMobile && videoRef.current && mobileVideoRef.current) {
-      // Mobile: Aggressive video playback for all browsers including Safari/Opera Mini
+      // Mobile: iOS Safari optimized video playback
       const backgroundVideo = videoRef.current;
       const mobileVideo = mobileVideoRef.current;
 
@@ -39,13 +41,30 @@ export default function HeroSection({ className }: { className?: string }) {
       backgroundVideo.playbackRate = 1.0;
       mobileVideo.playbackRate = 1.0;
 
-      // Force load videos
-      backgroundVideo.load();
-      mobileVideo.load();
+      // iOS Safari optimizations
+      if (isIOSDevice) {
+        // For old iOS, stagger video loading to prevent crashes
+        if (isOldIOS) {
+          setTimeout(() => {
+            backgroundVideo.load();
+          }, 100);
+          setTimeout(() => {
+            mobileVideo.load();
+          }, 200);
+        } else {
+          // Modern iOS can handle simultaneous loading
+          backgroundVideo.load();
+          mobileVideo.load();
+        }
+      } else {
+        // Non-iOS devices load normally
+        backgroundVideo.load();
+        mobileVideo.load();
+      }
 
       let hasStarted = false;
       let retryCount = 0;
-      const maxRetries = 5;
+      const maxRetries = isOldIOS ? 3 : 5; // Fewer retries for old iOS
 
       const attemptPlay = () => {
         if (hasStarted) return;
@@ -54,40 +73,73 @@ export default function HeroSection({ className }: { className?: string }) {
         backgroundVideo.currentTime = 0;
         mobileVideo.currentTime = 0;
 
-        // Attempt to play both videos
-        const bgPlayPromise = backgroundVideo.play();
-        const mobilePlayPromise = mobileVideo.play();
+        // For old iOS, play videos sequentially to prevent crashes
+        if (isOldIOS) {
+          const playBackgroundFirst = () => {
+            const bgPlayPromise = backgroundVideo.play();
+            if (bgPlayPromise !== undefined) {
+              bgPlayPromise
+                .then(() => {
+                  console.log("Background video playing");
+                  // Wait before playing mobile video
+                  setTimeout(() => {
+                    const mobilePlayPromise = mobileVideo.play();
+                    if (mobilePlayPromise !== undefined) {
+                      mobilePlayPromise
+                        .then(() => {
+                          console.log("Mobile video playing");
+                          hasStarted = true;
+                        })
+                        .catch((error) => {
+                          console.log("Mobile video autoplay blocked:", error);
+                        });
+                    }
+                  }, 300);
+                })
+                .catch((error) => {
+                  console.log("Background video autoplay blocked:", error);
+                  if (retryCount < maxRetries) {
+                    retryCount++;
+                    setTimeout(attemptPlay, 1000); // Longer delay for old iOS
+                  }
+                });
+            }
+          };
+          playBackgroundFirst();
+        } else {
+          // Modern devices can play simultaneously
+          const bgPlayPromise = backgroundVideo.play();
+          const mobilePlayPromise = mobileVideo.play();
 
-        if (bgPlayPromise !== undefined) {
-          bgPlayPromise
-            .then(() => {
-              console.log("Background video playing");
-              hasStarted = true;
-            })
-            .catch((error) => {
-              console.log("Background video autoplay blocked:", error);
-              // Retry or wait for user interaction
-              if (retryCount < maxRetries) {
-                retryCount++;
-                setTimeout(attemptPlay, 500);
-              }
-            });
-        }
+          if (bgPlayPromise !== undefined) {
+            bgPlayPromise
+              .then(() => {
+                console.log("Background video playing");
+                hasStarted = true;
+              })
+              .catch((error) => {
+                console.log("Background video autoplay blocked:", error);
+                if (retryCount < maxRetries) {
+                  retryCount++;
+                  setTimeout(attemptPlay, 500);
+                }
+              });
+          }
 
-        if (mobilePlayPromise !== undefined) {
-          mobilePlayPromise
-            .then(() => {
-              console.log("Mobile video playing");
-              hasStarted = true;
-            })
-            .catch((error) => {
-              console.log("Mobile video autoplay blocked:", error);
-              // Retry or wait for user interaction
-              if (retryCount < maxRetries) {
-                retryCount++;
-                setTimeout(attemptPlay, 500);
-              }
-            });
+          if (mobilePlayPromise !== undefined) {
+            mobilePlayPromise
+              .then(() => {
+                console.log("Mobile video playing");
+                hasStarted = true;
+              })
+              .catch((error) => {
+                console.log("Mobile video autoplay blocked:", error);
+                if (retryCount < maxRetries) {
+                  retryCount++;
+                  setTimeout(attemptPlay, 500);
+                }
+              });
+          }
         }
       };
 
@@ -98,9 +150,18 @@ export default function HeroSection({ className }: { className?: string }) {
         }
       };
 
-      // Attempt play immediately
-      if (backgroundVideo.readyState >= 2 || mobileVideo.readyState >= 2) {
-        attemptPlay();
+      // Attempt play with delay for old iOS
+      if (isOldIOS) {
+        setTimeout(() => {
+          if (backgroundVideo.readyState >= 2 || mobileVideo.readyState >= 2) {
+            attemptPlay();
+          }
+        }, 500);
+      } else {
+        // Modern devices can play immediately
+        if (backgroundVideo.readyState >= 2 || mobileVideo.readyState >= 2) {
+          attemptPlay();
+        }
       }
 
       // Add multiple event listeners for better compatibility

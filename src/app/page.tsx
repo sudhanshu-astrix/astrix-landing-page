@@ -1,6 +1,8 @@
 "use client";
 import dynamic from 'next/dynamic';
 import HeroSection from "./components/heroSection";
+import { optimizeForIOS } from "@/utils";
+import { useEffect } from "react";
 
 // Lazy load below-the-fold components
 const CollaboratorSectionMobile = dynamic(() => import("./components/collaboratorSectionMobile"), {
@@ -26,6 +28,11 @@ const FooterSection = dynamic(() => import("./components/footerSection"), {
 });
 
 export default function Home() {
+  // Initialize iOS optimizations on page load
+  useEffect(() => {
+    optimizeForIOS();
+  }, []);
+
   return (
     <div className="w-full min-h-screen">
       <HeroSection />
