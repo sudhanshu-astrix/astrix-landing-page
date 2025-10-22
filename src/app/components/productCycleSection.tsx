@@ -206,6 +206,7 @@ const MediaComponent = ({
 const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [stickyLabel, setStickyLabel] = useState("Distribute");
+  const [hideStickyLabel, setHideStickyLabel] = useState(false);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
@@ -293,6 +294,43 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         observer.observe(section.ref.current);
       }
     });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMobile]);
+
+  // Mobile: Hide sticky label when last section is 20% scrolled from top
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const lastSection = ninthSectionRef.current;
+    if (!lastSection) return;
+
+    const observerOptions = {
+      threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0], // Multiple thresholds for precise detection
+      rootMargin: "0px 0px 0px 0px",
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        // Get how much of the section is visible from the top
+        const rect = entry.boundingClientRect;
+        
+        // Calculate how much has scrolled past the top
+        // If rect.top is negative, that much has scrolled past
+        // If 20% or more has scrolled past (80% or less visible), hide label
+        const scrolledPastTop = Math.max(0, -rect.top);
+        const sectionHeight = rect.height;
+        const percentScrolled = (scrolledPastTop / sectionHeight) * 100;
+        
+        // Hide label when 20% or more of the last section has scrolled past the top
+        setHideStickyLabel(percentScrolled >= 20);
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    observer.observe(lastSection);
 
     return () => {
       observer.disconnect();
@@ -592,19 +630,19 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           // Create timeline with ScrollTrigger
           // We have 10 major sections
-          // Mobile: Constant scroll speed - one scroll = one section, regardless of scroll velocity
+          // Mobile: Ultra-slow controlled scroll - one section per scroll action
           // Desktop: Normal velocity-based scrolling
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: section,
               start: "top top",
               end: () => {
-                // Much longer distance on mobile for very slow, controlled scrolling
+                // Massively long distance on mobile for ultra-controlled scrolling
                 if (isLowPerformance) return "+=3000"; // Even shorter for Opera Mini
-                if (isMobile) return "+=50000"; // Extremely long distance = very slow scrolling
+                if (isMobile) return "+=50000"; // Extremely long distance = very slow, precise control
                 return "+=12000";
               },
-              scrub: isLowPerformance ? 0.05 : isMobile ? 5 : 1.5, // Higher scrub value = slower, more controlled
+              scrub: isLowPerformance ? 0.05 : isMobile ? 5 : 1.5, // Very high scrub = maximum control
               pin: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,
@@ -612,15 +650,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fastScrollEnd: false, // Disable for consistent mobile behavior
               // Prevent layout shifts
               pinReparent: false,
-              // Mobile-specific optimizations for constant speed
+              // Mobile-specific optimizations
               ...(isMobile && {
                 refreshPriority: -1,
-                snap: {
-                  snapTo: "labelsDirectional", // Snap to nearest section
-                  duration: { min: 0.3, max: 0.5 }, // Slightly slower snap for smoother feel
-                  delay: 0.15, // Slightly longer delay before snapping
-                  ease: "power1.inOut",
-                },
               }),
               // Low-performance browser optimizations
               ...(isLowPerformance && {
@@ -635,9 +667,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           const slideDuration = isLowPerformance ? 0.3 : isMobile ? 0.5 : 0.8; // Even faster for low-performance
           const slideEase =
             isLowPerformance || isMobile ? "none" : "power2.inOut"; // Simpler easing on mobile/low-performance
-
-          // Add label for toolkit section (for snap)
-          tl.addLabel("toolkit");
 
           if (isMobile) {
             tl.to(toolkitSection, {
@@ -698,7 +727,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 1: Auto-trigger first section text animation (CreateEvent)
-          tl.addLabel("firstSection"); // Add label for snap
           tl.call(
             () => {
               animateTextReveal(firstText);
@@ -761,7 +789,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 3: Slide to third section (Purchase/RSVP)
-          tl.addLabel("thirdSection"); // Add label for snap
           tl.add("thirdSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -811,7 +838,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 4: Slide to fourth section (Data Insights) & label change
-          tl.addLabel("fourthSection"); // Add label for snap
           tl.add("fourthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -899,7 +925,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 5: Slide to fifth section (Email Marketing)
-          tl.addLabel("fifthSection"); // Add label for snap
           tl.add("fifthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -949,7 +974,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 6: Slide to sixth section (Promotions)
-          tl.addLabel("sixthSection"); // Add label for snap
           tl.add("sixthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -999,7 +1023,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 7: Slide to seventh section (Marketing Insights)
-          tl.addLabel("seventhSection"); // Add label for snap
           tl.add("seventhSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -1049,7 +1072,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 8: Slide to eighth section (Mini Portfolio) & label change
-          tl.addLabel("eighthSection"); // Add label for snap
           tl.add("eighthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -1137,7 +1159,6 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           );
 
           // Phase 9: Slide to ninth section (Discovery Channel)
-          tl.addLabel("ninthSection"); // Add label for snap
           tl.add("ninthSection", sectionDelay);
           if (isMobile) {
             tl.to(
@@ -1425,8 +1446,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           {/* Container for sticky label and all sections */}
           <div className="relative min-h-fit overflow-visible">
-            {/* Sticky Label - Starts here and sticks to top on scroll */}
-            <div className="sticky top-0 left-0 w-full z-50 bg-[#EBE4D4]" style={{ WebkitTransform: 'translateZ(0)', isolation: 'isolate' }}>
+            {/* Sticky Label - Starts here and sticks to top on scroll, hides when last section is 20% scrolled */}
+            <div 
+              className="sticky top-0 left-0 w-full z-50 bg-[#EBE4D4] transition-opacity duration-300" 
+              style={{ 
+                WebkitTransform: 'translateZ(0)', 
+                isolation: 'isolate',
+                opacity: hideStickyLabel ? 0 : 1,
+                pointerEvents: hideStickyLabel ? 'none' : 'auto'
+              }}
+            >
             <Image
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
