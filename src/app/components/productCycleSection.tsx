@@ -599,12 +599,12 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               trigger: section,
               start: "top top",
               end: () => {
-                // Much shorter distance on mobile/low-performance for better performance
+                // Much longer distance on mobile for controlled one-section-at-a-time scrolling
                 if (isLowPerformance) return "+=3000"; // Even shorter for Opera Mini
-                if (isMobile) return "+=4000"; // Shorter scroll distance for mobile
+                if (isMobile) return "+=18000"; // Much longer scroll distance for controlled mobile scrolling
                 return "+=12000";
               },
-              scrub: isLowPerformance ? 0.05 : isMobile ? 0.1 : 1.5, // Near-instant for low-performance browsers
+              scrub: isLowPerformance ? 0.05 : isMobile ? 1.8 : 1.5, // Slower scrub for controlled mobile scrolling
               pin: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,

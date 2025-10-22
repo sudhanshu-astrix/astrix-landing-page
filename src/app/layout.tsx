@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import { Instrument_Serif } from "next/font/google";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
@@ -149,16 +149,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Preload critical hero video for mobile */}
+        {/* Prefetch hero video (lower priority than preload) - loads after critical resources */}
         <link
-          rel="preload"
+          rel="prefetch"
           href="/Assets/Images/HeroSectionMobile.mp4"
           as="video"
           type="video/mp4"
           media="(max-width: 767px)"
         />
         <link
-          rel="preload"
+          rel="prefetch"
           href="/Assets/Images/HeroSectionMobile.webm"
           as="video"
           type="video/webm"
