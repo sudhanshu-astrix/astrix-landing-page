@@ -143,15 +143,26 @@ export default function CollaboratorSectionMobile({
               >
                 <div className="relative w-full max-w-[260] overflow-hidden h-fit ">
                   {/* Image - Maintain original aspect ratio */}
-                  <div className=" w-full  h-full bg-[#023020]">
-                    <Image
-                      src={collaborator?.image}
-                      alt={collaborator?.title}
-                      width={260}
-                      height={300}
-                      loading={index < 2 ? "eager" : "lazy"}
-                      className="w-full h-full"
-                    />
+                  <div className="w-full h-full">
+                    {collaborator?.image ? (
+                      <Image
+                        src={collaborator?.image}
+                        alt={collaborator?.title}
+                        width={260}
+                        height={300}
+                        loading={index < 2 ? "eager" : "lazy"}
+                        className="w-full h-full"
+                        onLoadingComplete={(img) => {
+                          img.style.opacity = "1";
+                        }}
+                        style={{ transition: "opacity 0.3s", opacity: 1 }}
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full animate-pulse bg-[#232323] rounded"
+                        style={{ width: "260px", height: "300px" }}
+                      />
+                    )}
                   </div>
 
                   {/* Content */}

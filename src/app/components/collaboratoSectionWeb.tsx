@@ -298,21 +298,28 @@ export default function CollaboratorSectionWeb({
               >
                 <div className="relative group">
                   {/* Image - Maintain original aspect ratio */}
-                  <div className="relative overflow-hidden bg-[#023020]">
-                    <Image
-                      src={collaborator?.image}
-                      alt={collaborator?.title}
-                      width={350}
-                      height={400}
-                      loading={index < 2 ? "eager" : "lazy"}
-                      className="w-auto h-auto max-w-none transition-transform group-hover:scale-105"
-                      style={{
-                        width: "auto",
-                        height: "auto",
-                        maxHeight: "400px",
-                        maxWidth: "350px",
-                      }}
-                    />
+                  <div className="relative overflow-hidden">
+                    {collaborator?.image ? (
+                      <Image
+                        src={collaborator?.image}
+                        alt={collaborator?.title}
+                        width={350}
+                        height={400}
+                        loading={index < 2 ? "eager" : "lazy"}
+                        className="w-auto h-auto max-w-none transition-transform group-hover:scale-105"
+                        style={{
+                          width: "auto",
+                          height: "auto",
+                          maxHeight: "400px",
+                          maxWidth: "350px",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        className="w-[350px] h-[400px] animate-pulse bg-[#232323] rounded"
+                        style={{ width: "350px", height: "400px" }}
+                      />
+                    )}
                   </div>
 
                   {/* Content */}
