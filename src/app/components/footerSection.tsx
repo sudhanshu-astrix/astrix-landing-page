@@ -61,7 +61,7 @@ export default function FooterSection({ className }: { className?: string }) {
               />
             </a>
             <a
-              href="#"
+              href="https://x.com/astrix_live"
               aria-label="X"
               className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
             >

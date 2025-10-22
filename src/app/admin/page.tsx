@@ -116,7 +116,7 @@ export default function ContactsPage() {
             </thead>
             <tbody>
               {contacts.map((contact) => (
-                <tr key={contact._id} className="hover:bg-gray-50">
+                <tr key={contact._id} className="hover:bg-gray-700">
                   <td className="px-4 py-2 border">
                     {contact.firstName} {contact.lastName || ""}
                   </td>

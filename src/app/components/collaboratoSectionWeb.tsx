@@ -298,7 +298,7 @@ export default function CollaboratorSectionWeb({
               >
                 <div className="relative group">
                   {/* Image - Maintain original aspect ratio */}
-                  <div className="relative overflow-hidden">
+                  <div className="relative overflow-hidden bg-[#023020]">
                     <Image
                       src={collaborator?.image}
                       alt={collaborator?.title}
