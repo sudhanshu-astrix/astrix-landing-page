@@ -1414,7 +1414,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover absolute inset-0"
+              className="pointer-events-none object-cover absolute inset-0 opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
             <div className="pt-6 relative z-10">
@@ -1434,7 +1434,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             src="/Assets/Images/NoiseEffectBg.svg"
             alt="noise"
             fill
-            className="pointer-events-none object-cover z-0"
+            className="pointer-events-none object-cover z-0 opacity-60"
             style={{ mixBlendMode: "multiply" }}
           />
 
@@ -1479,7 +1479,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -1525,7 +1525,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -1566,7 +1566,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           ref={fourthSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
-          <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)]">
+          <div className="absolute top-0 left-0 w-full h-[calc(100%+0.5rem)] opacity-60">
             <Image
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
@@ -1617,7 +1617,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -1663,7 +1663,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -1709,7 +1709,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -1755,7 +1755,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -1801,7 +1801,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               src="/Assets/Images/NoiseEffectBg.svg"
               alt="noise"
               fill
-              className="pointer-events-none object-cover"
+              className="pointer-events-none object-cover opacity-60"
               style={{ mixBlendMode: "multiply" }}
             />
           </div>
@@ -2008,7 +2008,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2066,7 +2066,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2124,7 +2124,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2190,7 +2190,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2265,7 +2265,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2341,7 +2341,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2409,7 +2409,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2486,7 +2486,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
@@ -2564,7 +2564,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
-          className="pointer-events-none select-none object-cover z-0"
+          className="pointer-events-none select-none object-cover z-0 opacity-60"
           style={{ mixBlendMode: "multiply" }}
         />
 
