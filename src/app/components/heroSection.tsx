@@ -352,18 +352,19 @@ export default function HeroSection({ className }: { className?: string }) {
         }}
       >
         <div className="flex flex-col items-center text-white">
-          <div className="animate-bounce">
+          <div className="animate-bounce relative w-4 h-4">
             {/* Double down arrow using the DownArrow.svg image, stacked */}
-            <img
+            <Image
               src="/Assets/Icons/DownArrow.svg"
               alt="Down Arrow"
-              className="w-4 h-4"
+              fill
               draggable={false}
             />
-            <img
+            <Image
               src="/Assets/Icons/DownArrow.svg"
               alt="Down Arrow"
-              className="w-4 h-4 -mt-1.5"
+              fill
+              className="-mt-1.5"
               draggable={false}
             />
           </div>

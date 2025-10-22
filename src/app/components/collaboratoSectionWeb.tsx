@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { collaborators } from "@/utils/Data";
 
 // Register ScrollTrigger plugin
@@ -298,9 +299,11 @@ export default function CollaboratorSectionWeb({
                 <div className="relative group">
                   {/* Image - Maintain original aspect ratio */}
                   <div className="relative overflow-hidden">
-                    <img
+                    <Image
                       src={collaborator?.image}
                       alt={collaborator?.title}
+                      width={350}
+                      height={400}
                       className="w-auto h-auto max-w-none transition-transform group-hover:scale-105"
                       style={{
                         width: "auto",

@@ -47,7 +47,7 @@ export default function GrowthCycleSection({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "center center",
-          end: isMobile ? "+=6000" : "+=3000", // Reduced from 8000 to 6000 for better control
+          end: isMobile ? "+=2700" : "+=3000", // Reduced from 8000 to 6000 for better control
           scrub: isSafari && isMobile ? 0.5 : true, // Less smooth but faster on Safari mobile
           pin: true,
           anticipatePin: 1,

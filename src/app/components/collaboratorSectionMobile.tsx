@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useSwipeable } from "react-swipeable";
+import Image from "next/image";
 import { collaborators } from "@/utils/Data";
 
 interface CollaboratorSectionProps {
@@ -12,10 +13,6 @@ export default function CollaboratorSectionMobile({
 }: CollaboratorSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const [autoScrollInterval, setAutoScrollInterval] =
-    useState<NodeJS.Timeout | null>(null);
-  const [inactivityTimeout, setInactivityTimeout] =
-    useState<NodeJS.Timeout | null>(null);
 
   // Auto-scroll logic
   // const startAutoScroll = () => {
@@ -116,7 +113,7 @@ export default function CollaboratorSectionMobile({
         </div>
 
         {/* Horizontal Scrolling Cards - Below title on mobile, Right side on desktop */}
-        <div className="flex-1 relative h-[40vh]  w-full max-w-full  overflow-x-auto scrollbar-hide">
+        <div className="flex-1 relative h-[40vh] w-full max-w-full overflow-y-hidden overflow-x-auto scrollbar-hide">
           <div
             ref={setRefs}
             // {...handlers}
@@ -147,9 +144,11 @@ export default function CollaboratorSectionMobile({
                 <div className="relative w-full max-w-[260] overflow-hidden h-fit ">
                   {/* Image - Maintain original aspect ratio */}
                   <div className=" w-full  h-full ">
-                    <img
+                    <Image
                       src={collaborator?.image}
                       alt={collaborator?.title}
+                      width={260}
+                      height={300}
                       className="w-full h-full"
                     />
                   </div>
