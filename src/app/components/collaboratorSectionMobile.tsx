@@ -143,7 +143,7 @@ export default function CollaboratorSectionMobile({
               >
                 <div className="relative w-full max-w-[260] overflow-hidden h-fit ">
                   {/* Image - Maintain original aspect ratio */}
-                  <div className=" w-full  h-full ">
+                  <div className=" w-full  h-full bg-[#023020]">
                     <Image
                       src={collaborator?.image}
                       alt={collaborator?.title}
