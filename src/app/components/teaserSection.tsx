@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function TeaserSection({ className }: { className?: string }) {
   return (
     <section
@@ -12,9 +14,14 @@ export default function TeaserSection({ className }: { className?: string }) {
             <strong className="italic">already here</strong>
           </h3>
           <div className="mt-8">
-            <button className="w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cc2] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs">
+            <Link
+              href="https://app.astrix.live"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block w-fit px-5 py-2 rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cc2] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-xs"
+            >
               <p className="leading-none mt-0.5">GET STARTED</p>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
