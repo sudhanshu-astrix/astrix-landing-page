@@ -17,51 +17,51 @@ export default function CollaboratorSectionMobile({
     useState<NodeJS.Timeout | null>(null);
 
   // Auto-scroll logic
-  const startAutoScroll = () => {
-    console.log("autoooo scrollll")
-    if (autoScrollInterval) clearInterval(autoScrollInterval);
+  // const startAutoScroll = () => {
+  //   console.log("autoooo scrollll")
+  //   if (autoScrollInterval) clearInterval(autoScrollInterval);
 
-    const interval = setInterval(() => {
-      const container = cardsRef.current;
-      console.log(container, "container autoooo scrollll")
-      if (!container) return;
+  //   const interval = setInterval(() => {
+  //     const container = cardsRef.current;
+  //     console.log(container, "container autoooo scrollll")
+  //     if (!container) return;
 
-      container.scrollBy({ left: 2, behavior: "auto" });
+  //     container.scrollBy({ left: 2, behavior: "auto" });
 
-      // Check if we've reached the end (with some tolerance)
-      if (
-        container.scrollLeft + container.clientWidth >=
-        container.scrollWidth - 10
-      ) {
-        // Reset to start
-        container.scrollTo({ left: 0, behavior: "auto" });
-      }
-    }, 30);
+  //     // Check if we've reached the end (with some tolerance)
+  //     if (
+  //       container.scrollLeft + container.clientWidth >=
+  //       container.scrollWidth - 10
+  //     ) {
+  //       // Reset to start
+  //       container.scrollTo({ left: 0, behavior: "auto" });
+  //     }
+  //   }, 30);
 
-    setAutoScrollInterval(interval);
-  };
+  //   setAutoScrollInterval(interval);
+  // };
 
-  const stopAutoScroll = () => {
-    if (autoScrollInterval) {
-      clearInterval(autoScrollInterval);
-      setAutoScrollInterval(null);
-    }
-  };
+  // const stopAutoScroll = () => {
+  //   if (autoScrollInterval) {
+  //     clearInterval(autoScrollInterval);
+  //     setAutoScrollInterval(null);
+  //   }
+  // };
 
-  const restartAutoScroll = () => {
-    if (inactivityTimeout) clearTimeout(inactivityTimeout);
-    const timeout = setTimeout(() => startAutoScroll(), 3000);
-    setInactivityTimeout(timeout);
-  };
+  // const restartAutoScroll = () => {
+  //   if (inactivityTimeout) clearTimeout(inactivityTimeout);
+  //   const timeout = setTimeout(() => startAutoScroll(), 3000);
+  //   setInactivityTimeout(timeout);
+  // };
 
-  useEffect(() => {
-    const timer = setTimeout(startAutoScroll, 500); 
-    return () => {
-      clearTimeout(timer);
-      stopAutoScroll();
-      if (inactivityTimeout) clearTimeout(inactivityTimeout);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(startAutoScroll, 500); 
+  //   return () => {
+  //     clearTimeout(timer);
+  //     stopAutoScroll();
+  //     if (inactivityTimeout) clearTimeout(inactivityTimeout);
+  //   };
+  // }, []);
 
 
   // Swipe gesture integration
@@ -71,19 +71,19 @@ export default function CollaboratorSectionMobile({
       if (container) {
         container.scrollBy({ left: 300, behavior: "smooth" });
       }
-      stopAutoScroll();
-      restartAutoScroll();
+      // stopAutoScroll();
+      // restartAutoScroll();
     },
     onSwipedRight: () => {
       const container = cardsRef.current;
       if (container) {
         container.scrollBy({ left: -300, behavior: "smooth" });
       }
-      stopAutoScroll();
-      restartAutoScroll();
+      // stopAutoScroll();
+      // restartAutoScroll();
     },
     onSwipeStart: () => {
-      stopAutoScroll();
+      // stopAutoScroll();
     },
     preventScrollOnSwipe: false,
     trackMouse: false,
@@ -284,7 +284,7 @@ export default function CollaboratorSectionMobile({
                 className={`flex-shrink-0 cursor-pointer bg-transparent  flex ${
                   collaborator?.random % 2 === 0
                     ? "items-start"
-                    : "items-center"
+                    : "items-end"
                 }`}
                 // style={{ width: "fit-content" }}
                 style={{
