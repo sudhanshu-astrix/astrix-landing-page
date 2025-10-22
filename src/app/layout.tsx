@@ -8,6 +8,8 @@ const instrumentSerif = Instrument_Serif({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-instrument-serif",
+  display: 'swap',
+  preload: true,
 });
 
 const switzer = localFont({
@@ -95,6 +97,8 @@ const switzer = localFont({
     },
   ],
   variable: "--font-switzer",
+  display: 'swap',
+  preload: true,
 });
 
 const nohemi = localFont({
@@ -121,6 +125,8 @@ const nohemi = localFont({
     },
   ],
   variable: "--font-nohemi",
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -141,13 +147,33 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Preload critical hero video for mobile */}
+        <link
+          rel="preload"
+          href="/Assets/Images/HeroSectionMobile.mp4"
+          as="video"
+          type="video/mp4"
+          media="(max-width: 767px)"
+        />
+        <link
+          rel="preload"
+          href="/Assets/Images/HeroSectionMobile.webm"
+          as="video"
+          type="video/webm"
+          media="(min-width: 768px)"
+        />
+        {/* DNS prefetch for Google Analytics */}
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+      </head>
       <body className={`${switzer.variable} ${nohemi.variable} ${instrumentSerif.variable}  antialiased`}>
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-3XRZVZBTNJ"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

@@ -218,6 +218,7 @@ export default function HeroSection({ className }: { className?: string }) {
           src="/Assets/Images/NoiseEffectBg.svg"
           alt="noise texture"
           fill
+          priority
           className="absolute z-10 object-cover"
           style={{ mixBlendMode: "multiply" }}
         />
@@ -231,6 +232,7 @@ export default function HeroSection({ className }: { className?: string }) {
             src="/Assets/Icons/LogoIcon.png"
             alt="Astrix Logo"
             fill
+            priority
             objectFit="contain"
           />
         </div>

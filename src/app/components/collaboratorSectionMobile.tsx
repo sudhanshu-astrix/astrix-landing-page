@@ -149,6 +149,7 @@ export default function CollaboratorSectionMobile({
                       alt={collaborator?.title}
                       width={260}
                       height={300}
+                      loading={index < 2 ? "eager" : "lazy"}
                       className="w-full h-full"
                     />
                   </div>
