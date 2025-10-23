@@ -241,6 +241,7 @@ export default function HeroSection({ className }: { className?: string }) {
 
   return (
     <section
+      data-hero-section="true"
       className={`${
         className || ""
       } relative min-h-screen h-[100vh] md:h-fit w-full flex flex-col justify-between overflow-hidden`}
@@ -254,7 +255,7 @@ export default function HeroSection({ className }: { className?: string }) {
           playsInline
           webkit-playsinline="true"
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="hero-video absolute inset-0 w-full h-full object-cover"
           style={{
             objectFit: "cover",
             WebkitTransform: "translate3d(0, 0, 0)",
@@ -270,7 +271,7 @@ export default function HeroSection({ className }: { className?: string }) {
           {/* Mobile iOS uses mp4, Mobile Android and Desktop use webm */}
           {isMobile && isIOS ? (
             <source
-              src="/Assets/Images/HeroSectionMobileCompressed.mp4"
+              src="/Assets/Images/HeroSectionMobile.mp4"
               type="video/mp4"
             />
           ) : (
@@ -393,7 +394,7 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="relative w-full h-[30vh] md:hidden z-30">
           <video
             ref={mobileVideoRef}
-            className="object-cover w-full h-full"
+            className="hero-video object-cover w-full h-full"
             loop
             muted
             playsInline
@@ -417,7 +418,7 @@ export default function HeroSection({ className }: { className?: string }) {
             {/* iOS mobile uses mp4, Android mobile uses webm */}
             {isIOS ? (
               <source
-                src="/Assets/Images/HeroSectionMobileCompressed.mp4"
+                src="/Assets/Images/HeroSectionMobile.mp4"
                 type="video/mp4"
               />
             ) : (

@@ -191,7 +191,12 @@ let currentPlayingVideo: HTMLVideoElement | null = null;
 const pauseAllVideos = () => {
   const allVideos = document.querySelectorAll('video');
   allVideos.forEach(video => {
-    if (video !== currentPlayingVideo && !video.paused) {
+    // Don't pause HeroSection videos - they should play independently
+    const isHeroVideo = video.closest('[data-hero-section]') || 
+                       video.classList.contains('hero-video') ||
+                       video.id?.includes('hero');
+    
+    if (video !== currentPlayingVideo && !video.paused && !isHeroVideo) {
       video.pause();
     }
   });
@@ -199,11 +204,13 @@ const pauseAllVideos = () => {
 
 // iOS Safari Optimized Media Component - Single video playback management
 const MediaComponent = ({
+  objectFit,
   mp4Src,
   webmSrc,
   isMobile,
   className = "",
 }: {
+  objectFit: string;
   mp4Src: string;
   webmSrc: string;
   isMobile: boolean;
@@ -328,7 +335,7 @@ const MediaComponent = ({
       preload="none"
       poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
       style={{
-        objectFit: 'cover',
+        objectFit: objectFit,
         width: '100%',
         height: '100%',
         // iOS Safari specific optimizations
@@ -487,6 +494,153 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
     return () => {
       observer.disconnect();
+    };
+  }, [isMobile]);
+
+  // Mobile: Snap scroll behavior - only scroll to complete sections within ProductCycleSection
+  useEffect(() => {
+    if (!isMobile) return;
+
+    let isScrolling = false;
+    let scrollTimeout: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      if (isScrolling) return;
+      isScrolling = true;
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 150);
+
+      // Get all sections
+      const sections = [
+        firstSectionRef.current,
+        secondSectionRef.current,
+        thirdSectionRef.current,
+        fourthSectionRef.current,
+        fifthSectionRef.current,
+        sixthSectionRef.current,
+        seventhSectionRef.current,
+        eighthSectionRef.current,
+        ninthSectionRef.current,
+      ].filter(Boolean);
+
+      if (sections.length === 0) return;
+
+      // Check if we're within the ProductCycleSection boundaries
+      const firstSection = firstSectionRef.current;
+      const lastSection = ninthSectionRef.current;
+      
+      if (!firstSection || !lastSection) return;
+
+      const firstSectionRect = firstSection.getBoundingClientRect();
+      const lastSectionRect = lastSection.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+
+      // Only apply snap logic if we're within the ProductCycleSection
+      // Check if the first section is above the viewport and last section is below
+      const isWithinProductCycle = firstSectionRect.bottom > 0 && lastSectionRect.top < viewportHeight;
+      
+      if (!isWithinProductCycle) {
+        // We're outside the ProductCycleSection, don't apply snap logic
+        return;
+      }
+
+      // Find the section with the most visible area
+      let mostVisibleSection = sections[0];
+      let maxVisibleArea = 0;
+
+      sections.forEach((section) => {
+        if (!section) return;
+        
+        const rect = section.getBoundingClientRect();
+        
+        // Calculate visible area
+        const visibleTop = Math.max(0, rect.top);
+        const visibleBottom = Math.min(viewportHeight, rect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const visibleArea = visibleHeight * rect.width;
+        
+        if (visibleArea > maxVisibleArea) {
+          maxVisibleArea = visibleArea;
+          mostVisibleSection = section;
+        }
+      });
+
+      // Calculate how much of the most visible section is in view
+      if (!mostVisibleSection) return;
+      
+      const rect = mostVisibleSection.getBoundingClientRect();
+      const visibleHeight = Math.min(viewportHeight, rect.bottom) - Math.max(0, rect.top);
+      const sectionHeight = rect.height;
+      const visiblePercentage = (visibleHeight / sectionHeight) * 100;
+
+      // Check if we're in a "stuck" state where multiple sections are partially visible
+      const currentIndex = sections.indexOf(mostVisibleSection);
+      let shouldSnap = false;
+      let snapDirection = 'next';
+
+      // If the current section is less than 50% visible, we need to snap
+      if (visiblePercentage < 50) {
+        shouldSnap = true;
+        
+        // Determine snap direction based on section position relative to viewport center
+        const sectionTop = rect.top;
+        const viewportCenter = viewportHeight / 2;
+        
+        if (sectionTop > viewportCenter) {
+          // Section is below center, snap to previous section
+          snapDirection = 'prev';
+        } else {
+          // Section is above center, snap to next section
+          snapDirection = 'next';
+        }
+      } else {
+        // Check if we're in a "stuck" state with multiple sections partially visible
+        // Look for sections that are 40-60% visible (stuck between sections)
+        const stuckSections = sections.filter((section) => {
+          if (!section) return false;
+          const sectionRect = section.getBoundingClientRect();
+          const sectionVisibleHeight = Math.min(viewportHeight, sectionRect.bottom) - Math.max(0, sectionRect.top);
+          const sectionVisiblePercentage = (sectionVisibleHeight / sectionRect.height) * 100;
+          return sectionVisiblePercentage >= 40 && sectionVisiblePercentage <= 60;
+        });
+
+        if (stuckSections.length >= 2) {
+          // We're stuck between sections, snap to the next one
+          shouldSnap = true;
+          snapDirection = 'next';
+        }
+      }
+
+      if (shouldSnap) {
+        if (snapDirection === 'prev' && currentIndex > 0) {
+          const prevSection = sections[currentIndex - 1];
+          if (prevSection) {
+            prevSection.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        } else if (snapDirection === 'next' && currentIndex < sections.length - 1) {
+          const nextSection = sections[currentIndex + 1];
+          if (nextSection) {
+            nextSection.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      }
+    };
+
+    // Add scroll event listener with passive: false to allow preventDefault
+    window.addEventListener('scroll', handleScroll, { passive: false });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
     };
   }, [isMobile]);
 
@@ -1665,6 +1819,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Create_Event.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Create_Event.webm"
                 isMobile={isMobile}
@@ -1712,6 +1867,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative bg-transparent">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Issue_Tickets.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
                 isMobile={isMobile}
@@ -1740,6 +1896,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Purchase.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Purchase.webm"
                 isMobile={isMobile}
@@ -1806,6 +1963,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Data_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                 isMobile={isMobile}
@@ -1853,6 +2011,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Email_Marketing.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                 isMobile={isMobile}
@@ -1881,6 +2040,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Promotions.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Promotions.webm"
                 isMobile={isMobile}
@@ -1947,6 +2107,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Marketing_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
                 isMobile={isMobile}
@@ -1994,6 +2155,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
+              objectFit="contain"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Mini_Portfolio.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
                 isMobile={isMobile}
@@ -2022,6 +2184,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="h-full w-full flex flex-col z-10 pt-24">
             <div className="w-full h-1/2 relative order-2">
               <MediaComponent
+                objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Discovery_Channel.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
                 isMobile={isMobile}
@@ -2029,7 +2192,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               />
             </div>
             <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between pb-4">
-              <div className="w-full flex flex-col items-end justify-center gap-8 mt-4">
+              <div className="w-full flex flex-col items-end justify-center gap-4">
                 <AnimatedText
                   text="Let your audience explore nearby experiences on the map, RSVP with a tap, view an interactive calendar"
                   className="text-xl font-switzer font-[400] text-[#363636] leading-tight w-full"
@@ -2256,6 +2419,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Create_Event.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Create_Event.webm"
                 isMobile={isMobile}
@@ -2314,6 +2478,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Issue_Tickets.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Issue_Tickets.webm"
                 isMobile={isMobile}
@@ -2347,6 +2512,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full">
             <div className="relative w-full h-full top-0 left-0">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Purchase.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Purchase.webm"
                 isMobile={isMobile}
@@ -2455,6 +2621,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full relative z-10">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Data_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                 isMobile={isMobile}
@@ -2531,6 +2698,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative top-0 left-0">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Email_Marketing.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                 isMobile={isMobile}
@@ -2564,6 +2732,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           <div className="w-full md:w-1/2 relative flex items-center justify-center h-1/2 md:h-full md:order-1">
             <div className="w-full h-full overflow-hidden relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Promotions.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Promotions.webm"
                 isMobile={isMobile}
@@ -2676,6 +2845,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Marketing_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Marketing-Insights.webm"
                 isMobile={isMobile}
@@ -2754,6 +2924,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Mini_Portfolio.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Mini_Portfolio.webm"
                 isMobile={isMobile}
@@ -2795,6 +2966,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative">
               <MediaComponent
+              objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Discovery_Channel.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Discovery_Channel.webm"
                 isMobile={isMobile}
