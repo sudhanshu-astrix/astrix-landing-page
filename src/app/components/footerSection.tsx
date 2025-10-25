@@ -23,13 +23,13 @@ export default function FooterSection({ className }: { className?: string }) {
           <a href="#" className="hover:text-[#CCD0D7] transition-colors">
             Home
           </a>
-          <a href="#" className="hover:text-[#CCD0D7] transition-colors">
+          <a href="/terms" className="hover:text-[#CCD0D7] transition-colors">
             Terms &amp; Conditions
           </a>
-          <a href="#" className="hover:text-[#CCD0D7] transition-colors">
+          <a href="/privacy" className="hover:text-[#CCD0D7] transition-colors">
             Privacy policy
           </a>
-          <a href="#" className="hover:text-[#CCD0D7] transition-colors">
+          <a href="/refund" className="hover:text-[#CCD0D7] transition-colors">
             Refund Policy
           </a>
           <a href="#contact" className="hover:text-[#CCD0D7] transition-colors">
