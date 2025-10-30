@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
+import GlobalMenu from "./components/GlobalMenu";
 import { Instrument_Serif } from "next/font/google";
 import { Toaster } from "sonner";
 
@@ -131,7 +132,7 @@ const nohemi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Astrix - Omnichannel Community Building Platform",
+  title: "Astrix - Build for the Shift",
   description:
     "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
   icons: {
@@ -181,6 +182,7 @@ export default function RootLayout({
         </Script>
         <Toaster position="top-center" richColors />
         {children}
+        <GlobalMenu />
       </body>
     </html>
   );

@@ -1668,6 +1668,110 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     };
   }, [isMobile]);
 
+  // Desktop: Jump to a specific internal slide when requested
+  useEffect(() => {
+    if (isMobile) return;
+    const handler = (e: Event) => {
+      const custom = e as CustomEvent<{ id: string }>;
+      const id = custom.detail?.id;
+      if (!id || !sectionRef.current) return;
+
+      const order = [
+        "pc-create-event",
+        "pc-issue-tickets",
+        "pc-purchase-rsvp",
+        "pc-data-insights",
+        "pc-email-marketing",
+        "pc-promotions",
+        "pc-marketing-insights",
+        "pc-mini-portfolio",
+        "pc-discovery-channel",
+      ];
+      const index = Math.max(0, order.indexOf(id));
+
+      // Ensure we're at the section first, then compute exact ScrollTrigger range
+      const sectionEl = sectionRef.current;
+      const sectionTop = sectionEl.getBoundingClientRect().top + window.scrollY;
+
+      const goToSlide = () => {
+        // Find the ScrollTrigger instance for this section
+        const st = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+        if (!st) {
+          // If ST isn't ready yet, try again on next frame
+          requestAnimationFrame(goToSlide);
+          return;
+        }
+        const stWithAnim = st as unknown as { animation?: gsap.core.Timeline };
+        const tl = stWithAnim.animation;
+        if (!tl) {
+          requestAnimationFrame(goToSlide);
+          return;
+        }
+
+        // Map each id to the NEXT timeline label (or duration for last),
+        // so the selected section ends fully in view, not mid-transition.
+        const idToNextLabel: Record<string, string | "duration"> = {
+          "pc-create-event": "secondSection",
+          "pc-issue-tickets": "thirdSection",
+          "pc-purchase-rsvp": "fourthSection",
+          "pc-data-insights": "fifthSection",
+          "pc-email-marketing": "sixthSection",
+          "pc-promotions": "seventhSection",
+          "pc-marketing-insights": "eighthSection",
+          "pc-mini-portfolio": "ninthSection",
+          "pc-discovery-channel": "duration",
+        };
+
+        let targetTime: number = 0;
+        const key = idToNextLabel[id];
+        if (key === "duration") {
+          targetTime = tl.duration();
+        } else if (typeof key === "string") {
+          targetTime = tl.labels[key] ?? 0;
+        }
+        // Nudge slightly before the label to ensure the section is fully settled
+        if (targetTime > 0.05) targetTime -= 0.05;
+
+        try {
+          tl.tweenTo(targetTime as gsap.Position, { ease: "power2.inOut", duration: 0.8 });
+        } catch {
+          // Fallback to scroll mapping if tweenTo fails
+          const start = typeof st.start === 'number' ? st.start : (st.start as number);
+          const end = typeof st.end === 'number' ? st.end : (st.end as number);
+          const total = (end as number) - (start as number);
+          const per = total / (order.length - 1);
+          const targetIndex = Math.min(order.length - 1, index + 1); // next section
+          const targetY = (start as number) + targetIndex * per;
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+        }
+      };
+
+      // If we're not near the section yet, scroll to it first and wait
+      const threshold = 32;
+      if (Math.abs(window.scrollY - sectionTop) > threshold) {
+        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+        // Poll until the section top is reached before jumping inside
+        let tries = 0;
+        const maxTries = 40; // ~2s at 50ms
+        const interval = setInterval(() => {
+          tries++;
+          const y = window.scrollY;
+          if (Math.abs(y - sectionTop) <= threshold || tries >= maxTries) {
+            clearInterval(interval);
+            // Allow pinning to settle
+            setTimeout(goToSlide, 50);
+          }
+        }, 50);
+      } else {
+        // Already at section; jump immediately
+        goToSlide();
+      }
+    };
+
+    window.addEventListener("gotoProductCycle", handler as EventListener);
+    return () => window.removeEventListener("gotoProductCycle", handler as EventListener);
+  }, [isMobile]);
+
   // Mobile Render: Simple vertical scroll with labels
   if (isMobile) {
     return (
@@ -1785,6 +1889,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
           {/* Section 1: Create Event */}
           <section
+            id="pc-create-event"
             ref={firstSectionRef}
             className="h-screen w-full bg-[#EBE4D4] flex flex-col relative gap-0 snap-section"
           >
@@ -1831,6 +1936,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 2: Issue Tickets */}
         <section
+          id="pc-issue-tickets"
           ref={secondSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -1879,6 +1985,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 3: Purchase/RSVP */}
         <section
+          id="pc-purchase-rsvp"
           ref={thirdSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -1927,6 +2034,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 4: Data Insights */}
         <section
+          id="pc-data-insights"
           ref={fourthSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -1975,6 +2083,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 5: Email Marketing */}
         <section
+          id="pc-email-marketing"
           ref={fifthSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -2023,6 +2132,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 6: Promotions */}
         <section
+          id="pc-promotions"
           ref={sixthSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -2071,6 +2181,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 7: Marketing Insights */}
         <section
+          id="pc-marketing-insights"
           ref={seventhSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -2119,6 +2230,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Section 8: Mini Portfolio */}
         <section
+          id="pc-mini-portfolio"
           ref={eighthSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -2165,8 +2277,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
         </section>
 
-          {/* Section 9: Discovery Channel */}
+        {/* Section 9: Discovery Channel */}
         <section
+          id="pc-discovery-channel"
           ref={ninthSectionRef}
           className="h-screen w-full bg-[#EBE4D4] flex flex-col relative snap-section"
         >
@@ -2220,10 +2333,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   // Desktop Render: GSAP horizontal scroll
   return (
     <section
+      id="product-cycle-root"
       ref={sectionRef}
       className={`${
         className || ""
-      } w-full h-screen flex relative overflow-hidden`}
+      } w-full h-screen flex relative z-60 overflow-hidden`}
     >
       {/* Toolkit Section - Slides in from right first */}
       <div
@@ -2373,6 +2487,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* First Section - Create Event - Slides in from right */}
       <div
+        id="pc-create-event"
         ref={firstSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
@@ -2432,6 +2547,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Second Section - Issue Tickets - Slides in from right */}
       <div
+        id="pc-issue-tickets"
         ref={secondSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
@@ -2491,6 +2607,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Third Section - Purchase/RSVP - Slides in from right */}
       <div
+        id="pc-purchase-rsvp"
         ref={thirdSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
@@ -2558,6 +2675,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Fourth Section - Data Insights - Slides in from right */}
       <div
+        id="pc-data-insights"
         ref={fourthSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
@@ -2634,6 +2752,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Fifth Section - Email Marketing */}
       <div
+        id="pc-email-marketing"
         ref={fifthSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
@@ -2711,6 +2830,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Sixth Section - Promotions and Discount Codes */}
       <div
+        id="pc-promotions"
         ref={sixthSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
@@ -2780,6 +2900,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Seventh Section - Marketing Insights */}
       <div
+        id="pc-marketing-insights"
         ref={seventhSectionRef}
         className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{

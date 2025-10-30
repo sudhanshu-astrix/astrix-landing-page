@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -12,6 +12,7 @@ export default function GrowthCycleSection({
   className?: string;
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isTitleSticky, setIsTitleSticky] = useState(true);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -143,16 +144,39 @@ export default function GrowthCycleSection({
     return () => ctx.revert();
   }, []);
 
+  // Toggle title stickiness based on center circle position
+  useEffect(() => {
+    const handle = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      const centerEl = section.querySelector('.center') as HTMLElement | null;
+      if (!centerEl) return;
+      const rect = centerEl.getBoundingClientRect();
+      const threshold = -0.3 * rect.height; // 30% out above the top
+      const shouldStick = rect.top > threshold;
+      setIsTitleSticky(shouldStick);
+    };
+
+    handle();
+    window.addEventListener('scroll', handle, { passive: true });
+    window.addEventListener('resize', handle);
+    return () => {
+      window.removeEventListener('scroll', handle as EventListener);
+      window.removeEventListener('resize', handle as EventListener);
+    };
+  }, []);
+
   return (
     <>
       {/* Growth Cycle Section */}
       <section
+        id="growth-cycle-root"
         ref={sectionRef}
         className={`${
           className || ""
         } h-fit min-h-screen bg-[#0A0A0A] flex flex-col justify-between py-10 gap-10 relative`}
       >
-        <div className="w-full max-w-6xl mx-auto px-6 md:px-10 text-center">
+        <div className={`${isTitleSticky ? "md:sticky md:top-10 md:z-50" : "relative"} w-full max-w-6xl mx-auto px-6 md:px-10 text-center transition-all duration-200`}>
           <h2 className="text-[48px] sm:text-[56px] md:text-[64px] leading-none text-[#F0E9B2] instrument-serif-regular">
             Growth Cycle
           </h2>

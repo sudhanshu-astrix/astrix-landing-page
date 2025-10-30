@@ -238,6 +238,23 @@ export default function CollaboratorSectionWeb({
         ease: "none",
       });
 
+      // Also respond to horizontal wheel gestures (trackpads) by translating
+      // horizontal delta into vertical scroll so the pinned timeline scrubs.
+      const handleWheel = (e: WheelEvent) => {
+        // Only react when horizontal intent is stronger than vertical
+        if (!section.contains(e.target as Node)) return;
+        const absX = Math.abs(e.deltaX);
+        const absY = Math.abs(e.deltaY);
+        if (absX > absY && absX > 0) {
+          e.preventDefault();
+          // Map horizontal movement to vertical scroll to drive ScrollTrigger
+          // Boost factor to roughly match the feel of vertical wheel speed
+          const speedFactor = 3; // tune for parity with deltaY feel
+          window.scrollBy({ top: e.deltaX * speedFactor, behavior: "auto" });
+        }
+      };
+      window.addEventListener("wheel", handleWheel, { passive: false });
+
       // Safari-specific delayed refresh to prevent rendering issues
       if (isSafari) {
         gsap.delayedCall(1.5, () => {
@@ -247,6 +264,7 @@ export default function CollaboratorSectionWeb({
 
       return () => {
         ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        window.removeEventListener("wheel", handleWheel as EventListener);
       };
     }
   }, []);
@@ -340,6 +358,42 @@ export default function CollaboratorSectionWeb({
           </div>
         </div>
       </div>
+
+      {/* Bottom-right skip control */}
+      <button
+        onClick={() => {
+          const next = document.getElementById('growth-cycle-root');
+          if (next) {
+            next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+          }
+        }}
+        className="absolute bottom-6 cursor-pointer transition-all duration-300 right-6 z-50 flex items-center gap-2"
+        aria-label="Skip to next section"
+      >
+        <div className="flex flex-row items-center gap-3 text-white">
+          <span className="text-xs font-nohemi font-[300] text-[#9C9C9C] hover:text-white transition-colors">
+            Skip To Next Section
+          </span>
+          <div className="relative -rotate-90 w-3 h-3">
+            {/* Double down arrow using the DownArrow.svg image, stacked */}
+            <Image
+              src="/Assets/Icons/DownArrow.svg"
+              alt="Down Arrow"
+              fill
+              draggable={false}
+            />
+            <Image
+              src="/Assets/Icons/DownArrow.svg"
+              alt="Down Arrow"
+              fill
+              className="-mt-[6px]"
+              draggable={false}
+            />
+          </div>
+        </div>
+      </button>
     </section>
   );
 }

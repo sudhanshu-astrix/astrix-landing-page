@@ -7,6 +7,8 @@ import { useState, useEffect, useRef } from "react";
 
 export default function HeroSection({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [isServicesDropdownOpenMobile, setIsServicesDropdownOpenMobile] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -16,6 +18,23 @@ export default function HeroSection({ className }: { className?: string }) {
     // Scroll to top on page reload/load for all devices
     window.scrollTo(0, 0);
 
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isServicesDropdownOpen) {
+        const target = event.target as Element;
+        if (!target.closest('[data-services-dropdown]')) {
+          setIsServicesDropdownOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isServicesDropdownOpen]);
+
+  useEffect(() => {
     // Detect iOS and mobile
     const checkIOS = () => {
       return (
@@ -28,11 +47,11 @@ export default function HeroSection({ className }: { className?: string }) {
     setIsIOS(checkIOS());
     setIsMobile(checkMobile);
 
-    const isMobile = checkMobile;
+    const isMobileDevice = checkMobile;
     const isIOSDevice = checkIOS();
     const isOldIOS = /OS [1-9]_|OS 10_|OS 11_/.test(navigator.userAgent);
 
-    if (isMobile && videoRef.current && mobileVideoRef.current) {
+    if (isMobileDevice && videoRef.current && mobileVideoRef.current) {
       // Mobile: iOS Safari optimized video playback
       const backgroundVideo = videoRef.current;
       const mobileVideo = mobileVideoRef.current;
@@ -195,7 +214,7 @@ export default function HeroSection({ className }: { className?: string }) {
         document.removeEventListener("touchstart", handleUserInteraction);
         document.removeEventListener("click", handleUserInteraction);
       };
-    } else if (!isMobile && videoRef.current) {
+    } else if (!isMobileDevice && videoRef.current) {
       // Desktop: play the background video
       const backgroundVideo = videoRef.current;
 
@@ -222,7 +241,7 @@ export default function HeroSection({ className }: { className?: string }) {
         backgroundVideo.removeEventListener("canplay", handleCanPlay);
       };
     }
-  }, []);
+  }, [isMobile, isIOS]);
 
   const handleNavClick = (targetId: string) => {
     disableScrollPinning(); // temporarily unpin
@@ -237,6 +256,34 @@ export default function HeroSection({ className }: { className?: string }) {
 
     // Re-enable pinning after a short delay (once scroll completes)
     setTimeout(() => enableScrollPinning(), 3000);
+  };
+
+  const scrollToProductSection = (targetId: string) => {
+    setIsServicesDropdownOpen(false);
+    setIsMenuOpen(false);
+    disableScrollPinning();
+
+    const isDesktop = window.innerWidth >= 768;
+
+    if (isDesktop) {
+      const root = document.getElementById("product-cycle-root");
+      if (root) {
+        root.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Dispatch after a short delay to allow pin to engage
+        setTimeout(() => {
+          window.dispatchEvent(
+            new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
+          );
+        }, 200);
+      }
+    } else {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    setTimeout(() => enableScrollPinning(), 2000);
   };
 
   return (
@@ -255,7 +302,9 @@ export default function HeroSection({ className }: { className?: string }) {
           playsInline
           webkit-playsinline="true"
           preload="auto"
-          className="hero-video absolute inset-0 w-full h-full object-cover"
+          className={`hero-video absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
+            isServicesDropdownOpen ? 'blur-sm' : ''
+          }`}
           style={{
             objectFit: "cover",
             WebkitTransform: "translate3d(0, 0, 0)",
@@ -289,11 +338,16 @@ export default function HeroSection({ className }: { className?: string }) {
           alt="noise texture"
           fill
           priority
-          className="absolute z-10 object-cover"
+          className={`absolute z-10 object-cover transition-all duration-300 ${
+            isServicesDropdownOpen ? 'blur-sm' : ''
+          }`}
           style={{ mixBlendMode: "multiply" }}
         />
 
-        <div className="absolute inset-0 bg-black/40 z-20"></div>
+        {/* Desktop overlay shown only when Services dropdown is open */}
+        {isServicesDropdownOpen && !isMobile && (
+          <div className="hidden md:block absolute inset-0 z-20 bg-black/30 backdrop-blur-sm transition-all duration-300"></div>
+        )}
       </div>
 
       <nav className="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full">
@@ -313,18 +367,77 @@ export default function HeroSection({ className }: { className?: string }) {
               ABOUT
             </p>
           </button>
+          
+          {/* Services Dropdown */}
+          <div className="relative" data-services-dropdown>
+            <button 
+              onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+            >
+              <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+                SERVICES
+              </p>
+              <svg 
+                className={`w-3 h-3 ml-1 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            {/* Services Dropdown Menu */}
+            {isServicesDropdownOpen && (
+              <div className="absolute top-full -left-56 mt-2 w-[650px] bg-[#141414] rounded-lg border border-[#4e4e4e87] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] z-50">
+                <div className="p-6 grid grid-cols-3 gap-8">
+                  {/* Distribute Column */}
+                  <div>
+                    <h3 className="text-[#E8EAED] text-sm font-instrument-serif font-[400] mb-2">Distribute</h3>
+                    <ul className="space-y-1 ml-2">
+                      <li><button onClick={() => scrollToProductSection('pc-create-event')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Create Event</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-issue-tickets')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Issue Ticket</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-purchase-rsvp')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Purchase/RSVP</button></li>
+                    </ul>
+                  </div>
+                  
+                  {/* Retarget Column */}
+                  <div>
+                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Retarget</h3>
+                    <ul className="space-y-1 ml-2">
+                      <li><button onClick={() => scrollToProductSection('pc-data-insights')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Data Insights</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-email-marketing')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Email Marketing</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-promotions')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Promotions / Discounts</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-marketing-insights')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Marketing Insights</button></li>
+                    </ul>
+                  </div>
+                  
+                  {/* Discover Column */}
+                  <div>
+                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Discover</h3>
+                    <ul className="space-y-1 ml-2">
+                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Mini Portfolio</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-discovery-channel')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Discovery Channel</button></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
           <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
-              PRICING
+              RESOURCES
             </p>
           </button>
+          
           <Link
             href="#contact"
             onClick={() => handleNavClick("contact")}
             className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
           >
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
-              CONTACT
+              CONTACT US
             </p>
           </Link>
         </div>
@@ -466,14 +579,14 @@ export default function HeroSection({ className }: { className?: string }) {
 
       {/* Mobile Menu - Slides in from right */}
       <div
-        className={`fixed top-0 right-0 h-full w-80 bg-[#1f1f1f] z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed top-0 right-0 h-full w-80 bg-[#0F0F0F] z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full relative">
           {/* Menu Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-700">
-            <div className="flex items-center gap-2 w-[60px] h-[20px] relative">
+          <div className="flex items-center justify-between px-6 pt-6">
+            <div className="flex items-center gap-2 w-[80px] h-[30px] relative">
               <Image
                 src="/Assets/Icons/LogoIcon.png"
                 alt="Astrix Logo"
@@ -494,7 +607,7 @@ export default function HeroSection({ className }: { className?: string }) {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
@@ -502,40 +615,104 @@ export default function HeroSection({ className }: { className?: string }) {
           </div>
 
           {/* Menu Items */}
-          <div className="flex-1 flex flex-col justify-start px-6 pt-8 space-y-6">
+          <div className="flex-1 flex flex-col justify-start px-3 pt-8 space-y-4">
             <Link
               href="#"
-              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm"
+              className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
               onClick={() => setIsMenuOpen(false)}
             >
               ABOUT
             </Link>
+            
+            {/* Services Dropdown for Mobile */}
+            <div className="space-y-3">
+              <button
+                onClick={() => setIsServicesDropdownOpenMobile(!isServicesDropdownOpenMobile)}
+                className={`flex py-2 px-4 hover:bg-[#1F1F1F] items-center justify-between w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm ${isServicesDropdownOpenMobile && 'bg-[#1F1F1F]'}`}
+              >
+                <span>{`SERVICES`}</span>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-200 ${isServicesDropdownOpenMobile ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isServicesDropdownOpenMobile && (
+                <div className="pl-4 space-y-4">
+                  <div>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Distribute</h4>
+                    <ul className="space-y-1 pl-2">
+                      <li><button onClick={() => scrollToProductSection('pc-create-event')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Create Event</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-issue-tickets')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Issue Tickets</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-purchase-rsvp')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Purchase/RSVP</button></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Retarget</h4>
+                    <ul className="space-y-1 pl-2">
+                      <li><button onClick={() => scrollToProductSection('pc-data-insights')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Data Insights</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-email-marketing')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Email Marketing</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-promotions')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Promotions / Discounts</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-marketing-insights')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Marketing Insights</button></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Discover</h4>
+                    <ul className="space-y-1 pl-2">
+                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Mini Portfolio</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-discovery-channel')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Discovery Channel</button></li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+            
             <Link
               href="#"
-              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm"
+              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
               onClick={() => setIsMenuOpen(false)}
             >
-              PRICING
+              RESOURCES
             </Link>
+            
             <Link
               href="#contact"
               onClick={() => {
                 setIsMenuOpen(false);
                 handleNavClick("contact");
               }}
-              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm"
+              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
             >
               CONTACT US
+            </Link>
+            <div className="absolute bottom-0 right-0 w-full p-5 flex flex-row gap-4">
+            <Link
+              href="https://app.astrix.live"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-fit px-3 py-1 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] leading-none text-shadow-sm"
+            >
+              <p className="leading-none">
+                GET STARTED
+              </p>
             </Link>
             <Link
               href="https://app.astrix.live"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-fit px-5 py-2 flex items-center font-nohemi font-[400] justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-xs leading-none text-shadow-sm"
-              onClick={() => setIsMenuOpen(false)}
+              className="w-fit px-3 py-1 flex items-center font-nohemi font-[400] justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-[10px] leading-none text-shadow-sm"
+              onClick={() => {
+                setIsMenuOpen(false);
+                handleNavClick("contact");
+              }}
             >
-              <p className="leading-none mt-0.5">GET STARTED</p>
+              <p className="leading-none mt-0.5">BOOK A DEMO</p>
             </Link>
+            </div>
           </div>
         </div>
       </div>
