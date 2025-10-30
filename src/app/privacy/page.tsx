@@ -22,7 +22,7 @@ const PrivacyPage = () => {
               <section>
                 <h2 className="font-semibold text-base text-[#AFB6C0]">1. Introduction</h2>
                 <p>
-                  For ease of reference, the use of terms such as “Astrix,” “we,” “us,” “our,” and/or “Company” refer to Tikitin Solutions Private Limited, a private limited company duly incorporated under the Companies Act, 2013, with its registered office at [COMPANY ADDRESS].
+                  For ease of reference, the use of terms such as “Astrix,” “we,” “us,” “our,” and/or “Company” refer to Tikitin Solutions Private Limited, a private limited company duly incorporated under the Companies Act, 2013, with its registered office at Office No. 1, 1st Floor, Suite 168, Sapphire Chambers Riviresa, Baner, Pune – 411045.
                 </p>
                 <p>
                   The terms “You,” “your,” and/or “user(s)” refer to:
@@ -86,7 +86,7 @@ const PrivacyPage = () => {
                   <br />
                   Email: <a href="mailto:privacy@astrix.live" className="text-blue-400 underline">privacy@astrix.live</a>
                   <br />
-                  Address: [COMPANY ADDRESS]
+                  Address: Office No. 1, 1st Floor, Suite 168, Sapphire Chambers Riviresa, Baner, Pune – 411045
                 </p>
               </section>
 

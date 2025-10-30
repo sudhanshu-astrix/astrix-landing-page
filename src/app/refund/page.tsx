@@ -25,7 +25,7 @@ const RefundPage: React.FC = () => {
 
         <h2 className="font-semibold">2. Definitions</h2>
         <ul className="list-disc list-inside">
-          <li><b>Astrix:</b> Tikitin Solutions Private Limited, registered office at [COMPANY ADDRESS].</li>
+          <li><b>Astrix:</b> Tikitin Solutions Private Limited, registered office at Office No. 1, 1st Floor, Suite 168, Sapphire Chambers Riviresa, Baner, Pune – 411045.</li>
           <li><b>Event:</b> Any performance, show, concert, sports event, or other activity for which tickets are sold via the Platform.</li>
           <li><b>Event Partner:</b> The organizer/producer (artists, venues, teams, fan clubs, promoters, leagues, etc.).</li>
           <li><b>Platform:</b> The Astrix application, website, and related services.</li>

@@ -25,7 +25,7 @@ const TermsPage: React.FC = () => {
           <h2 className="font-semibold">1. Definitions</h2>
           <ul className="list-disc list-inside ml-3">
             <li>
-              <b>Astrix:</b> Tikitin Solutions Private Limited, incorporated under the Companies Act, 2013, with its registered office at [COMPANY ADDRESS].
+              <b>Astrix:</b> Tikitin Solutions Private Limited, incorporated under the Companies Act, 2013, with its registered office at Office No. 1, 1st Floor, Suite 168, Sapphire Chambers Riviresa, Baner, Pune – 411045.
             </li>
             <li>
               <b>Content:</b> All text, information, data, software, executable code, images, audio, and video provided on or through the Services.
