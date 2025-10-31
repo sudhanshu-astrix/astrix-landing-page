@@ -303,7 +303,7 @@ export default function HeroSection({ className }: { className?: string }) {
           webkit-playsinline="true"
           preload="auto"
           className={`hero-video absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
-            isServicesDropdownOpen ? 'blur-sm' : ''
+            isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''
           }`}
           style={{
             objectFit: "cover",
@@ -339,19 +339,19 @@ export default function HeroSection({ className }: { className?: string }) {
           fill
           priority
           className={`absolute z-10 object-cover transition-all duration-300 ${
-            isServicesDropdownOpen ? 'blur-sm' : ''
+            isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''
           }`}
           style={{ mixBlendMode: "multiply" }}
         />
 
         {/* Desktop overlay shown only when Services dropdown is open */}
         {isServicesDropdownOpen && !isMobile && (
-          <div className="hidden md:block absolute inset-0 z-20 bg-black/30 backdrop-blur-sm transition-all duration-300"></div>
+          <div className="hidden md:block fixed inset-0 z-40 bg-[#1F1F1F]/60 transition-all duration-300"></div>
         )}
       </div>
 
-      <nav className="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full">
-        <div className="flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative">
+      <nav className={`relative ${isServicesDropdownOpen ? 'z-[100]' : 'z-10'} flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full`}>
+        <div className={`flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative ${isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''}`}>
           <Image
             src="/Assets/Icons/LogoIcon.png"
             alt="Astrix Logo"
@@ -362,7 +362,7 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+          <button className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               ABOUT
             </p>
@@ -425,7 +425,7 @@ export default function HeroSection({ className }: { className?: string }) {
             )}
           </div>
           
-          <button className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none">
+          <button className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               RESOURCES
             </p>
@@ -434,7 +434,7 @@ export default function HeroSection({ className }: { className?: string }) {
           <Link
             href="#contact"
             onClick={() => handleNavClick("contact")}
-            className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+            className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}
           >
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               CONTACT US
@@ -445,7 +445,7 @@ export default function HeroSection({ className }: { className?: string }) {
           href="https://app.astrix.live"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+          className={`hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}
         >
           <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
             GET STARTED
@@ -472,7 +472,7 @@ export default function HeroSection({ className }: { className?: string }) {
         </button>
       </nav>
 
-      <div className="relative z-10 bottom-40 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0">
+      <div className={`relative z-10 bottom-40 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0 ${isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''}`}> 
         <div className="text-center w-full h-fit max-w-full md:max-w-[80%] flex flex-col justify-around gap-10 md:gap-14">
           <h1 className="text-2xl md:text-[72px] font-nohemi font-[400] text-white leading-[100%]">
             An omnichannel platform
