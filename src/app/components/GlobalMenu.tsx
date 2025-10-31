@@ -50,9 +50,10 @@ export default function GlobalMenu() {
         const maxTries = 5;
         const reattempt = () => {
           tries++;
-          // @ts-ignore
+        // @ts-expect-error: ScrollTrigger is not defined in TypeScript window type
+
           if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
-            // @ts-ignore
+          // @ts-expect-error: ScrollTrigger refresh not recognized by TS
             window.ScrollTrigger.refresh();
           }
           const target = document.getElementById(targetId);
