@@ -1,22 +1,35 @@
 "use client";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import HeroSection from "./components/heroSection";
 import { optimizeForIOS } from "@/utils";
 import { useEffect } from "react";
+import { useSectionTracker } from "@/hooks/useSectionTracker";
 
 // Lazy load below-the-fold components
-const CollaboratorSectionMobile = dynamic(() => import("./components/collaboratorSectionMobile"), {
-  loading: () => <div className="h-screen bg-[#0A0A0A]" />,
-});
-const CollaboratorSectionWeb = dynamic(() => import("./components/collaboratoSectionWeb"), {
-  loading: () => <div className="h-screen bg-[#0A0A0A]" />,
-});
-const GrowthCycleSection = dynamic(() => import("./components/growthCycleSection"), {
-  loading: () => <div className="h-screen bg-[#0A0A0A]" />,
-});
-const ProductCycleSection = dynamic(() => import("./components/productCycleSection"), {
-  loading: () => <div className="h-screen bg-[#0A0A0A]" />,
-});
+const CollaboratorSectionMobile = dynamic(
+  () => import("./components/collaboratorSectionMobile"),
+  {
+    loading: () => <div className="h-screen bg-[#0A0A0A]" />,
+  }
+);
+const CollaboratorSectionWeb = dynamic(
+  () => import("./components/collaboratoSectionWeb"),
+  {
+    loading: () => <div className="h-screen bg-[#0A0A0A]" />,
+  }
+);
+const GrowthCycleSection = dynamic(
+  () => import("./components/growthCycleSection"),
+  {
+    loading: () => <div className="h-screen bg-[#0A0A0A]" />,
+  }
+);
+const ProductCycleSection = dynamic(
+  () => import("./components/productCycleSection"),
+  {
+    loading: () => <div className="h-screen bg-[#0A0A0A]" />,
+  }
+);
 const ContactSection = dynamic(() => import("./components/contactSection"), {
   loading: () => <div className="h-screen bg-[#0A0A0A]" />,
 });
@@ -32,6 +45,17 @@ export default function Home() {
   useEffect(() => {
     optimizeForIOS();
   }, []);
+
+  useSectionTracker([
+    "hero",
+    "collaborators-mobile",
+    "collaborators-web",
+    "growth-cycle-root",
+    "product-cycle",
+    "contact",
+    "teaser",
+    "footer",
+  ]);
 
   return (
     <div className="w-full min-h-screen">

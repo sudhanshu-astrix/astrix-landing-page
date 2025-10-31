@@ -275,6 +275,7 @@ export default function CollaboratorSectionWeb({
       className={`h-screen bg-[#0A0A0A] flex flex-col md:flex-row items-start md:items-center overflow-hidden ${
         className || ""
       }`}
+      id="collaborators-web"
     >
       <div className="w-full mx-auto px-8 flex gap-[152px] items-start md:items-center h-full">
         {/* Section Title - Top on mobile, Left on desktop */}
