@@ -11,7 +11,7 @@ export const collaborators = [
     title: "Darzi",
     description:
       "We partnered with Darzi to ticket his 3rd Year Album Anniversary at One8 Commune, Gurgaon.",
-    category: "Event Organiser",
+    category: "Artist",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide13.svg",
     random: 12,
   },
