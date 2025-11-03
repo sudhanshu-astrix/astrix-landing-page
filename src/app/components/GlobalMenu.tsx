@@ -9,6 +9,8 @@ export default function GlobalMenu() {
   const [showIcon, setShowIcon] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const pathname = usePathname();
+  const isHome = pathname === "/";
+  
 
   useEffect(() => {
     const hero = document.querySelector('[data-hero-section="true"]') as HTMLElement | null;
@@ -72,6 +74,8 @@ export default function GlobalMenu() {
       }
     }
   };
+
+  if (!isHome) return null;
 
   return (
     <>

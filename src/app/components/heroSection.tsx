@@ -362,8 +362,8 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <button className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
-            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+          <button className={`w-fit px-3 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
               ABOUT
             </p>
           </button>
@@ -372,9 +372,9 @@ export default function HeroSection({ className }: { className?: string }) {
           <div className="relative" data-services-dropdown>
             <button 
               onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
-              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+              <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
                 SERVICES
               </p>
               <svg 
@@ -425,18 +425,18 @@ export default function HeroSection({ className }: { className?: string }) {
             )}
           </div>
           
-          <button className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
+          {/* <button className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               RESOURCES
             </p>
-          </button>
+          </button> */}
           
           <Link
             href="#contact"
             onClick={() => handleNavClick("contact")}
             className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}
           >
-            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
               CONTACT US
             </p>
           </Link>
@@ -447,7 +447,7 @@ export default function HeroSection({ className }: { className?: string }) {
           rel="noopener noreferrer"
           className={`hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}
         >
-          <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+          <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
             GET STARTED
           </p>
         </Link>
@@ -489,7 +489,7 @@ export default function HeroSection({ className }: { className?: string }) {
               rel="noopener noreferrer"
               className="w-fit px-3 md:px-5 py-[10px] md:py-[14px] h-[30px] md:h-[40px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">
+              <p className="leading-none mt-0.5 text-xs md:text-sm font-nohemi font-[400] text-shadow-md">
                 GET STARTED
               </p>
             </Link>
@@ -498,7 +498,7 @@ export default function HeroSection({ className }: { className?: string }) {
               onClick={() => handleNavClick("contact")}
               className="w-fit flex items-center justify-center px-3 md:px-5 py-[10px] md:py-[14px]  h-[30px] md:h-[40px]   rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none"
             >
-              <p className="leading-none mt-0.5 text-xs md:text-base font-nohemi font-[400] text-shadow-md">
+              <p className="leading-none mt-0.5 text-xs md:text-sm font-nohemi font-[400] text-shadow-md">
                 BOOK A DEMO
               </p>
             </Link>

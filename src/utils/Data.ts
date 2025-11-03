@@ -43,7 +43,7 @@ export const collaborators = [
     description:
       "Hosted Shauharty’s mixtape ‘Farokh’ - listening sessions in Delhi and Mumbai.",
     category: "Event Organisers",
-    image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide8.svg",
+    image: "/Assets/Images/Slides/Slide8.png",
     random: 7,
   },
   {
