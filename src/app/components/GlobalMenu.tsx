@@ -2,11 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function GlobalMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [showIcon, setShowIcon] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const hero = document.querySelector('[data-hero-section="true"]');
@@ -110,6 +112,15 @@ export default function GlobalMenu() {
 
           {/* Items */}
           <div className="flex-1 flex flex-col justify-start px-3 pt-8 space-y-4">
+            {pathname !== "/" && (
+              <Link
+                href="/"
+                className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
+                onClick={() => setIsOpen(false)}
+              >
+                HOME
+              </Link>
+            )}
             <Link
               href="#"
               className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
