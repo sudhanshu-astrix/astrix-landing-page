@@ -164,7 +164,7 @@ export default function AboutUsPage() {
                   just showing up and people feeling truly seen.
                 </p>
                 <p className="text-[#E4E4E4] font-switzer font-[400] text-xs sm:text-base md:ext-[1.5rem] max-w-[390px] leading-[120%]">
-                  in "third spaces", those rare places, online or off, that
+                  in &quot;third spaces&quot;, those rare places, online or off, that
                   aren&apos;t work and aren&apos;t home, but are where you find
                   your people and build real, authentic
                   <br /> relationships.
