@@ -362,11 +362,11 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <button className={`w-fit px-3 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
+          <Link href="/about" className={`w-fit px-3 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
               ABOUT
             </p>
-          </button>
+          </Link>
           
           {/* Services Dropdown */}
           <div className="relative" data-services-dropdown>
@@ -617,7 +617,7 @@ export default function HeroSection({ className }: { className?: string }) {
           {/* Menu Items */}
           <div className="flex-1 flex flex-col justify-start px-3 pt-8 space-y-4">
             <Link
-              href="#"
+              href="/about"
               className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
               onClick={() => setIsMenuOpen(false)}
             >

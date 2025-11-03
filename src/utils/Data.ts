@@ -3,7 +3,7 @@ export const collaborators = [
     title: "&Friends",
     description:
       "Curated by Prithvi, &Friends Vol.4 landed on Friendship Day at Khar Social. Karaoke, cyphers, tattoos, and collabs with Superkicks + Extra Butter made it a full-circle celebration.",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide17.svg",
     random: 16,
   },
@@ -11,14 +11,14 @@ export const collaborators = [
     title: "Darzi",
     description:
       "We partnered with Darzi to ticket his 3rd Year Album Anniversary at One8 Commune, Gurgaon.",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide13.svg",
     random: 12,
   },
   {
     title: "Jagermeister",
     description: "Brand partner for the BAPE launch at Extra Butter, Mumbai.",
-    category: "Brands",
+    category: "Brand",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide12.svg",
     random: 11,
   },
@@ -26,7 +26,7 @@ export const collaborators = [
     title: "Ranj x Clifr",
     description:
       "PLAY ME! tour with Meba Ofilia - EP launch shows across Shillong, Mumbai, and Bangalore, powered by Jameson Connects Jam Pad.",
-    category: "Artists",
+    category: "Artist",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide1.svg",
     random: 0,
   },
@@ -34,15 +34,15 @@ export const collaborators = [
     title: "Dohnraj",
     description:
       "Ticketing partner for a show featuring Dee En, Dohnraj & The Peculiars and Fringe Mechanics at the multidisciplinary space – Mool, New Delhi.",
-    category: "Artists",
+    category: "Artist",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide5.svg",
     random: 4,
   },
   {
     title: "Shauharty",
     description:
-      "Hosted Shauharty’s mixtape ‘Farokh’ - listening sessions in Delhi and Mumbai.",
-    category: "Event Organisers",
+      "Hosted Shauharty’s mixtape ‘Farookh’ - listening sessions in Delhi and Mumbai.",
+    category: "Artist",
     image: "/Assets/Images/Slides/Slide8.png",
     random: 7,
   },
@@ -57,7 +57,7 @@ export const collaborators = [
   {
     title: "Frappe ash",
     description: "Delhi leg of his Junkie Tour, hosted by Hot Sauce.",
-    category: "Artists",
+    category: "Artist",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide9.svg",
     random: 8,
   },
@@ -65,7 +65,7 @@ export const collaborators = [
     title: "Muzzle",
     description:
       "Collaborated for Muzzle’s debut EP, October Baby launch party at Depot48, Delhi – his first ever India pop-out.",
-    category: "Artists",
+    category: "Artist",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide3.svg",
     random: 2,
   },
@@ -73,14 +73,14 @@ export const collaborators = [
     title: "BAPE Preview Launch",
     description:
       "Curated BAPE’s first India outing with Pursue and Jägermeister. Prithvi and Gandhar on the decks. ",
-    category: "Brands",
+    category: "Brand",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide11.svg",
     random: 10,
   },
   {
     title: "Pursue Hard Seltzer",
     description: "Brand partner for the BAPE launch at Extra Butter, Mumbai.",
-    category: "Brands",
+    category: "Brand",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide10.svg",
     random: 9,
   },
@@ -96,7 +96,7 @@ export const collaborators = [
     title: "Compass Box Studio",
     description:
       "One of our first collabs – ticketing for The Blues Experience at Blockheads Vinyl Café, Ahmedabad. ",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide16.svg",
     random: 15,
   },
@@ -104,7 +104,7 @@ export const collaborators = [
     title: "Frostbite",
     description:
       "Frostbite brought fashion and music together at their launch event at Slink & Bardot, Mumbai. ",
-    category: "Brands",
+    category: "Brand",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide18.svg",
     random: 17,
   },
@@ -112,7 +112,7 @@ export const collaborators = [
     title: "Flipside Vol.1",
     description:
       "Ticketing partner for Flipside Vol.1 — packed out Nehru Place Social with 600+ people for a lineup featuring Collesttye, Ghildiyal, ZerøKaata, The Seige and Dhanji.",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide2.svg",
     random: 1,
   },
@@ -128,7 +128,7 @@ export const collaborators = [
     title: "The House Guest",
     description:
       "Ticketed a secret-location show (address revealed only to buyers) with Shwe G and Acharya on decks.",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide6.svg",
     random: 5,
   },
@@ -136,7 +136,7 @@ export const collaborators = [
     title: "LeaveNoFingerprints",
     description:
       "Ahmedabad’s underground tastemakers. From Karun Nanku’s explosive set to Yashraj’s showcase, we partnered with LNF to ticket their events. ",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide19.svg",
     random: 18,
   },
@@ -144,7 +144,7 @@ export const collaborators = [
     title: "Blood Diamond",
     description:
       "SUBVERSE at Odella Green Park was an underground takeover – with Maurya, Blood Diamond Collective, and Rasa.",
-    category: "Event Organisers",
+    category: "Event Organiser",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide14.svg",
     random: 13,
   },

@@ -130,7 +130,7 @@ export default function GlobalMenu() {
               </Link>
             )}
             <Link
-              href="#"
+              href="/about"
               className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
               onClick={() => setIsOpen(false)}
             >
