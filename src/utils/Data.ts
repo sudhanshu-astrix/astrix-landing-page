@@ -41,7 +41,7 @@ export const collaborators = [
   {
     title: "Shauharty",
     description:
-      "Karun Nanku Live in Ahmedabad at Niro’s, hosted by LeaveNoFingerprints.",
+      "Hosted Shauharty’s mixtape ‘Farokh’ - listening sessions in Delhi and Mumbai.",
     category: "Event Organisers",
     image: "https://astrix.blob.core.windows.net/cdn/landing-site/Slide8.svg",
     random: 7,

@@ -11,22 +11,26 @@ export default function GlobalMenu() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const hero = document.querySelector('[data-hero-section="true"]');
+    const hero = document.querySelector('[data-hero-section="true"]') as HTMLElement | null;
     if (!hero) {
       setShowIcon(true);
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        // Hide icon when hero is visible, show otherwise
-        setShowIcon(!entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
+    const update = () => {
+      const rect = hero.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      // Hide icon whenever any part of hero is visible
+      setShowIcon(!inView);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
   }, []);
 
   const scrollToProductSection = (targetId: string) => {
