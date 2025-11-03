@@ -31,22 +31,22 @@ export default function AboutUsPage() {
               ABOUT
             </p>
           </span>
-          <Link
+          {/* <Link
             href="/"
             className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#1f1f1f9e] cursor-pointe p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5"
           >
             <p className="leading-none mt-0.5 px-2 py-1 text-xs font-nohemi font-[400]">
               SERVICES
             </p>
-          </Link>
-          <Link
+          </Link> */}
+          {/* <Link
             href="#"
             className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#1f1f1f9e] cursor-pointer p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5"
           >
             <p className="leading-none mt-0.5 px-2 py-1 text-xs font-nohemi font-[400]">
               RESOURCES
             </p>
-          </Link>
+          </Link> */}
           <Link
             href="/#contact"
             className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#1f1f1f9e] cursor-pointer p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5"
