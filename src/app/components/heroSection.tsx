@@ -2,6 +2,7 @@
 import { disableScrollPinning, enableScrollPinning } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -277,12 +278,24 @@ export default function HeroSection({ className }: { className?: string }) {
       const rootRect = root.getBoundingClientRect();
       const rootTop = rootRect.top + window.scrollY;
       
-      // Scroll to the product cycle section
-      window.scrollTo({ top: rootTop, behavior: "smooth" });
+      // Try to get ScrollTrigger start position to avoid overshooting
+      let targetScrollTop = rootTop;
+      const st = ScrollTrigger.getAll().find((s) => s.trigger === root);
+      if (st) {
+        const start = typeof st.start === 'number' ? st.start : (st.start as number);
+        // Use ScrollTrigger start position if available (more accurate)
+        targetScrollTop = start;
+      }
       
-      // Poll to ensure we've reached the section and it's pinned before dispatching
+      // ALWAYS use instant scroll (behavior: 'auto') to prevent overshooting
+      // Smooth scroll cannot be reliably stopped and causes overshoot issues
+      window.scrollTo({ top: targetScrollTop, behavior: 'auto' });
+      
+      // Wait for ScrollTrigger to be ready and pinned, then dispatch event
+      // The handler will calculate the exact target position and scroll there
       let attempts = 0;
-      const maxAttempts = 40;
+      const maxAttempts = 50;
+      
       const checkAndDispatch = () => {
         attempts++;
         const currentRoot = document.getElementById("product-cycle-root");
@@ -298,19 +311,27 @@ export default function HeroSection({ className }: { className?: string }) {
         const currentRect = currentRoot.getBoundingClientRect();
         const distanceFromTop = Math.abs(currentRect.top);
         
-        // If section is within 50px of top, we're close enough (pinned)
-        if (distanceFromTop < 50 || attempts >= maxAttempts) {
-          window.dispatchEvent(
-            new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
-          );
-          setTimeout(() => enableScrollPinning(), 2000);
+        // Check if ScrollTrigger is active (pinned)
+        const stCheck = ScrollTrigger.getAll().find((s) => s.trigger === currentRoot);
+        const isPinned = stCheck?.isActive || distanceFromTop < 100;
+        
+        // If section is pinned/close to top, dispatch event
+        // The handler will calculate exact target position and scroll there instantly
+        if (isPinned || attempts >= maxAttempts) {
+          // Small delay to ensure ScrollTrigger is fully initialized
+          setTimeout(() => {
+            window.dispatchEvent(
+              new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
+            );
+            setTimeout(() => enableScrollPinning(), 2000);
+          }, 150);
         } else {
           setTimeout(checkAndDispatch, 100);
         }
       };
       
-      // Start checking after a short delay to allow scroll to begin
-      setTimeout(checkAndDispatch, 300);
+      // Start checking after a short delay to allow instant scroll to apply
+      setTimeout(checkAndDispatch, 200);
     } else {
       const el = document.getElementById(targetId);
       if (el) {

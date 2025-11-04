@@ -1753,10 +1753,12 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         const sectionIndex = order.indexOf(id);
         
         if (typeof key === "number") {
-          // Direct time value (0 for first section)
-          targetTime = key;
-          // Add a small offset to ensure first section is visible
-          targetTime = 0.1;
+          // For first section (Create Event), wait until after toolkit slides out and Create Event slides in
+          // The transition takes slideDuration (0.8s), so we need to be after that
+          const slideDuration = 0.8;
+          const sectionDelay = 0.8;
+          // Wait for transition to complete, then add offset to ensure it's fully visible
+          targetTime = slideDuration + (sectionDelay * 0.6); // Same formula as other sections
         } else if (typeof key === "string") {
           // Timeline label - get the time for this label
           const labelTime = tl.labels[key];
@@ -1913,38 +1915,99 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         }
       };
 
-      // If we're not near the section yet, scroll to it first and wait
-      const threshold = 32;
-      if (Math.abs(window.scrollY - sectionTop) > threshold) {
-        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
-        // Poll until the section top is reached AND it's pinned before jumping inside
-        let tries = 0;
-        const maxTries = 50; // Increased for better reliability
-        const interval = setInterval(() => {
-          tries++;
-          const y = window.scrollY;
-          const distanceFromTop = Math.abs(y - sectionTop);
-          
-          // Check if we're close enough AND ScrollTrigger is active (pinned)
-          const st = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
-          const isPinned = st?.isActive || false;
-          
-          if ((distanceFromTop <= threshold && isPinned) || tries >= maxTries) {
-            clearInterval(interval);
-            // Allow pinning to fully settle before jumping
-            setTimeout(goToSlide, 150);
-          }
-        }, 100);
-      } else {
-        // Already at section; check if pinned, then jump
-        const st = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
-        if (st?.isActive) {
-          goToSlide();
-        } else {
-          // Wait for pinning
-          setTimeout(goToSlide, 150);
+      // Calculate target scroll position for the specific slide BEFORE scrolling
+      // This way we can scroll directly to the final position
+      const calculateTargetScroll = () => {
+        const stCheck = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+        if (!stCheck || !stCheck.isActive) return null;
+        
+        const stWithAnim = stCheck as unknown as { animation?: gsap.core.Timeline };
+        const tlCheck = stWithAnim.animation;
+        if (!tlCheck) return null;
+        
+        // Calculate targetTime same way as goToSlide
+        const idToLabel: Record<string, string | number> = {
+          "pc-create-event": 0,
+          "pc-issue-tickets": "secondSection",
+          "pc-purchase-rsvp": "thirdSection",
+          "pc-data-insights": "fourthSection",
+          "pc-email-marketing": "fifthSection",
+          "pc-promotions": "sixthSection",
+          "pc-marketing-insights": "seventhSection",
+          "pc-mini-portfolio": "eighthSection",
+          "pc-discovery-channel": "ninthSection",
+        };
+        
+        const key = idToLabel[id];
+        if (key === undefined) return null;
+        
+        let targetTime = 0;
+        if (typeof key === "number") {
+          // For first section (Create Event), wait until after toolkit slides out and Create Event slides in
+          // The transition takes slideDuration (0.8s), so we need to be after that
+          const slideDuration = 0.8;
+          const sectionDelay = 0.8;
+          // Wait for transition to complete, then add a small offset to ensure it's fully visible
+          targetTime = slideDuration + (sectionDelay * 0.6); // Same as other sections
+        } else if (typeof key === "string") {
+          const labelTime = tlCheck.labels[key];
+          if (labelTime === undefined) return null;
+          const slideDuration = 0.8;
+          const sectionDelay = 0.8;
+          targetTime = labelTime + slideDuration + (sectionDelay * 0.6);
         }
-      }
+        
+        const maxTime = tlCheck.duration();
+        targetTime = Math.max(0, Math.min(targetTime, maxTime - 0.1));
+        
+        // Calculate scroll position
+        const progress = targetTime / maxTime;
+        const start = typeof stCheck.start === 'number' ? stCheck.start : (stCheck.start as number);
+        const end = typeof stCheck.end === 'number' ? stCheck.end : (stCheck.end as number);
+        return start + ((end - start) * progress);
+      };
+
+      // Calculate target scroll position BEFORE any scrolling
+      // This ensures we scroll directly to the final position
+      const getTargetScrollPosition = () => {
+        const stCheck = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+        if (!stCheck || !stCheck.isActive) {
+          // ScrollTrigger not active yet - return section top as fallback
+          return sectionTop;
+        }
+        
+        const targetScrollY = calculateTargetScroll();
+        if (targetScrollY !== null) {
+          return targetScrollY;
+        }
+        
+        // Fallback to ScrollTrigger start position
+        const start = typeof stCheck.start === 'number' ? stCheck.start : (stCheck.start as number);
+        return start;
+      };
+
+      // Wait a moment for ScrollTrigger to initialize after instant scroll from heroSection
+      // Then calculate target position and scroll directly to it
+      const attemptNavigation = () => {
+        const stCheck = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+        
+        if (!stCheck) {
+          // ScrollTrigger not ready yet, try again
+          setTimeout(attemptNavigation, 100);
+          return;
+        }
+        
+        // Calculate target position and scroll directly to it
+        // This handles all cases: past section, before section, or within bounds
+        const targetScrollY = getTargetScrollPosition();
+        window.scrollTo({ top: targetScrollY, behavior: 'auto' });
+        
+        // Wait for scroll to apply, then tween timeline
+        setTimeout(goToSlide, 150);
+      };
+      
+      // Start attempting navigation after a short delay to allow ScrollTrigger to initialize
+      setTimeout(attemptNavigation, 100);
     };
 
     window.addEventListener("gotoProductCycle", handler as EventListener);
