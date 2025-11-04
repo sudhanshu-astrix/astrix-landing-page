@@ -40,38 +40,29 @@ export default function GlobalMenu() {
     setIsOpen(false);
     const isDesktop = window.innerWidth >= 768;
     if (isDesktop) {
+      // Find the root section that contains ScrollTrigger
       const root = document.getElementById("product-cycle-root");
-      if (root) {
-        root.scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(() => {
-          window.dispatchEvent(
-            new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
-          );
-        }, 200);
+      
+      if (!root) {
+        return;
       }
+
+      // Scroll to the root section (instant)
+      const rootRect = root.getBoundingClientRect();
+      const rootTop = rootRect.top + window.scrollY;
+      
+      window.scrollTo({ top: rootTop, behavior: "auto" });
+
+      // Dispatch once shortly after instant jump
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
+        );
+      }, 120);
     } else {
       const el = document.getElementById(targetId);
       if (el) {
-        // First attempt
         el.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Mobile + ScrollTrigger may need a refresh and a second attempt on first visit
-        let tries = 0;
-        const maxTries = 5;
-        const reattempt = () => {
-          tries++;
-        // @ts-expect-error: ScrollTrigger is not defined in TypeScript window type
-
-          if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
-          // @ts-expect-error: ScrollTrigger refresh not recognized by TS
-            window.ScrollTrigger.refresh();
-          }
-          const target = document.getElementById(targetId);
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-          if (tries < maxTries) setTimeout(reattempt, 120);
-        };
-        setTimeout(reattempt, 150);
       }
     }
   };

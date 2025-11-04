@@ -2,7 +2,6 @@
 import { disableScrollPinning, enableScrollPinning } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { useState, useEffect, useRef } from "react";
 import mixpanel from "@/lib/mixpanelClient";
@@ -269,74 +268,32 @@ export default function HeroSection({ className }: { className?: string }) {
     const isDesktop = window.innerWidth >= 768;
 
     if (isDesktop) {
+      // Find the root section that contains ScrollTrigger
       const root = document.getElementById("product-cycle-root");
+      
       if (!root) {
         console.warn("product-cycle-root not found");
         setTimeout(() => enableScrollPinning(), 2000);
         return;
       }
 
-      // Get the top position of the product cycle section
+      // Scroll to the root section (smooth)
       const rootRect = root.getBoundingClientRect();
       const rootTop = rootRect.top + window.scrollY;
+      
+      window.scrollTo({ 
+        top: rootTop, 
+        behavior: "smooth" 
+      });
 
-      // Try to get ScrollTrigger start position to avoid overshooting
-      let targetScrollTop = rootTop;
-      const st = ScrollTrigger.getAll().find((s) => s.trigger === root);
-      if (st) {
-        const start =
-          typeof st.start === "number" ? st.start : (st.start as number);
-        // Use ScrollTrigger start position if available (more accurate)
-        targetScrollTop = start;
-      }
-
-      // ALWAYS use instant scroll (behavior: 'auto') to prevent overshooting
-      // Smooth scroll cannot be reliably stopped and causes overshoot issues
-      window.scrollTo({ top: targetScrollTop, behavior: "auto" });
-
-      // Wait for ScrollTrigger to be ready and pinned, then dispatch event
-      // The handler will calculate the exact target position and scroll there
-      let attempts = 0;
-      const maxAttempts = 50;
-
-      const checkAndDispatch = () => {
-        attempts++;
-        const currentRoot = document.getElementById("product-cycle-root");
-        if (!currentRoot) {
-          if (attempts < maxAttempts) {
-            setTimeout(checkAndDispatch, 100);
-          } else {
-            setTimeout(() => enableScrollPinning(), 2000);
-          }
-          return;
-        }
-
-        const currentRect = currentRoot.getBoundingClientRect();
-        const distanceFromTop = Math.abs(currentRect.top);
-
-        // Check if ScrollTrigger is active (pinned)
-        const stCheck = ScrollTrigger.getAll().find(
-          (s) => s.trigger === currentRoot
+      // Dispatch event immediately - handler will wait for ScrollTrigger to be ready
+      // Small delay to allow scroll to start
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
         );
-        const isPinned = stCheck?.isActive || distanceFromTop < 100;
-
-        // If section is pinned/close to top, dispatch event
-        // The handler will calculate exact target position and scroll there instantly
-        if (isPinned || attempts >= maxAttempts) {
-          // Small delay to ensure ScrollTrigger is fully initialized
-          setTimeout(() => {
-            window.dispatchEvent(
-              new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
-            );
-            setTimeout(() => enableScrollPinning(), 2000);
-          }, 150);
-        } else {
-          setTimeout(checkAndDispatch, 100);
-        }
-      };
-
-      // Start checking after a short delay to allow instant scroll to apply
-      setTimeout(checkAndDispatch, 200);
+        setTimeout(() => enableScrollPinning(), 2000);
+      }, 300);
     } else {
       const el = document.getElementById(targetId);
       if (el) {
@@ -434,7 +391,7 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
           <Link
             href="/about"
-            className={`w-fit px-3 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+            className={`w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
             onClick={() =>
@@ -443,7 +400,7 @@ export default function HeroSection({ className }: { className?: string }) {
               })
             }
           >
-            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
               ABOUT
             </p>
           </Link>
@@ -457,7 +414,7 @@ export default function HeroSection({ className }: { className?: string }) {
                   location: "Web Navbar",
                 });
               }}
-              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+              className="w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
             >
               <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
                 SERVICES
@@ -663,7 +620,7 @@ export default function HeroSection({ className }: { className?: string }) {
                 location: "Web Navbar",
               });
             }}
-            className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+            className={`w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
           >
