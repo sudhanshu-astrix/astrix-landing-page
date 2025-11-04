@@ -640,7 +640,7 @@ export default function HeroSection({ className }: { className?: string }) {
             )}
           </div>
 
-          <button
+          {/* <button
             className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
@@ -653,7 +653,7 @@ export default function HeroSection({ className }: { className?: string }) {
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               RESOURCES
             </p>
-          </button>
+          </button> */}
 
           <Link
             href="#contact"
