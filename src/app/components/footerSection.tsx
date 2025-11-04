@@ -1,4 +1,5 @@
 import Image from "next/image";
+import mixpanel from "@/lib/mixpanelClient";
 
 export default function FooterSection({ className }: { className?: string }) {
   return (
@@ -6,6 +7,7 @@ export default function FooterSection({ className }: { className?: string }) {
       className={`${
         className || ""
       } relative overflow-hidde min-h-[60vh] md:min-h-[50vh] h-fit bg-[#1f1f1f70] text-white/80 flex items-start py-10`}
+      id="footer"
     >
       {/* Background logo - centered horizontally, slightly off screen at bottom */}
       <div className="pointer-events-none absolute left-1/2 w-[80%] h-[100%] md:max-h-[25vh] max-h-[9vh] -translate-x-1/2 bottom-0 select-none">
@@ -20,19 +22,57 @@ export default function FooterSection({ className }: { className?: string }) {
       <div className="relative z-10 w-full mx-auto px-6 md:px-10 lg:px-16 flex flex-col gap-4">
         {/* Top links */}
         <nav className="flex flex-col md:flex-row items-center md:gap-8 gap-4 text-sm font-nohemi font-[400]">
-          <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors">
+          <a
+            href="#"
+            target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors"
+            onClick={() => {
+              mixpanel.track("Footer - Home Clicked", { location: "Footer" });
+            }}
+          >
             Home
           </a>
-          <a href="/terms" target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors">
+          <a
+            href="/terms"
+            target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors"
+            onClick={() => {
+              mixpanel.track("Footer - Terms and Conditions Clicked", {
+                location: "Footer",
+              });
+            }}
+          >
             Terms &amp; Conditions
           </a>
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors">
+          <a
+            href="/privacy"
+            target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors"
+            onClick={() => {
+              mixpanel.track("Footer - Privacy Policy Clicked", {
+                location: "Footer",
+              });
+            }}
+          >
             Privacy policy
           </a>
-          <a href="/refund" target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors">
+          <a
+            href="/refund"
+            target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors"
+            onClick={() => {
+              mixpanel.track("Footer - Refund Policy Clicked", {
+                location: "Footer",
+              });
+            }}
+          >
             Refund Policy
           </a>
-          <a href="#contact" target="_blank" rel="noopener noreferrer" className="hover:text-[#CCD0D7] transition-colors">
+          <a
+            href="#contact"
+            className="hover:text-[#CCD0D7] transition-colors"
+            onClick={() => {
+              mixpanel.track("Footer - Contact Us Clicked", {
+                location: "Footer",
+              });
+            }}
+          >
             Contact Us
           </a>
         </nav>
@@ -48,12 +88,70 @@ export default function FooterSection({ className }: { className?: string }) {
 
           {/* Socials pill */}
           <div className="flex items-center gap-4 bg-[#1f1f1f97] rounded-lg px-4 py-2">
-          <a
+            <a
+              href="#"
+              aria-label="Spotify"
+              className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
+              onClick={() => {
+                mixpanel.track("Footer - Spotify Clicked", {
+                  location: "Footer",
+                });
+              }}
+            >
+              <Image
+                src="/Assets/Icons/SpotifyIcon.svg"
+                alt="Spotify"
+                width={16}
+                height={16}
+              />
+            </a>
+            <a
+              href="https://x.com/astrix_live"
+              aria-label="X"
+              className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
+              onClick={() => {
+                mixpanel.track("Footer - Twitter Clicked", {
+                  location: "Footer",
+                });
+              }}
+            >
+              <Image
+                src="/Assets/Icons/XIcon.svg"
+                alt="X"
+                width={16}
+                height={16}
+              />
+            </a>
+            <a
+              href="https://www.youtube.com/@astrix-live"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
+              onClick={() => {
+                mixpanel.track("Footer - YouTube Clicked", {
+                  location: "Footer",
+                });
+              }}
+            >
+              <Image
+                src="/Assets/Icons/YoutubeIcon.svg"
+                alt="YouTube"
+                width={16}
+                height={16}
+              />
+            </a>
+            <a
               href="https://www.instagram.com/astrix.live/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
               className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
+              onClick={() => {
+                mixpanel.track("Footer - Instagram Clicked", {
+                  location: "Footer",
+                });
+              }}
             >
               <Image
                 src="/Assets/Icons/InstagramIcon.svg"
@@ -68,6 +166,11 @@ export default function FooterSection({ className }: { className?: string }) {
               rel="noopener noreferrer"
               aria-label="LinkedIn"
               className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
+              onClick={() => {
+                mixpanel.track("Footer - LinkedIn Clicked", {
+                  location: "Footer",
+                });
+              }}
             >
               <svg
                 width="16"

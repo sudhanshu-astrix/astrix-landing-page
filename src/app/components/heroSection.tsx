@@ -5,11 +5,13 @@ import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { useState, useEffect, useRef } from "react";
+import mixpanel from "@/lib/mixpanelClient";
 
 export default function HeroSection({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
-  const [isServicesDropdownOpenMobile, setIsServicesDropdownOpenMobile] = useState(false);
+  const [isServicesDropdownOpenMobile, setIsServicesDropdownOpenMobile] =
+    useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -23,15 +25,15 @@ export default function HeroSection({ className }: { className?: string }) {
     const handleClickOutside = (event: MouseEvent) => {
       if (isServicesDropdownOpen) {
         const target = event.target as Element;
-        if (!target.closest('[data-services-dropdown]')) {
+        if (!target.closest("[data-services-dropdown]")) {
           setIsServicesDropdownOpen(false);
         }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isServicesDropdownOpen]);
 
@@ -273,29 +275,30 @@ export default function HeroSection({ className }: { className?: string }) {
         setTimeout(() => enableScrollPinning(), 2000);
         return;
       }
-      
+
       // Get the top position of the product cycle section
       const rootRect = root.getBoundingClientRect();
       const rootTop = rootRect.top + window.scrollY;
-      
+
       // Try to get ScrollTrigger start position to avoid overshooting
       let targetScrollTop = rootTop;
       const st = ScrollTrigger.getAll().find((s) => s.trigger === root);
       if (st) {
-        const start = typeof st.start === 'number' ? st.start : (st.start as number);
+        const start =
+          typeof st.start === "number" ? st.start : (st.start as number);
         // Use ScrollTrigger start position if available (more accurate)
         targetScrollTop = start;
       }
-      
+
       // ALWAYS use instant scroll (behavior: 'auto') to prevent overshooting
       // Smooth scroll cannot be reliably stopped and causes overshoot issues
-      window.scrollTo({ top: targetScrollTop, behavior: 'auto' });
-      
+      window.scrollTo({ top: targetScrollTop, behavior: "auto" });
+
       // Wait for ScrollTrigger to be ready and pinned, then dispatch event
       // The handler will calculate the exact target position and scroll there
       let attempts = 0;
       const maxAttempts = 50;
-      
+
       const checkAndDispatch = () => {
         attempts++;
         const currentRoot = document.getElementById("product-cycle-root");
@@ -307,14 +310,16 @@ export default function HeroSection({ className }: { className?: string }) {
           }
           return;
         }
-        
+
         const currentRect = currentRoot.getBoundingClientRect();
         const distanceFromTop = Math.abs(currentRect.top);
-        
+
         // Check if ScrollTrigger is active (pinned)
-        const stCheck = ScrollTrigger.getAll().find((s) => s.trigger === currentRoot);
+        const stCheck = ScrollTrigger.getAll().find(
+          (s) => s.trigger === currentRoot
+        );
         const isPinned = stCheck?.isActive || distanceFromTop < 100;
-        
+
         // If section is pinned/close to top, dispatch event
         // The handler will calculate exact target position and scroll there instantly
         if (isPinned || attempts >= maxAttempts) {
@@ -329,7 +334,7 @@ export default function HeroSection({ className }: { className?: string }) {
           setTimeout(checkAndDispatch, 100);
         }
       };
-      
+
       // Start checking after a short delay to allow instant scroll to apply
       setTimeout(checkAndDispatch, 200);
     } else {
@@ -337,13 +342,15 @@ export default function HeroSection({ className }: { className?: string }) {
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-      setTimeout(() => enableScrollPinning(), 2000);
     }
+
+    setTimeout(() => enableScrollPinning(), 2000);
   };
 
   return (
     <section
       data-hero-section="true"
+      id="hero"
       className={`${
         className || ""
       } relative min-h-screen h-[100vh] md:h-fit w-full flex flex-col justify-between overflow-hidden`}
@@ -358,7 +365,7 @@ export default function HeroSection({ className }: { className?: string }) {
           webkit-playsinline="true"
           preload="auto"
           className={`hero-video absolute inset-0 w-full h-full object-cover transition-all duration-300 ${
-            isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''
+            isServicesDropdownOpen && !isMobile ? "blur-sm" : ""
           }`}
           style={{
             objectFit: "cover",
@@ -394,7 +401,7 @@ export default function HeroSection({ className }: { className?: string }) {
           fill
           priority
           className={`absolute z-10 object-cover transition-all duration-300 ${
-            isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''
+            isServicesDropdownOpen && !isMobile ? "blur-sm" : ""
           }`}
           style={{ mixBlendMode: "multiply" }}
         />
@@ -405,8 +412,16 @@ export default function HeroSection({ className }: { className?: string }) {
         )}
       </div>
 
-      <nav className={`relative ${isServicesDropdownOpen ? 'z-[100]' : 'z-10'} flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full`}>
-        <div className={`flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative ${isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''}`}>
+      <nav
+        className={`relative ${
+          isServicesDropdownOpen ? "z-[100]" : "z-10"
+        } flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full`}
+      >
+        <div
+          className={`flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative ${
+            isServicesDropdownOpen && !isMobile ? "blur-sm" : ""
+          }`}
+        >
           <Image
             src="/Assets/Icons/LogoIcon.png"
             alt="Astrix Logo"
@@ -417,79 +432,240 @@ export default function HeroSection({ className }: { className?: string }) {
         </div>
 
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <Link href="/about" className={`w-fit px-3 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
-            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+          <Link
+            href="/about"
+            className={`w-fit px-3 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+              isServicesDropdownOpen ? "blur-sm" : ""
+            }`}
+            onClick={() =>
+              mixpanel.track("Web Navbar - About Clicked", {
+                location: "Web Navbar",
+              })
+            }
+          >
+            <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               ABOUT
             </p>
           </Link>
-          
+
           {/* Services Dropdown */}
           <div className="relative" data-services-dropdown>
-            <button 
-              onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
-              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] leading-none"
+            <button
+              onClick={() => {
+                setIsServicesDropdownOpen(!isServicesDropdownOpen);
+                mixpanel.track("Web Navbar - Services Opened", {
+                  location: "Web Navbar",
+                });
+              }}
+              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
             >
               <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
                 SERVICES
               </p>
-              <svg 
-                className={`w-3 h-3 ml-1 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`}
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className={`w-3 h-3 ml-1 transition-transform duration-200 ${
+                  isServicesDropdownOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
-            
+
             {/* Services Dropdown Menu */}
             {isServicesDropdownOpen && (
               <div className="absolute top-full -left-56 mt-2 w-[650px] bg-[#141414] rounded-lg border border-[#4e4e4e87] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] z-50">
                 <div className="p-6 grid grid-cols-3 gap-8">
                   {/* Distribute Column */}
                   <div>
-                    <h3 className="text-[#E8EAED] text-sm font-instrument-serif font-[400] mb-2">Distribute</h3>
+                    <h3 className="text-[#E8EAED] text-sm font-instrument-serif font-[400] mb-2">
+                      Distribute
+                    </h3>
                     <ul className="space-y-1 ml-2">
-                      <li><button onClick={() => scrollToProductSection('pc-create-event')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Create Event</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-issue-tickets')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Issue Ticket</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-purchase-rsvp')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Purchase/RSVP</button></li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-create-event");
+                            mixpanel.track(
+                              "Web Navbar Services - Create Event Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Create Event
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-issue-tickets");
+                            mixpanel.track(
+                              "Web Navbar Services - Issue Tickets Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Issue Ticket
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-purchase-rsvp");
+                            mixpanel.track(
+                              "Web Navbar Services - Purchase RSVP Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Purchase/RSVP
+                        </button>
+                      </li>
                     </ul>
                   </div>
-                  
+
                   {/* Retarget Column */}
                   <div>
-                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Retarget</h3>
+                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">
+                      Retarget
+                    </h3>
                     <ul className="space-y-1 ml-2">
-                      <li><button onClick={() => scrollToProductSection('pc-data-insights')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Data Insights</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-email-marketing')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Email Marketing</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-promotions')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Promotions / Discounts</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-marketing-insights')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Marketing Insights</button></li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-data-insights");
+                            mixpanel.track(
+                              "Web Navbar Services - Data Insights Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Data Insights
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-email-marketing");
+                            mixpanel.track(
+                              "Web Navbar Services - Email Marketing Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Email Marketing
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-promotions");
+                            mixpanel.track(
+                              "Web Navbar Services - Promotions/Discounts Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Promotions / Discounts
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-marketing-insights");
+                            mixpanel.track(
+                              "Web Navbar Services - Marketing Insights Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Marketing Insights
+                        </button>
+                      </li>
                     </ul>
                   </div>
-                  
+
                   {/* Discover Column */}
                   <div>
-                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Discover</h3>
+                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">
+                      Discover
+                    </h3>
                     <ul className="space-y-1 ml-2">
-                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Mini Portfolio</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-discovery-channel')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Discovery Channel</button></li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-mini-portfolio");
+                            mixpanel.track(
+                              "Web Navbar Services - Mini Portfolio Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Mini Portfolio
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-discovery-channel");
+                            mixpanel.track(
+                              "Web Navbar Services - Discovery Channel Clicked",
+                              { location: "Web Navbar Services" }
+                            );
+                          }}
+                          className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
+                        >
+                          Discovery Channel
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
             )}
           </div>
-          
-          {/* <button className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}>
+
+          <button
+            className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+              isServicesDropdownOpen ? "blur-sm" : ""
+            }`}
+            onClick={() => {
+              mixpanel.track("Web Navbar - Resources Clicked", {
+                location: "Web Navbar",
+              });
+            }}
+          >
             <p className="leading-none mt-0.5 text-base font-nohemi font-[400]">
               RESOURCES
             </p>
-          </button> */}
-          
+          </button>
+
           <Link
             href="#contact"
-            onClick={() => handleNavClick("contact")}
-            className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}
+            onClick={() => {
+              handleNavClick("contact");
+              mixpanel.track("Web Navbar - Contact Us Clicked", {
+                location: "Web Navbar",
+              });
+            }}
+            className={`w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+              isServicesDropdownOpen ? "blur-sm" : ""
+            }`}
           >
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
               CONTACT US
@@ -500,7 +676,14 @@ export default function HeroSection({ className }: { className?: string }) {
           href="https://app.astrix.live"
           target="_blank"
           rel="noopener noreferrer"
-          className={`hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${isServicesDropdownOpen ? 'blur-sm' : ''}`}
+          className={`hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+            isServicesDropdownOpen ? "blur-sm" : ""
+          }`}
+          onClick={() => {
+            mixpanel.track("Web Navbar - Get Started Clicked", {
+              location: "Web Navbar",
+            });
+          }}
         >
           <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
             GET STARTED
@@ -509,7 +692,12 @@ export default function HeroSection({ className }: { className?: string }) {
 
         <button
           className="md:hidden text-white z-50"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={() => {
+            setIsMenuOpen(!isMenuOpen);
+            mixpanel.track("Mobile Navbar - Mobile Menu Opened", {
+              location: "Mobile Navbar",
+            });
+          }}
         >
           <svg
             className="w-6 h-6"
@@ -527,7 +715,11 @@ export default function HeroSection({ className }: { className?: string }) {
         </button>
       </nav>
 
-      <div className={`relative z-10 bottom-40 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0 ${isServicesDropdownOpen && !isMobile ? 'blur-sm' : ''}`}> 
+      <div
+        className={`relative z-10 bottom-40 flex h-fit md:h-[45vh] flex-col items-center justify-between px-4 md:px-8 gap-10 md:gap-0 ${
+          isServicesDropdownOpen && !isMobile ? "blur-sm" : ""
+        }`}
+      >
         <div className="text-center w-full h-fit max-w-full md:max-w-[80%] flex flex-col justify-around gap-10 md:gap-14">
           <h1 className="text-2xl md:text-[72px] font-nohemi font-[400] text-white leading-[100%]">
             An omnichannel platform
@@ -542,6 +734,11 @@ export default function HeroSection({ className }: { className?: string }) {
               href="https://app.astrix.live"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() =>
+                mixpanel.track("Hero Section - Get Started Button Clicked", {
+                  location: "Hero Section",
+                })
+              }
               className="w-fit px-3 md:px-5 py-[10px] md:py-[14px] h-[30px] md:h-[40px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] md:text-[10px] leading-none"
             >
               <p className="leading-none mt-0.5 text-xs md:text-sm font-nohemi font-[400] text-shadow-md">
@@ -550,7 +747,12 @@ export default function HeroSection({ className }: { className?: string }) {
             </Link>
             <Link
               href="#contact"
-              onClick={() => handleNavClick("contact")}
+              onClick={() => {
+                handleNavClick("contact");
+                mixpanel.track("Hero Section - Book A Demo Button Clicked", {
+                  location: "Hero Section",
+                });
+              }}
               className="w-fit flex items-center justify-center px-3 md:px-5 py-[10px] md:py-[14px]  h-[30px] md:h-[40px]   rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none"
             >
               <p className="leading-none mt-0.5 text-xs md:text-sm font-nohemi font-[400] text-shadow-md">
@@ -607,6 +809,9 @@ export default function HeroSection({ className }: { className?: string }) {
             top: window.innerHeight * 0.9,
             behavior: "smooth",
           });
+          mixpanel.track("Hero Section - Scroll to Down Arrow Clicked", {
+            location: "Hero Section",
+          });
         }}
       >
         <div className="flex flex-col items-center text-white">
@@ -650,7 +855,12 @@ export default function HeroSection({ className }: { className?: string }) {
               />
             </div>
             <button
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                setIsMenuOpen(false);
+                mixpanel.track("Mobile Navbar - Mobile Menu Closed", {
+                  location: "Mobile Navbar",
+                });
+              }}
               className="text-white hover:text-gray-300 transition-colors"
             >
               <svg
@@ -674,99 +884,275 @@ export default function HeroSection({ className }: { className?: string }) {
             <Link
               href="/about"
               className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                setIsMenuOpen(false);
+                mixpanel.track("Mobile Navbar - About Clicked", {
+                  location: "Mobile Navbar",
+                });
+              }}
             >
               ABOUT
             </Link>
-            
+
             {/* Services Dropdown for Mobile */}
             <div className="space-y-3">
               <button
-                onClick={() => setIsServicesDropdownOpenMobile(!isServicesDropdownOpenMobile)}
-                className={`flex py-2 px-4 hover:bg-[#1F1F1F] items-center justify-between w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm ${isServicesDropdownOpenMobile && 'bg-[#1F1F1F]'}`}
+                onClick={() => {
+                  setIsServicesDropdownOpenMobile(
+                    !isServicesDropdownOpenMobile
+                  );
+                  mixpanel.track("Mobile Navbar - Services Toggled", {
+                    location: "Mobile Navbar",
+                  });
+                }}
+                className={`flex py-2 px-4 hover:bg-[#1F1F1F] items-center justify-between w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm ${
+                  isServicesDropdownOpenMobile && "bg-[#1F1F1F]"
+                }`}
               >
                 <span>{`SERVICES`}</span>
-                <svg 
-                  className={`w-4 h-4 transition-transform duration-200 ${isServicesDropdownOpenMobile ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isServicesDropdownOpenMobile ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
-              
+
               {isServicesDropdownOpenMobile && (
                 <div className="pl-4 space-y-4">
                   <div>
-                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Distribute</h4>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">
+                      Distribute
+                    </h4>
                     <ul className="space-y-1 pl-2">
-                      <li><button onClick={() => scrollToProductSection('pc-create-event')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Create Event</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-issue-tickets')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Issue Tickets</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-purchase-rsvp')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Purchase/RSVP</button></li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-create-event");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Create Event Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Create Event
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-issue-tickets");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Issue Tickets Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Issue Tickets
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-purchase-rsvp");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Purchase/RSVP Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Purchase/RSVP
+                        </button>
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Retarget</h4>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">
+                      Retarget
+                    </h4>
                     <ul className="space-y-1 pl-2">
-                      <li><button onClick={() => scrollToProductSection('pc-data-insights')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Data Insights</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-email-marketing')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Email Marketing</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-promotions')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Promotions / Discounts</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-marketing-insights')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Marketing Insights</button></li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-data-insights");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Data Insights Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Data Insights
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-email-marketing");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Email Marketing Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Email Marketing
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-promotions");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Promotions/Discounts Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Promotions / Discounts
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-marketing-insights");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Marketing Insights Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Marketing Insights
+                        </button>
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Discover</h4>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">
+                      Discover
+                    </h4>
                     <ul className="space-y-1 pl-2">
-                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Mini Portfolio</button></li>
-                      <li><button onClick={() => scrollToProductSection('pc-discovery-channel')} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Discovery Channel</button></li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-mini-portfolio");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Mini Portfolio Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Mini Portfolio
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => {
+                            scrollToProductSection("pc-discovery-channel");
+                            mixpanel.track(
+                              "Mobile Navbar Services - Discovery Channel Clicked",
+                              {
+                                location: "Mobile Navbar Services",
+                              }
+                            );
+                          }}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Discovery Channel
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 </div>
               )}
             </div>
-            
+
             <Link
               href="#"
               className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                setIsMenuOpen(false);
+                mixpanel.track("Mobile Navbar - Resources Clicked", {
+                  location: "Mobile Navbar",
+                });
+              }}
             >
               RESOURCES
             </Link>
-            
+
             <Link
               href="#contact"
               onClick={() => {
                 setIsMenuOpen(false);
                 handleNavClick("contact");
+                mixpanel.track("Mobile Navbar - Contact Us Clicked", {
+                  location: "Mobile Navbar",
+                });
               }}
               className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
             >
               CONTACT US
             </Link>
             <div className="absolute bottom-0 right-0 w-full p-5 flex flex-row gap-4">
-            <Link
-              href="https://app.astrix.live"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-fit px-3 py-1 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] leading-none text-shadow-sm"
-            >
-              <p className="leading-none">
-                GET STARTED
-              </p>
-            </Link>
-            <Link
-              href="https://app.astrix.live"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-fit px-3 py-1 flex items-center font-nohemi font-[400] justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-[10px] leading-none text-shadow-sm"
-              onClick={() => {
-                setIsMenuOpen(false);
-                handleNavClick("contact");
-              }}
-            >
-              <p className="leading-none mt-0.5">BOOK A DEMO</p>
-            </Link>
+              <Link
+                href="https://app.astrix.live"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-fit px-3 py-1 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] leading-none text-shadow-sm"
+                onClick={() => {
+                  mixpanel.track("Mobile Navbar - Get Started Clicked", {
+                    location: "Mobile Navbar",
+                  });
+                }}
+              >
+                <p className="leading-none">GET STARTED</p>
+              </Link>
+              <Link
+                href="https://app.astrix.live"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-fit px-3 py-1 flex items-center font-nohemi font-[400] justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-[10px] leading-none text-shadow-sm"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleNavClick("contact");
+                  mixpanel.track("Mobile Navbar - Book A Demo Clicked", {
+                    location: "Mobile Navbar",
+                  });
+                }}
+              >
+                <p className="leading-none mt-0.5">BOOK A DEMO</p>
+              </Link>
             </div>
           </div>
         </div>

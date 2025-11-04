@@ -5,6 +5,7 @@ import "./globals.css";
 import GlobalMenu from "./components/GlobalMenu";
 import { Instrument_Serif } from "next/font/google";
 import { Toaster } from "sonner";
+import MixpanelProvider from "@/providers/mixpanerlProvider";
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
@@ -181,7 +182,7 @@ export default function RootLayout({
           `}
         </Script>
         <Toaster position="top-center" richColors />
-        {children}
+         <MixpanelProvider>{children}</MixpanelProvider>
         <GlobalMenu />
       </body>
     </html>

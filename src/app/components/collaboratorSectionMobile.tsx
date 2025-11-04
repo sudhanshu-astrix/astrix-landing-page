@@ -100,6 +100,7 @@ export default function CollaboratorSectionMobile({
       className={`h-screen bg-[#0A0A0A] flex flex-col md:flex-row items-start md:items-center pt-[140px] overflow-hidden ${
         className || ""
       }`}
+      id="collaborators-mobile"
     >
       <div className="w-full mx-auto px-4 flex flex-col gap-8  items-start  h-full">
         {/* Section Title - Top on mobile, Left on desktop */}

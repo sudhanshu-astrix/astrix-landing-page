@@ -1,8 +1,20 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import mixpanel from "@/lib/mixpanelClient";
 
 export default function ContactSection({ className }: { className?: string }) {
   const [loading, setLoading] = useState(false);
+
+  const [fieldsTracked, setFieldsTracked] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const handleFieldChange = (fieldName: string) => {
+    if (!fieldsTracked[fieldName]) {
+      mixpanel.track("Contact Field Interacted", { field: fieldName });
+      setFieldsTracked((prev) => ({ ...prev, [fieldName]: true }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,6 +72,7 @@ export default function ContactSection({ className }: { className?: string }) {
     setLoading(true);
 
     const data = { firstName, lastName, email, phone, message };
+    mixpanel.track("Contact Form Submit Attempted", data);
 
     try {
       const res = await fetch("/api/contact", {
@@ -71,12 +84,25 @@ export default function ContactSection({ className }: { className?: string }) {
       const result = await res.json();
       if (result.success) {
         toast.success("Message sent successfully!");
+        mixpanel.track("Contact Form Submission Success", {
+          email,
+          firstName,
+          lastName,
+          phone,
+          message,
+        });
         form.reset();
       } else {
         toast.warning(result.error || "Something went wrong.");
+        mixpanel.track("Contact Form Submission Failed", {
+          error: result.error || "Unknown error",
+        });
       }
     } catch (err) {
       toast.error("Error submitting the form. Please try again.");
+      mixpanel.track("Contact Form Submission Failed", {
+        error: (err as Error).message,
+      });
     } finally {
       setLoading(false);
     }
@@ -106,6 +132,7 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="First Name"
                     type="text"
+                    onChange={() => handleFieldChange("first_name")}
                     className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi font-[400] text-base"
                     autoComplete="given-name"
                     autoCorrect="off"
@@ -117,6 +144,7 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="Last Name"
                     type="text"
+                    onChange={() => handleFieldChange("last_name")}
                     className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi font-[400] text-base"
                     autoComplete="family-name"
                     autoCorrect="off"
@@ -128,6 +156,7 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="Email"
                     type="email"
+                    onChange={() => handleFieldChange("email")}
                     className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi font-[400] text-base"
                     autoComplete="email"
                     autoCorrect="off"
@@ -140,6 +169,7 @@ export default function ContactSection({ className }: { className?: string }) {
                   <input
                     placeholder="Phone Number"
                     type="tel"
+                    onChange={() => handleFieldChange("phone_number")}
                     className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi font-[400] text-base"
                     autoComplete="tel"
                     autoCorrect="off"
@@ -151,6 +181,7 @@ export default function ContactSection({ className }: { className?: string }) {
                   <textarea
                     placeholder="Message"
                     rows={1}
+                    onChange={() => handleFieldChange("message")}
                     className="w-full bg-transparent outline-none border-b border-white/20 focus:border-white/40 transition-colors pb-3 font-nohemi font-[400] resize-none text-base"
                     autoComplete="off"
                     autoCorrect="off"

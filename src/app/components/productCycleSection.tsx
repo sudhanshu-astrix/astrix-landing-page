@@ -2019,7 +2019,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
     return (
       <>
         {/* Toolkit Section - No label */}
-        <section className="h-screen w-full bg-[#0B0B0B] flex flex-col justify-between relative overflow-hidden">
+        <section className="h-screen w-full bg-[#0B0B0B] flex flex-col justify-between relative overflow-hidden"
+          id="product-cycle"
+        >
           <div className="flex flex-col w-full h-fit mt-5">
             <h2 className="text-white text-2xl ml-5 w-[70%] font-switzer font-[400] leading-tight">
               If your community had an HQ, it&apos;d probably be here. Discover,
