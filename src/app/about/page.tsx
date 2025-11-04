@@ -4,9 +4,104 @@ import Image from "next/image";
 import Link from "next/link";
 import FooterSection from "@/app/components/footerSection";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function AboutUsPage() {
   const router = useRouter();
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isServicesDropdownOpen) {
+        const target = event.target as Element;
+        if (!target.closest('[data-services-dropdown]')) {
+          setIsServicesDropdownOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isServicesDropdownOpen]);
+
+  const scrollToProductSection = (targetId: string) => {
+    setIsServicesDropdownOpen(false);
+    // First navigate to home page
+    router.push("/");
+    
+    // Wait for navigation to complete, then find and scroll to section
+    let attempts = 0;
+    const maxAttempts = 50;
+    
+    const checkAndNavigate = () => {
+      attempts++;
+      const root = document.getElementById("product-cycle-root");
+      
+      if (!root) {
+        if (attempts < maxAttempts) {
+          setTimeout(checkAndNavigate, 100);
+        }
+        return;
+      }
+      
+      // Get the top position of the product cycle section
+      const rootRect = root.getBoundingClientRect();
+      const rootTop = rootRect.top + window.scrollY;
+      
+      // Scroll to the product cycle section
+      window.scrollTo({ top: rootTop, behavior: "smooth" });
+      
+      // Poll to ensure we've reached the section and it's pinned before dispatching
+      let pinAttempts = 0;
+      const maxPinAttempts = 40;
+      const checkAndDispatch = () => {
+        pinAttempts++;
+        const currentRoot = document.getElementById("product-cycle-root");
+        if (!currentRoot) return;
+        
+        const currentRect = currentRoot.getBoundingClientRect();
+        const distanceFromTop = Math.abs(currentRect.top);
+        
+        // If section is within 50px of top, we're close enough (pinned)
+        if (distanceFromTop < 50 || pinAttempts >= maxPinAttempts) {
+          window.dispatchEvent(
+            new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
+          );
+        } else {
+          setTimeout(checkAndDispatch, 100);
+        }
+      };
+      
+      // Start checking after a short delay to allow scroll to begin
+      setTimeout(checkAndDispatch, 300);
+    };
+    
+    // Start checking after navigation
+    setTimeout(checkAndNavigate, 300);
+  };
+
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Navigate to home page first
+    router.push("/");
+    // Poll for the contact element to exist after navigation
+    let attempts = 0;
+    const maxAttempts = 30;
+    const checkAndScroll = () => {
+      attempts++;
+      const contactEl = document.getElementById("contact");
+      if (contactEl) {
+        contactEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (attempts < maxAttempts) {
+        setTimeout(checkAndScroll, 100);
+      }
+    };
+    setTimeout(checkAndScroll, 200);
+  };
+
   return (
     <main className="min-h-screen w-full bg-[#0F0F0F] text-white">
       {/* Top bar (mirrors HeroSection navbar) */}
@@ -31,27 +126,71 @@ export default function AboutUsPage() {
               ABOUT
             </p>
           </span>
-          {/* <Link
-            href="/"
-            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#1f1f1f9e] cursor-pointe p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5"
-          >
-            <p className="leading-none mt-0.5 px-2 py-1 text-xs font-nohemi font-[400]">
-              SERVICES
-            </p>
-          </Link> */}
-          {/* <Link
-            href="#"
-            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#1f1f1f9e] cursor-pointer p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5"
-          >
-            <p className="leading-none mt-0.5 px-2 py-1 text-xs font-nohemi font-[400]">
-              RESOURCES
-            </p>
-          </Link> */}
+          
+          {/* Services Dropdown */}
+          <div className="relative" data-services-dropdown>
+            <button 
+              onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] leading-none"
+            >
+              <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+                SERVICES
+              </p>
+              <svg 
+                className={`w-3 h-3 ml-1 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            {/* Services Dropdown Menu */}
+            {isServicesDropdownOpen && (
+              <div className="absolute top-full -left-56 mt-2 w-[650px] bg-[#141414] rounded-lg border border-[#4e4e4e87] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] z-50">
+                <div className="p-6 grid grid-cols-3 gap-8">
+                  {/* Distribute Column */}
+                  <div>
+                    <h3 className="text-[#E8EAED] text-sm font-instrument-serif font-[400] mb-2">Distribute</h3>
+                    <ul className="space-y-1 ml-2">
+                      <li><button onClick={() => scrollToProductSection('pc-create-event')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Create Event</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-issue-tickets')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Issue Ticket</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-purchase-rsvp')} className="text-left w-full text-[#E8EAED] text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Purchase/RSVP</button></li>
+                    </ul>
+                  </div>
+                  
+                  {/* Retarget Column */}
+                  <div>
+                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Retarget</h3>
+                    <ul className="space-y-1 ml-2">
+                      <li><button onClick={() => scrollToProductSection('pc-data-insights')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Data Insights</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-email-marketing')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Email Marketing</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-promotions')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Promotions / Discounts</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-marketing-insights')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Marketing Insights</button></li>
+                    </ul>
+                  </div>
+                  
+                  {/* Discover Column */}
+                  <div>
+                    <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Discover</h3>
+                    <ul className="space-y-1 ml-2">
+                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Mini Portfolio</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-discovery-channel')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Discovery Channel</button></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          
           <Link
             href="/#contact"
-            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#1f1f1f9e] cursor-pointer p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5"
+            onClick={handleContactClick}
+            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#0F0F0F] cursor-pointer p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5 shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)]"
           >
-            <p className="leading-none mt-0.5 px-2 py-1 text-xs font-nohemi font-[400]">
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400] text-shadow-md">
               CONTACT US
             </p>
           </Link>

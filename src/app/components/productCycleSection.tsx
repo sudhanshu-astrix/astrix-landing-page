@@ -1701,6 +1701,14 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           requestAnimationFrame(goToSlide);
           return;
         }
+        
+        // Check if ScrollTrigger is active (section is pinned)
+        if (!st.isActive) {
+          // Wait a bit more for ScrollTrigger to become active
+          setTimeout(goToSlide, 100);
+          return;
+        }
+        
         const stWithAnim = st as unknown as { animation?: gsap.core.Timeline };
         const tl = stWithAnim.animation;
         if (!tl) {
@@ -1708,32 +1716,191 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           return;
         }
 
-        // Map each id to the NEXT timeline label (or duration for last),
-        // so the selected section ends fully in view, not mid-transition.
-        const idToNextLabel: Record<string, string | "duration"> = {
-          "pc-create-event": "secondSection",
-          "pc-issue-tickets": "thirdSection",
-          "pc-purchase-rsvp": "fourthSection",
-          "pc-data-insights": "fifthSection",
-          "pc-email-marketing": "sixthSection",
-          "pc-promotions": "seventhSection",
-          "pc-marketing-insights": "eighthSection",
-          "pc-mini-portfolio": "ninthSection",
-          "pc-discovery-channel": "duration",
+        // Map each id to its section's timeline label
+        // Labels mark when we START transitioning TO that section
+        // To land ON a section, we need to be after its transition completes
+        const idToLabel: Record<string, string | number> = {
+          "pc-create-event": 0, // Start of timeline - first section appears immediately
+          "pc-issue-tickets": "secondSection", // Label for transitioning to second section
+          "pc-purchase-rsvp": "thirdSection", // Label for transitioning to third section
+          "pc-data-insights": "fourthSection", // Label for transitioning to fourth section
+          "pc-email-marketing": "fifthSection", // Label for transitioning to fifth section
+          "pc-promotions": "sixthSection", // Label for transitioning to sixth section
+          "pc-marketing-insights": "seventhSection", // Label for transitioning to seventh section
+          "pc-mini-portfolio": "eighthSection", // Label for transitioning to eighth section
+          "pc-discovery-channel": "ninthSection", // Label for transitioning to ninth section
         };
 
         let targetTime: number = 0;
-        const key = idToNextLabel[id];
-        if (key === "duration") {
-          targetTime = tl.duration();
-        } else if (typeof key === "string") {
-          targetTime = tl.labels[key] ?? 0;
+        const key = idToLabel[id];
+        if (key === undefined) {
+          console.warn(`ProductCycleSection: No label mapping found for ID: ${id}`);
+          return;
         }
-        // Nudge slightly before the label to ensure the section is fully settled
-        if (targetTime > 0.05) targetTime -= 0.05;
+        
+        // Get section index for fallback calculation
+        const order = [
+          "pc-create-event",
+          "pc-issue-tickets",
+          "pc-purchase-rsvp",
+          "pc-data-insights",
+          "pc-email-marketing",
+          "pc-promotions",
+          "pc-marketing-insights",
+          "pc-mini-portfolio",
+          "pc-discovery-channel",
+        ];
+        const sectionIndex = order.indexOf(id);
+        
+        if (typeof key === "number") {
+          // Direct time value (0 for first section)
+          targetTime = key;
+          // Add a small offset to ensure first section is visible
+          targetTime = 0.1;
+        } else if (typeof key === "string") {
+          // Timeline label - get the time for this label
+          const labelTime = tl.labels[key];
+          
+          if (labelTime === undefined) {
+            // Fallback: calculate based on section index
+            console.warn(`ProductCycleSection: Label "${key}" not found, using index-based calculation`);
+            const slideDuration = 0.8;
+            const sectionDelay = 0.8;
+            // Each section takes slideDuration + sectionDelay
+            // First section starts at 0, so index-th section starts at index * (slideDuration + sectionDelay)
+            targetTime = sectionIndex * (slideDuration + sectionDelay) + slideDuration;
+          } else {
+            // The label marks when we START transitioning TO this section
+            // We want to land when the section is fully visible (after transition)
+            // Timeline structure: [label at time T] -> [transition 0.8s] -> [delay 0.8s] -> [next label]
+            // To land ON the section, we need T + transition_duration + some_delay
+            const slideDuration = 0.8; // Desktop slide duration
+            const sectionDelay = 0.8; // Desktop section delay
+            // Add transition + 60% of delay to land in the middle of the visible period
+            targetTime = labelTime + slideDuration + (sectionDelay * 0.6);
+          }
+        }
+        
+        // Ensure we don't go past the end
+        const maxTime = tl.duration();
+        // Clamp to be within timeline bounds
+        targetTime = Math.max(0, Math.min(targetTime, maxTime - 0.1));
+        
+        // Debug logging
+        console.log(`ProductCycleSection: Navigating to ${id} (index ${sectionIndex}), targetTime: ${targetTime.toFixed(2)}, maxTime: ${maxTime.toFixed(2)}, progress: ${(targetTime / maxTime * 100).toFixed(1)}%`);
 
         try {
-          tl.tweenTo(targetTime as gsap.Position, { ease: "power2.inOut", duration: 0.8 });
+          // Temporarily disable ScrollTrigger to prevent it from interfering during tween
+          const wasEnabled = st.isActive;
+          if (wasEnabled) {
+            st.disable();
+          }
+
+          // Store the target time to use in onComplete (avoid closure issues)
+          const finalTargetTime = targetTime;
+          
+          // Tween the timeline to target position
+          tl.tweenTo(finalTargetTime as gsap.Position, { 
+            ease: "power2.inOut", 
+            duration: 0.8,
+            onComplete: () => {
+              // After tween completes, we need to sync scroll position WITHOUT resetting timeline
+              // Get current ScrollTrigger bounds
+              const currentStart = typeof st.start === 'number' ? st.start : (st.start as number);
+              const currentEnd = typeof st.end === 'number' ? st.end : (st.end as number);
+              
+              // Force timeline to exact target position (in case it drifted slightly)
+              tl.time(finalTargetTime);
+              
+              // Calculate scroll position based on the target timeline time
+              const maxDuration = tl.duration();
+              const safeTargetTime = Math.max(0, Math.min(finalTargetTime, maxDuration));
+              const targetProgress = safeTargetTime / maxDuration;
+              const targetScrollY = currentStart + ((currentEnd - currentStart) * targetProgress);
+              
+              // Clamp to pinned range - ensure it's never below start
+              const clampedScrollY = Math.max(currentStart, Math.min(currentEnd, targetScrollY));
+              
+              // Debug logging
+              console.log(`ProductCycleSection: Syncing scroll. targetTime: ${safeTargetTime.toFixed(2)}, progress: ${(targetProgress * 100).toFixed(1)}%, scrollY: ${clampedScrollY.toFixed(0)}, bounds: [${currentStart.toFixed(0)}, ${currentEnd.toFixed(0)}]`);
+              
+              // Update scroll position immediately (this must happen while ScrollTrigger is disabled)
+              window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+              
+              // Wait a bit longer to ensure scroll position is fully set before re-enabling
+              setTimeout(() => {
+                // Verify timeline is still at target
+                if (Math.abs(tl.time() - finalTargetTime) > 0.05) {
+                  tl.time(finalTargetTime);
+                }
+                
+                // Re-verify scroll position matches timeline
+                const verifiedProgress = tl.time() / tl.duration();
+                const verifiedScrollY = currentStart + ((currentEnd - currentStart) * verifiedProgress);
+                const finalClampedScrollY = Math.max(currentStart, Math.min(currentEnd, verifiedScrollY));
+                
+                // Use requestAnimationFrame to ensure scroll happens before ScrollTrigger re-enables
+                requestAnimationFrame(() => {
+                  // Set scroll position one more time to ensure sync
+                  window.scrollTo({ top: finalClampedScrollY, behavior: 'auto' });
+                  
+                  // Wait another frame to ensure scroll is applied
+                  requestAnimationFrame(() => {
+                    // Verify we're still within the pinned section bounds
+                    const currentScrollY = window.scrollY;
+                    const isWithinBounds = currentScrollY >= currentStart && currentScrollY <= currentEnd;
+                    
+                    console.log(`ProductCycleSection: Final check. scrollY: ${currentScrollY.toFixed(0)}, bounds: [${currentStart.toFixed(0)}, ${currentEnd.toFixed(0)}], within: ${isWithinBounds}`);
+                    
+                    if (isWithinBounds) {
+                      // Now re-enable ScrollTrigger - it should match the current scroll position
+                      // Set the timeline time explicitly one more time before enabling
+                      tl.time(finalTargetTime);
+                      
+                      // Temporarily set a flag to prevent ScrollTrigger from syncing on enable
+                      // We'll manually sync scroll position instead
+                      if (wasEnabled) {
+                        // Re-enable ScrollTrigger
+                        st.enable();
+                        
+                        // Immediately after enabling, force the timeline to stay at target
+                        // This prevents ScrollTrigger from syncing timeline to scroll position
+                        tl.time(finalTargetTime);
+                        
+                        // Set scroll position again to match timeline
+                        const enforceProgress = finalTargetTime / tl.duration();
+                        const enforceScrollY = currentStart + ((currentEnd - currentStart) * enforceProgress);
+                        window.scrollTo({ top: Math.max(currentStart, Math.min(currentEnd, enforceScrollY)), behavior: 'auto' });
+                        
+                        // After a short delay, verify and correct if needed
+                        setTimeout(() => {
+                          const finalTime = tl.time();
+                          const finalScroll = window.scrollY;
+                          
+                          if (Math.abs(finalTime - finalTargetTime) > 0.1) {
+                            console.warn(`ProductCycleSection: Timeline drifted to ${finalTime.toFixed(2)} after enabling, resetting to ${finalTargetTime.toFixed(2)}`);
+                            tl.time(finalTargetTime);
+                            // Resync scroll
+                            const syncProgress = finalTargetTime / tl.duration();
+                            const syncScrollY = currentStart + ((currentEnd - currentStart) * syncProgress);
+                            window.scrollTo({ top: Math.max(currentStart, Math.min(currentEnd, syncScrollY)), behavior: 'auto' });
+                          } else if (finalScroll < currentStart || finalScroll > currentEnd) {
+                            console.warn(`ProductCycleSection: Scroll position ${finalScroll.toFixed(0)} outside bounds after enabling, correcting`);
+                            const correctProgress = finalTargetTime / tl.duration();
+                            const correctScrollY = currentStart + ((currentEnd - currentStart) * correctProgress);
+                            window.scrollTo({ top: Math.max(currentStart, Math.min(currentEnd, correctScrollY)), behavior: 'auto' });
+                          }
+                        }, 100);
+                      }
+                    } else {
+                      // If we're outside bounds, keep ScrollTrigger disabled and log warning
+                      console.warn(`ProductCycleSection: Scroll position ${currentScrollY} outside bounds [${currentStart}, ${currentEnd}], keeping ScrollTrigger disabled`);
+                    }
+                  });
+                });
+              }, 200);
+            }
+          });
         } catch {
           // Fallback to scroll mapping if tweenTo fails
           const start = typeof st.start === 'number' ? st.start : (st.start as number);
@@ -1750,21 +1917,33 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       const threshold = 32;
       if (Math.abs(window.scrollY - sectionTop) > threshold) {
         window.scrollTo({ top: sectionTop, behavior: 'smooth' });
-        // Poll until the section top is reached before jumping inside
+        // Poll until the section top is reached AND it's pinned before jumping inside
         let tries = 0;
-        const maxTries = 40; // ~2s at 50ms
+        const maxTries = 50; // Increased for better reliability
         const interval = setInterval(() => {
           tries++;
           const y = window.scrollY;
-          if (Math.abs(y - sectionTop) <= threshold || tries >= maxTries) {
+          const distanceFromTop = Math.abs(y - sectionTop);
+          
+          // Check if we're close enough AND ScrollTrigger is active (pinned)
+          const st = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+          const isPinned = st?.isActive || false;
+          
+          if ((distanceFromTop <= threshold && isPinned) || tries >= maxTries) {
             clearInterval(interval);
-            // Allow pinning to settle
-            setTimeout(goToSlide, 50);
+            // Allow pinning to fully settle before jumping
+            setTimeout(goToSlide, 150);
           }
-        }, 50);
+        }, 100);
       } else {
-        // Already at section; jump immediately
-        goToSlide();
+        // Already at section; check if pinned, then jump
+        const st = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+        if (st?.isActive) {
+          goToSlide();
+        } else {
+          // Wait for pinning
+          setTimeout(goToSlide, 150);
+        }
       }
     };
 

@@ -267,23 +267,57 @@ export default function HeroSection({ className }: { className?: string }) {
 
     if (isDesktop) {
       const root = document.getElementById("product-cycle-root");
-      if (root) {
-        root.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Dispatch after a short delay to allow pin to engage
-        setTimeout(() => {
+      if (!root) {
+        console.warn("product-cycle-root not found");
+        setTimeout(() => enableScrollPinning(), 2000);
+        return;
+      }
+      
+      // Get the top position of the product cycle section
+      const rootRect = root.getBoundingClientRect();
+      const rootTop = rootRect.top + window.scrollY;
+      
+      // Scroll to the product cycle section
+      window.scrollTo({ top: rootTop, behavior: "smooth" });
+      
+      // Poll to ensure we've reached the section and it's pinned before dispatching
+      let attempts = 0;
+      const maxAttempts = 40;
+      const checkAndDispatch = () => {
+        attempts++;
+        const currentRoot = document.getElementById("product-cycle-root");
+        if (!currentRoot) {
+          if (attempts < maxAttempts) {
+            setTimeout(checkAndDispatch, 100);
+          } else {
+            setTimeout(() => enableScrollPinning(), 2000);
+          }
+          return;
+        }
+        
+        const currentRect = currentRoot.getBoundingClientRect();
+        const distanceFromTop = Math.abs(currentRect.top);
+        
+        // If section is within 50px of top, we're close enough (pinned)
+        if (distanceFromTop < 50 || attempts >= maxAttempts) {
           window.dispatchEvent(
             new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
           );
-        }, 200);
-      }
+          setTimeout(() => enableScrollPinning(), 2000);
+        } else {
+          setTimeout(checkAndDispatch, 100);
+        }
+      };
+      
+      // Start checking after a short delay to allow scroll to begin
+      setTimeout(checkAndDispatch, 300);
     } else {
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
+      setTimeout(() => enableScrollPinning(), 2000);
     }
-
-    setTimeout(() => enableScrollPinning(), 2000);
   };
 
   return (
