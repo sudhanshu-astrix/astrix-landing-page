@@ -36,6 +36,37 @@ export default function HeroSection({ className}: { className?: string }) {
     };
   }, [isServicesDropdownOpen]);
 
+  // Separate useEffect for handling cross-page navigation events
+  useEffect(() => {
+    const handleScrollToSection = (event: Event) => {
+      const customEvent = event as CustomEvent<{ targetId: string }>;
+      const targetId = customEvent.detail?.targetId;
+      if (targetId) {
+        console.log("[HeroSection] Received scrollToSection event for:", targetId);
+        // Directly implement scroll logic with pinning disabled
+        disableScrollPinning();
+        setIsServicesDropdownOpenMobile(false);
+        setIsMenuOpen(false);
+
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({
+            behavior: "smooth",
+            block: isMobile ? "center" : "end",
+          });
+        }
+
+        setTimeout(() => enableScrollPinning(), 3000);
+      }
+    };
+
+    window.addEventListener("scrollToSection", handleScrollToSection);
+    
+    return () => {
+      window.removeEventListener("scrollToSection", handleScrollToSection);
+    };
+  }, [isMobile]);
+
   useEffect(() => {
     // Detect iOS and mobile
     const checkIOS = () => {
@@ -1072,7 +1103,7 @@ export default function HeroSection({ className}: { className?: string }) {
           <div className="flex-1 flex flex-col justify-start px-3 pt-8 space-y-4">
             <Link
               href="/about"
-              target="_blank"
+              rel="noopener noreferrer"
               className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
               onClick={() => {
                 setIsMenuOpen(false);

@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 export default function AboutUsPage() {
   const router = useRouter();
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesDropdownOpenMobile, setIsServicesDropdownOpenMobile] = useState(false);
 
   useEffect(() => {
     // Close dropdown when clicking outside
@@ -32,51 +34,201 @@ export default function AboutUsPage() {
     // First navigate to home page
     router.push("/");
     
-    // Wait for navigation to complete, then find and scroll to section
+    // Wait for navigation to complete, then apply the same logic as heroSection
     let attempts = 0;
     const maxAttempts = 50;
     
     const checkAndNavigate = () => {
       attempts++;
-      const root = document.getElementById("product-cycle-root");
+      const productCycleRoot = document.getElementById("product-cycle-root");
       
-      if (!root) {
+      if (!productCycleRoot) {
         if (attempts < maxAttempts) {
           setTimeout(checkAndNavigate, 100);
         }
         return;
       }
       
-      // Get the top position of the product cycle section
-      const rootRect = root.getBoundingClientRect();
-      const rootTop = rootRect.top + window.scrollY;
-      
-      // Scroll to the product cycle section
-      window.scrollTo({ top: rootTop, behavior: "smooth" });
-      
-      // Poll to ensure we've reached the section and it's pinned before dispatching
-      let pinAttempts = 0;
-      const maxPinAttempts = 40;
-      const checkAndDispatch = () => {
-        pinAttempts++;
-        const currentRoot = document.getElementById("product-cycle-root");
-        if (!currentRoot) return;
-        
-        const currentRect = currentRoot.getBoundingClientRect();
-        const distanceFromTop = Math.abs(currentRect.top);
-        
-        // If section is within 50px of top, we're close enough (pinned)
-        if (distanceFromTop < 50 || pinAttempts >= maxPinAttempts) {
-          window.dispatchEvent(
-            new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
-          );
-        } else {
-          setTimeout(checkAndDispatch, 100);
+      // Mobile: simple scroll to element
+      const isDesktop = window.innerWidth >= 768;
+      if (!isDesktop) {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
+        return;
+      }
+      
+      // Desktop: Navigate to ProductCycleSection with specific slide
+      // Map section IDs to their timeline progress (0 to 1)
+      const idToProgress: Record<string, number> = {
+        "pc-create-event": 0.05,        // ~5% - Just after toolkit slides out
+        "pc-issue-tickets": 0.15,        // ~15%
+        "pc-purchase-rsvp": 0.25,        // ~25%
+        "pc-data-insights": 0.35,        // ~35%
+        "pc-email-marketing": 0.50,      // ~50%
+        "pc-promotions": 0.60,           // ~60%
+        "pc-marketing-insights": 0.70,   // ~70%
+        "pc-mini-portfolio": 0.85,       // ~85%
+        "pc-discovery-channel": 0.95,    // ~95%
       };
       
-      // Start checking after a short delay to allow scroll to begin
-      setTimeout(checkAndDispatch, 300);
+      const targetProgress = idToProgress[targetId];
+      if (targetProgress === undefined) {
+        console.warn(`Unknown target ID: ${targetId}`);
+        return;
+      }
+      
+      console.log("[AboutPage] Navigating to:", targetId, "progress:", targetProgress);
+      
+      // Get the element's position relative to the document
+      const rect = productCycleRoot.getBoundingClientRect();
+      const sectionTop = rect.top + window.scrollY;
+      
+      // Try to get ScrollTrigger from window or fallback to estimation
+      let retryCount = 0;
+      const maxRetries = 30; // Try for 3 seconds max
+      
+      const getScrollTriggerAndNavigate = () => {
+        retryCount++;
+        
+        // First, try to get cached ScrollTrigger reference (instant)
+        let productCycleTrigger: unknown = null;
+        const cachedTrigger = (window as unknown as { __productCycleScrollTrigger?: unknown }).__productCycleScrollTrigger;
+        
+        if (cachedTrigger) {
+          console.log("[AboutPage] Using cached ScrollTrigger reference (instant navigation)");
+          productCycleTrigger = cachedTrigger;
+        } else {
+          // Fallback: Search for ScrollTrigger if not cached yet
+          console.log(`[AboutPage] Cached reference not found, searching... (attempt ${retryCount}/${maxRetries})`);
+          
+          let ScrollTrigger: { getAll?: () => unknown[] } | null = null;
+          
+          // Method 1: From window.ScrollTrigger
+          if (typeof window !== 'undefined' && (window as unknown as { ScrollTrigger?: unknown }).ScrollTrigger) {
+            ScrollTrigger = (window as unknown as { ScrollTrigger: { getAll?: () => unknown[] } }).ScrollTrigger;
+          }
+          
+          // Method 2: Try to import dynamically
+          if (!ScrollTrigger && typeof window !== 'undefined' && (window as unknown as { gsap?: { plugins?: { ScrollTrigger?: unknown } } }).gsap?.plugins?.ScrollTrigger) {
+            ScrollTrigger = (window as unknown as { gsap: { plugins: { ScrollTrigger: { getAll?: () => unknown[] } } } }).gsap.plugins.ScrollTrigger;
+          }
+          
+          if (ScrollTrigger) {
+            const allTriggers = ScrollTrigger.getAll?.();
+            productCycleTrigger = allTriggers?.find((st: unknown) => 
+              (st as { trigger?: unknown; vars?: { id?: string } }).trigger === productCycleRoot || (st as { trigger?: unknown; vars?: { id?: string } }).vars?.id === "product-cycle-root"
+            );
+          }
+        }
+        
+        // If we found the ScrollTrigger, use it
+        if (productCycleTrigger) {
+          console.log("[AboutPage] ScrollTrigger found!", productCycleTrigger);
+          
+          // Calculate scroll position based on ScrollTrigger bounds and target progress
+          const trigger = productCycleTrigger as { start?: number | (() => number); end?: number | (() => number); isActive?: boolean };
+          const start = typeof trigger.start === 'number' 
+            ? trigger.start 
+            : (typeof trigger.start === 'function' 
+                ? trigger.start() 
+                : sectionTop);
+          const end = typeof trigger.end === 'number'
+            ? trigger.end
+            : (typeof trigger.end === 'function'
+                ? trigger.end()
+                : start + 12000);
+          
+          const currentScrollY = window.scrollY;
+          const isInSection = currentScrollY >= start && currentScrollY <= end;
+          
+          console.log("[AboutPage] Navigation context:", {
+            currentScroll: currentScrollY.toFixed(0),
+            sectionStart: start.toFixed(0),
+            sectionEnd: end.toFixed(0),
+            isInSection: isInSection,
+            targetId: targetId
+          });
+          
+          // If already in the section, just dispatch the event without scrolling
+          if (isInSection) {
+            console.log("[AboutPage] Already in ProductCycleSection, navigating directly to:", targetId);
+            const event = new CustomEvent("gotoProductCycle", {
+              detail: { id: targetId }
+            });
+            window.dispatchEvent(event);
+            return;
+          }
+          
+          // Not in section yet - scroll to START of section first to ensure it's pinned
+          // Then navigate to the specific slide
+          const sectionStartScroll = start + 50; // Scroll just past the start to ensure pinning
+          
+          console.log("[AboutPage] Scrolling to section start first to pin it:", {
+            sectionStart: sectionStartScroll.toFixed(0),
+            targetId: targetId,
+            targetProgress: (targetProgress * 100).toFixed(1) + '%'
+          });
+          
+          // Scroll to section start to ensure it's pinned
+          window.scrollTo({
+            top: sectionStartScroll,
+            behavior: "auto",
+          });
+
+          // Wait for section to pin, then dispatch navigation event to specific slide
+          setTimeout(() => {
+            console.log("[AboutPage] Section pinned, dispatching navigation event for:", targetId);
+            const event = new CustomEvent("gotoProductCycle", {
+              detail: { id: targetId }
+            });
+            window.dispatchEvent(event);
+          }, 200);
+          
+          return;
+        }
+        
+        // If ScrollTrigger not ready and we haven't exceeded retries, try again
+        // Only retry if we didn't use the cached reference
+        if (retryCount < maxRetries && !cachedTrigger) {
+          console.log(`[AboutPage] ScrollTrigger not ready (attempt ${retryCount}/${maxRetries}), waiting...`);
+          setTimeout(getScrollTriggerAndNavigate, 100);
+          return;
+        }
+        
+        // Fallback: estimate scroll position without ScrollTrigger
+        console.warn("[AboutPage] ScrollTrigger not found after retries, using estimation");
+        
+        // Estimate: ProductCycleSection starts at sectionTop
+        const estimatedStart = sectionTop;
+        const sectionStartScroll = estimatedStart + 50; // Scroll just past the start to ensure pinning
+        
+        console.log("[AboutPage] Using estimated scroll position - scrolling to section start:", {
+          estimatedStart: estimatedStart.toFixed(0),
+          sectionStartScroll: sectionStartScroll.toFixed(0),
+          targetId: targetId,
+          targetProgress: (targetProgress * 100).toFixed(1) + '%'
+        });
+        
+        // Scroll to section start to ensure it's pinned
+        window.scrollTo({
+          top: sectionStartScroll,
+          behavior: "auto",
+        });
+
+        // Wait for section to pin, then dispatch navigation event
+        setTimeout(() => {
+          console.log("[AboutPage] Section pinned (estimation), dispatching navigation event for:", targetId);
+          const event = new CustomEvent("gotoProductCycle", {
+            detail: { id: targetId }
+          });
+          window.dispatchEvent(event);
+        }, 200);
+      };
+      
+      // Start the process
+      getScrollTriggerAndNavigate();
     };
     
     // Start checking after navigation
@@ -85,29 +237,83 @@ export default function AboutUsPage() {
 
   const handleContactClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    console.log("[AboutPage] Contact navigation requested");
+    
+    // Navigate to home page first with hash
+    router.push("/");
+    
+    // Wait for navigation to complete, then dispatch custom event for home page to handle
+    setTimeout(() => {
+      console.log("[AboutPage] Dispatching scrollToSection event for contact");
+      const event = new CustomEvent("scrollToSection", {
+        detail: { targetId: "contact" }
+      });
+      window.dispatchEvent(event);
+    }, 500);
+  };
+
+  const handleMobileNavClick = (targetId: string) => {
+    setIsServicesDropdownOpenMobile(false);
+    setIsMenuOpen(false);
+    
+    console.log(`[AboutPage Mobile] Navigation requested to: ${targetId}`);
+    
     // Navigate to home page first
     router.push("/");
-    // Poll for the contact element to exist after navigation
+    
+    // Poll for the element to exist after navigation
     let attempts = 0;
-    const maxAttempts = 30;
+    const maxAttempts = 50;
     const checkAndScroll = () => {
       attempts++;
-      const contactEl = document.getElementById("contact");
-      if (contactEl) {
-        contactEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      const el = document.getElementById(targetId);
+      if (el) {
+        console.log(`[AboutPage Mobile] Found element ${targetId} at attempt ${attempts}`);
+        
+        // Immediately scroll without waiting - use instant behavior
+        setTimeout(() => {
+          const element = document.getElementById(targetId);
+          if (element) {
+            console.log(`[AboutPage Mobile] Instant scrolling to ${targetId}`);
+            
+            // Use instant scrollIntoView to bypass all ScrollTrigger animations
+            element.scrollIntoView({ 
+              behavior: "instant" as ScrollBehavior, 
+              block: "start" 
+            });
+            
+            console.log(`[AboutPage Mobile] Scrolled to ${targetId}`);
+          }
+        }, 200); // Reduced wait time
       } else if (attempts < maxAttempts) {
         setTimeout(checkAndScroll, 100);
+      } else {
+        console.warn(`[AboutPage Mobile] Element ${targetId} not found after ${maxAttempts} attempts`);
       }
     };
-    setTimeout(checkAndScroll, 200);
+    
+    // Start checking after navigation
+    setTimeout(checkAndScroll, 300);
   };
 
   return (
-    <main className="min-h-screen w-full bg-[#0F0F0F] text-white">
+    <main className="min-h-screen w-full bg-[#0F0F0F] text-white relative">
+      {/* Background Image */}
+      <div className="absolute top-5 left-0 w-[100vw] h-[90vh] md:h-[200vh] pointer-events-none z-0">
+        <Image 
+          src="/AboutBg1.svg" 
+          alt="About Background" 
+          fill
+          className="w-full h-auto object-cover" 
+          priority
+        />
+      </div>
       {/* Top bar (mirrors HeroSection navbar) */}
-      <header className="relative z-10 flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full">
+      <header className={`relative ${isServicesDropdownOpen ? 'z-[60]' : 'z-10'} flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 w-full`}>
         <div
-          className="flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative"
+          className={`flex items-center gap-2 w-[100%] max-w-[114px] h-[30px] relative transition-all duration-300 ${
+            isServicesDropdownOpen ? 'blur-sm' : ''
+          }`}
           onClick={() => {
             router.push("/");
           }}
@@ -121,7 +327,9 @@ export default function AboutUsPage() {
           />
         </div>
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <span className="w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] leading-none">
+          <span className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] leading-none ${
+            isServicesDropdownOpen ? 'blur-sm' : ''
+          }`}>
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400] text-shadow-md">
               ABOUT
             </p>
@@ -148,7 +356,7 @@ export default function AboutUsPage() {
             
             {/* Services Dropdown Menu */}
             {isServicesDropdownOpen && (
-              <div className="absolute top-full -left-56 mt-2 w-[650px] bg-[#141414] rounded-lg border border-[#4e4e4e87] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] z-50">
+              <div className="absolute top-full -left-60 mt-2 w-[650px] bg-[#141414] rounded-lg border border-[#4e4e4e87] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] z-[70]">
                 <div className="p-6 grid grid-cols-3 gap-8">
                   {/* Distribute Column */}
                   <div>
@@ -188,7 +396,9 @@ export default function AboutUsPage() {
           <Link
             href="/#contact"
             onClick={handleContactClick}
-            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#0F0F0F] cursor-pointer px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5 shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)]"
+            className={`w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#0F0F0F] cursor-pointer px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5 shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] ${
+              isServicesDropdownOpen ? 'blur-sm' : ''
+            }`}
           >
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400] text-shadow-md">
               CONTACT US
@@ -199,23 +409,53 @@ export default function AboutUsPage() {
           href="https://app.astrix.live"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:inline-flex w-fit px-4 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] text-xs md:text-[10px] leading-none hover:contrast-125 transition-all hover:-translate-y-0.5"
+          className={`hidden md:inline-flex w-fit px-4 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] text-xs md:text-[10px] leading-none hover:contrast-125 transition-all hover:-translate-y-0.5 ${
+            isServicesDropdownOpen ? 'blur-sm' : ''
+          }`}
         >
           <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
             GET STARTED
           </p>
         </Link>
+
+        <button
+          className="md:hidden text-white z-50"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
       </header>
-      <section className="w-full h-full flex items-center justify-center px-4">
+
+      {/* Desktop overlay shown only when Services dropdown is open */}
+      {isServicesDropdownOpen && (
+        <div 
+          className="hidden md:block fixed inset-0 z-40 bg-[#1F1F1F]/60 transition-all duration-300"
+          onClick={() => setIsServicesDropdownOpen(false)}
+        ></div>
+      )}
+
+      <section className="relative z-10 w-full h-full flex items-center justify-center px-4">
         <div className="w-full  h-full xl:max-w-[80%] xl:mx-auto ">
-          <div className="bg-[url('/AboutBg.svg')] bg-cover bg-top flex items-center flex-col justify-center pb-[40px] sm:pb-[50px] md:pb-[180px]">
+          <div className="flex items-center flex-col justify-center pb-[40px] sm:pb-[50px] md:pb-[180px]">
             {/* upper div */}
             <div className="w-full flex flex-col md:flex-row justify-start items-start gap-[40px] md:gap-[200px] pb-[80px] md:pb-[160px] pt-[120px]">
               <p className="text-[2.2rem] md:text-[4rem] text-[#FFF3B0] font-instrument-serif leading-none text-nowrap">
                 About Us
               </p>
 
-              <p className=" w-full max-w-[200px]  self-end md:self-auto md:max-w-[800px] font-switzer font-[400] text-[#E4E4E4] text-xs sm:text-lg  md:text-[1.3rem] leading-[120%]">
+              <p className=" w-full max-w-[200px] self-end md:self-auto md:max-w-[800px] font-switzer font-[400] text-[#E4E4E4] text-xs sm:text-lg  md:text-[1.3rem] leading-[120%]">
                 Let&apos;s be honest. The endless scroll is getting old and the
                 feeds are feeling stale. We&apos;ve built a world to share
                 everything, but find it harder than ever to feel like we belong.
@@ -227,12 +467,12 @@ export default function AboutUsPage() {
             <div className="w-full relative flex pt-[80px]  md:pt-[160px] pb-[80px] md:pb-[200px] ">
               {/* yellow arrow + text */}
               <div className="absolute top-0 -right-6 sm:-top-[20px] sm:right-[10%] md:right-[0%] md:top-[5%] flex flex-row-reverse items-start gap-4 text-[#FFF3B0] text-sm font-switzer">
-                <span className="italic text-xs md:text-base relative -mt-4">
+                <span className="italic text-[10px] md:text-base relative mt-4 -ml-2 md:-mt-4">
                   ( of the fans, by the fans, <br /> and for the fans )
                 </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-[100px] h-auto md:w-[173px] md:h-[97px]"
+                  className="w-[75px] mt-6 md:mt-0 h-auto md:w-[173px] md:h-[97px]"
                   viewBox="0 0 173 97"
                   fill="none"
                 >
@@ -283,10 +523,21 @@ export default function AboutUsPage() {
               </div>
 
               {/* main paragraph */}
-              <p className=" text-[1.3rem] md:text-[4rem] font-switzer font-[500] text-[#E4E4E4] leading-[120%] ident-20 md:indent-100 md:max-w-[1000px] w-[80%]">
-                we started Astrix because we believe the real magic isn&apos;t
-                in the first click or the fleeting view; it&apos;s in the bonds <br />
-                you build long after someone discovers you.
+              <p className=" text-[1.3rem] md:text-[4rem] font-switzer font-[500] text-[#E4E4E4] leading-[120%] ident-20 md:indent-100 md:w-[85%] md:max-w-[1000px] w-[80%]">
+                <span className="hidden md:inline">
+                we started Astrix <br/>
+                </span>
+                <span className="md:hidden block text-right pr-14 w-full">
+                we started Astrix <br/>
+                </span>
+                 because we believe the real magic isn&apos;t
+                in the first click or the fleeting view; it&apos;s in the bonds
+                <span className="hidden md:inline">
+                 <br/> you build long after someone discovers you.
+                </span>
+                <span className="md:hidden inline">
+                  &nbsp;you build long after someone discovers you.
+                </span>
               </p>
             </div>
 
@@ -345,7 +596,227 @@ export default function AboutUsPage() {
       </section>
 
       {/* Footer */}
-      <FooterSection />
+      <div className="relative z-10">
+        <FooterSection />
+      </div>
+
+      {/* Mobile Menu - Slides in from right */}
+      <div
+        className={`fixed top-0 right-0 h-full w-80 bg-[#0F0F0F] z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col h-full relative">
+          {/* Menu Header */}
+          <div className="flex items-center justify-between px-6 pt-6">
+            <div className="flex items-center gap-2 w-[80px] h-[30px] relative">
+              <Image
+                src="/Assets/Icons/LogoIcon.png"
+                alt="Astrix Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="text-white hover:text-gray-300 transition-colors"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Menu Items */}
+          <div className="flex-1 flex flex-col justify-start px-3 pt-8 space-y-4">
+            <Link href="/" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm text-left">
+            
+              HOME
+            </Link>
+
+            {/* Services Dropdown for Mobile */}
+            <div className="space-y-3">
+              <button
+                onClick={() => setIsServicesDropdownOpenMobile(!isServicesDropdownOpenMobile)}
+                className={`flex py-2 px-4 hover:bg-[#1F1F1F] items-center justify-between w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm ${
+                  isServicesDropdownOpenMobile && "bg-[#1F1F1F]"
+                }`}
+              >
+                <span>SERVICES</span>
+                <svg
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isServicesDropdownOpenMobile ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {isServicesDropdownOpenMobile && (
+                <div className="pl-4 space-y-4">
+                  <div>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">
+                      Distribute
+                    </h4>
+                    <ul className="space-y-1 pl-2">
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-create-event")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Create Event
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-issue-tickets")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Issue Tickets
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-purchase-rsvp")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Purchase/RSVP
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">
+                      Retarget
+                    </h4>
+                    <ul className="space-y-1 pl-2">
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-data-insights")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Data Insights
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-email-marketing")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Email Marketing
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-promotions")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Promotions / Discounts
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-marketing-insights")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Marketing Insights
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">
+                      Discover
+                    </h4>
+                    <ul className="space-y-1 pl-2">
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-mini-portfolio")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Mini Portfolio
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => handleMobileNavClick("pc-discovery-channel")}
+                          className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
+                        >
+                          Discovery Channel
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Link
+              href="#"
+              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              RESOURCES
+            </Link>
+
+            <button
+              onClick={() => {
+                // handleContactClick({ preventDefault: () => {} } as React.MouseEvent);
+                setIsMenuOpen(false);
+                handleMobileNavClick("contact");
+              }}
+              className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F] text-left"
+            >
+              CONTACT US
+            </button>
+            <div className="absolute bottom-0 right-0 w-full p-5 flex flex-row gap-4">
+              <Link
+                href="https://app.astrix.live"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-fit px-3 py-1 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] leading-none text-shadow-sm"
+              >
+                <p className="leading-none">GET STARTED</p>
+              </Link>
+              <button
+                onClick={() => {
+                  handleContactClick({ preventDefault: () => {} } as React.MouseEvent);
+                  setIsMenuOpen(false);
+                }}
+                className="w-fit px-3 py-1 flex items-center font-nohemi font-[400] justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-[10px] leading-none text-shadow-sm"
+              >
+                <p className="leading-none mt-0.5">BOOK A DEMO</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay for mobile menu */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
     </main>
   );
 }
