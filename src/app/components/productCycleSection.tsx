@@ -2437,7 +2437,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
 
           <div className="h-full w-full flex flex-col z-10 pt-24">
-            <div className="w-full h-1/2 relative order-2">
+            <div className="w-full h-[55%] relative order-2">
               <MediaComponent
               objectFit="cover"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Purchase.mp4"
@@ -2446,7 +2446,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="w-full h-1/2 order-1 px-8 flex flex-col justify-between">
+            <div className="w-full h-[45%] order-1 px-8 flex flex-col justify-between">
               <div className="w-full flex flex-col items-end justify-center gap-4">
                 <AnimatedText
                   text="Give your fans a seamless way to book their tickets – apply discounts, confirm instantly."
@@ -2507,7 +2507,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             </div>
             <div className="w-full h-1/2 relative">
               <MediaComponent
-              objectFit="cover"
+              objectFit="contain"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Data_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                 isMobile={isMobile}
@@ -2941,7 +2941,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Content */}
         <div className="w-full h-full flex flex-col md:flex-row">
-          <div className="md:w-1/2 md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+          <div className="md:w-[45%] md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
             <div
               ref={firstTextRef}
               className="w-full h-full flex flex-col items-start relative pt-16 md:pt-0"
@@ -2967,7 +2967,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               </p>
             </div>
           </div>
-          <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
+          <div className="w-full md:w-[55%] z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
               <MediaComponent
               objectFit="cover"
@@ -3001,7 +3001,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         {/* Content */}
         <div className="w-full h-full flex flex-col md:flex-row">
-          <div className="md:w-1/2 md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
+          <div className="md:w-[45%] md:h-full h-1/2 w-full md:ml-24 px-8 md:pl-10 py-8 md:py-20 flex flex-col justify-between">
             <div
               ref={secondTextRef}
               className="w-full h-full flex flex-col items-start relative pt-16 md:pt-0"
@@ -3027,7 +3027,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               </p>
             </div>
           </div>
-          <div className="w-full md:w-1/2 z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
+          <div className="w-full md:w-[55%] z-100 bg-transparent relative flex items-center justify-center h-1/2 md:h-full">
             <div className="w-full h-full relative">
               <MediaComponent
               objectFit="cover"
