@@ -3,10 +3,11 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 }
 
 interface ProductCycleSectionProps {
@@ -367,6 +368,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [stickyLabel, setStickyLabel] = useState("Distribute");
   const [hideStickyLabel, setHideStickyLabel] = useState(false);
+
+  // Ref to track locked timeline position to prevent reset
+  const lockedTimelineTimeRef = useRef<number | null>(null);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const toolkitSectionRef = useRef<HTMLDivElement>(null);
@@ -835,6 +839,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             delay: number = 0.1
           ) => {
             const animTl = gsap.timeline({ delay });
+            
 
             if (isMobile || isLowPerformance) {
               // Mobile/Low-performance: Simple fade-in, no transforms for maximum performance
@@ -939,8 +944,16 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           // We have 10 major sections
           // Mobile: Ultra-slow controlled scroll - one section per scroll action
           // Desktop: Normal velocity-based scrolling
+
+          console.log({section});
+          
+          // Track last logged progress for manual navigation logging
+          let lastLoggedProgress = -1;
+          let lastLoggedTime = 0;
+          
           const tl = gsap.timeline({
             scrollTrigger: {
+              id: "product-cycle-root",
               trigger: section,
               start: "top top",
               end: () => {
@@ -957,6 +970,68 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               fastScrollEnd: false, // Disable for consistent mobile behavior
               // Prevent layout shifts
               pinReparent: false,
+              // Log progress during manual navigation
+              onUpdate: (self) => {
+                const currentTime = Date.now();
+                // Only log if enough time has passed (throttle to ~2 times per second)
+                if (currentTime - lastLoggedTime > 500) {
+                  const progress = self.progress;
+                  const progressPercent = (progress * 100).toFixed(1);
+                  const timelineTime = tl.time();
+                  
+                  // Determine direction (forward or backward)
+                  const direction = progress > lastLoggedProgress ? "→" : "←";
+                  
+                  // Determine which section we're in based on timeline labels and time
+                  let sectionName = "Toolkit";
+                  const labels = tl.labels;
+                  const slideDuration = isLowPerformance ? 0.3 : isMobile ? 0.5 : 0.8;
+                  
+                  // Check timeline labels to determine section
+                  if (timelineTime < slideDuration) {
+                    sectionName = "Toolkit";
+                  } else if (labels.secondSection && timelineTime >= labels.secondSection) {
+                    if (labels.thirdSection && timelineTime >= labels.thirdSection) {
+                      if (labels.fourthSection && timelineTime >= labels.fourthSection) {
+                        if (labels.fifthSection && timelineTime >= labels.fifthSection) {
+                          if (labels.sixthSection && timelineTime >= labels.sixthSection) {
+                            if (labels.seventhSection && timelineTime >= labels.seventhSection) {
+                              if (labels.eighthSection && timelineTime >= labels.eighthSection) {
+                                if (labels.ninthSection && timelineTime >= labels.ninthSection) {
+                                  sectionName = "Discovery Channel";
+                                } else {
+                                  sectionName = "Mini Portfolio";
+                                }
+                              } else {
+                                sectionName = "Marketing Insights";
+                              }
+                            } else {
+                              sectionName = "Promotions";
+                            }
+                          } else {
+                            sectionName = "Email Marketing";
+                          }
+                        } else {
+                          sectionName = "Data Insights";
+                        }
+                      } else {
+                        sectionName = "Purchase/RSVP";
+                      }
+                    } else {
+                      sectionName = "Issue Tickets";
+                    }
+                  } else {
+                    sectionName = "Create Event";
+                  }
+                  
+                  // Only log if progress changed significantly (more than 1%)
+                  if (Math.abs(progress - lastLoggedProgress) > 0.01) {
+                    console.log(`[ProductCycle] Manual navigation ${direction} - Progress: ${progressPercent}%, Timeline Time: ${timelineTime.toFixed(2)}s, Section: ${sectionName}`);
+                    lastLoggedProgress = progress;
+                    lastLoggedTime = currentTime;
+                  }
+                }
+              },
               // Mobile-specific optimizations
               ...(isMobile && {
                 refreshPriority: -1,
@@ -968,6 +1043,11 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               }),
             },
           });
+          const st = ScrollTrigger.getById("product-cycle-root");
+          if (st) {
+            (window as unknown as { __productCycleScrollTrigger?: unknown }).__productCycleScrollTrigger = st;
+            console.log("[ProductCycle] ScrollTrigger reference stored globally for navigation");
+          }
 
           // Phase 0: Toolkit section slides out, First Section (CreateEvent) slides in
           // Simplified animations for mobile and low-performance browsers
@@ -982,6 +1062,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               ease: slideEase,
                 });
           } else {
+            console.log({toolkitSection});
             tl.to(toolkitSection, {
               x: "-100%",
               duration: slideDuration,
@@ -1553,6 +1634,100 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
         window.addEventListener("resize", handleResize);
 
+        // Monitor scroll to maintain locked timeline position (prevent reset to toolkit and prevent scrolling beyond bounds)
+        let lastScrollY = window.scrollY;
+        let lastTimelineTime = 0;
+        
+        const handleScroll = () => {
+          if (lockedTimelineTimeRef.current !== null) {
+            const st = ScrollTrigger.getAll().find((s) => s.trigger === section);
+            if (st) {
+              const stWithAnim = st as unknown as { animation?: gsap.core.Timeline };
+              const timeline = stWithAnim.animation;
+              if (timeline) {
+                const currentTime = timeline.time();
+                const lockedTime = lockedTimelineTimeRef.current;
+                const start = typeof st.start === 'number' ? st.start : (st.start as number);
+                const end = typeof st.end === 'number' ? st.end : (st.end as number);
+                const currentScrollY = window.scrollY;
+                
+                // Detect scroll direction
+                const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+                const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+                
+                // Check if user is intentionally scrolling backward (upward)
+                if (scrollDirection === 'up' && scrollDelta > 5) {
+                  // User is scrolling up - check if they're trying to leave the section
+                  // If scroll position is approaching the start of ScrollTrigger (within 20% of locked position)
+                  const lockedProgress = lockedTime / timeline.duration();
+                  const currentProgress = currentTime / timeline.duration();
+                  
+                  // If user scrolled up significantly from locked position, unlock
+                  if (currentProgress < lockedProgress * 0.8) {
+                    console.log(`[ProductCycle] User scrolling backward, unlocking timeline (Progress: ${(currentProgress * 100).toFixed(1)}% < ${(lockedProgress * 0.8 * 100).toFixed(1)}%)`);
+                    lockedTimelineTimeRef.current = null;
+                    lastScrollY = currentScrollY;
+                    lastTimelineTime = currentTime;
+                    return;
+                  }
+                }
+                
+                // Check if scroll position is beyond ScrollTrigger end
+                if (currentScrollY > end) {
+                  console.warn(`[ProductCycle] Scroll beyond ScrollTrigger end detected! Current: ${currentScrollY.toFixed(0)}px, Max: ${end.toFixed(0)}px. Restoring...`);
+                  const progress = lockedTime / timeline.duration();
+                  const scrollRange = end - start;
+                  const targetScrollY = start + (scrollRange * progress);
+                  const clampedScrollY = Math.max(start, Math.min(targetScrollY, end - 1));
+                  window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+                  timeline.time(lockedTime);
+                  lastScrollY = clampedScrollY;
+                  lastTimelineTime = lockedTime;
+                  return;
+                }
+                
+                // Only prevent automatic reset to toolkit (not user-initiated backward scroll)
+                // This detects sudden jumps backward (not smooth scrolling)
+                const timeDelta = Math.abs(currentTime - lastTimelineTime);
+                const isJumpingBack = currentTime < lockedTime * 0.7 && timeDelta > 0.5; // Large sudden jump
+                
+                if (isJumpingBack && currentTime < 1.0 && scrollDirection !== 'up') {
+                  console.warn(`[ProductCycle] Timeline jumped back to toolkit (not user scroll)! Restoring from ${currentTime.toFixed(2)}s to ${lockedTime.toFixed(2)}s`);
+                  timeline.time(lockedTime);
+                  // Sync scroll position - stay within bounds
+                  const progress = lockedTime / timeline.duration();
+                  const scrollRange = end - start;
+                  const targetScrollY = start + (scrollRange * progress);
+                  const clampedScrollY = Math.max(start, Math.min(targetScrollY, end - 1));
+                  window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+                  lastScrollY = clampedScrollY;
+                  lastTimelineTime = lockedTime;
+                } else if (currentTime > lockedTime * 1.1) {
+                  // User scrolled forward significantly, unlock to allow normal navigation
+                  console.log(`[ProductCycle] User navigated forward, unlocking timeline`);
+                  lockedTimelineTimeRef.current = null;
+                }
+                
+                // Update last scroll position and timeline time
+                lastScrollY = currentScrollY;
+                lastTimelineTime = currentTime;
+              }
+            }
+          }
+        };
+
+        // Throttle scroll listener for performance
+        let scrollTimeout: NodeJS.Timeout | null = null;
+        const throttledScrollHandler = () => {
+          if (scrollTimeout) return;
+          scrollTimeout = setTimeout(() => {
+            handleScroll();
+            scrollTimeout = null;
+          }, 100); // Check every 100ms
+        };
+
+        window.addEventListener("scroll", throttledScrollHandler, { passive: true });
+
         // Force ScrollTrigger refresh after animations are set up
         ScrollTrigger.refresh();
 
@@ -1563,10 +1738,35 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           });
         }
 
+        // cleanup = () => {
+        //   try {
+        //     ctx.revert();
+        //     window.removeEventListener("resize", handleResize);
+        //     window.removeEventListener("scroll", throttledScrollHandler);
+        //     if (scrollTimeout) {
+        //       clearTimeout(scrollTimeout);
+        //     }
+        //     // Clean up all ScrollTriggers for this section
+        //     ScrollTrigger.getAll().forEach((st) => {
+        //       if (st.trigger === section) {
+        //         st.kill();
+        //       }
+        //     });
+        //   } catch (error) {
+        //     console.warn("ProductCycleSection: Error during cleanup:", error);
+        //   }
+        // };
         cleanup = () => {
           try {
+            // Remove global reference
+            delete (window as unknown as { __productCycleScrollTrigger?: unknown }).__productCycleScrollTrigger;
+            
             ctx.revert();
             window.removeEventListener("resize", handleResize);
+            window.removeEventListener("scroll", throttledScrollHandler);
+            if (scrollTimeout) {
+              clearTimeout(scrollTimeout);
+            }
             // Clean up all ScrollTriggers for this section
             ScrollTrigger.getAll().forEach((st) => {
               if (st.trigger === section) {
@@ -1671,6 +1871,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
   // Desktop: Jump to a specific internal slide when requested
   useEffect(() => {
     if (isMobile) return;
+    
     const handler = (e: Event) => {
       const custom = e as CustomEvent<{ id: string }>;
       const id = custom.detail?.id;
@@ -1678,7 +1879,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       const sectionEl = sectionRef.current;
 
-      // Map each id to its section's timeline label
+      // Map section IDs to timeline labels
       const idToLabel: Record<string, string | number> = {
         "pc-create-event": 0,
         "pc-issue-tickets": "secondSection",
@@ -1695,8 +1896,18 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         // Find ScrollTrigger for this section
         const st = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
         if (!st) {
-          // Not ready yet, try again
-          requestAnimationFrame(navigateToSlide);
+          let retryAttempts = 0;
+          const maxRetries = 20;
+          const retry = () => {
+            retryAttempts++;
+            const currentSt = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+            if (currentSt) {
+              navigateToSlide();
+            } else if (retryAttempts < maxRetries) {
+              requestAnimationFrame(retry);
+            }
+          };
+          requestAnimationFrame(retry);
           return;
         }
 
@@ -1704,7 +1915,19 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         const stWithAnim = st as unknown as { animation?: gsap.core.Timeline };
         const tl = stWithAnim.animation;
         if (!tl) {
-          requestAnimationFrame(navigateToSlide);
+          let retryAttempts = 0;
+          const maxRetries = 20;
+          const retry = () => {
+            retryAttempts++;
+            const currentSt = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+            const currentStWithAnim = currentSt as unknown as { animation?: gsap.core.Timeline };
+            if (currentStWithAnim?.animation) {
+              navigateToSlide();
+            } else if (retryAttempts < maxRetries) {
+              requestAnimationFrame(retry);
+            }
+          };
+          requestAnimationFrame(retry);
           return;
         }
 
@@ -1715,94 +1938,231 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           return;
         }
 
-        let targetTime = 0;
         const slideDuration = 0.8;
         const sectionDelay = 0.8;
+        let targetTime = 0;
 
         if (typeof key === "number") {
           // First section (Create Event) - after toolkit slides out
           targetTime = slideDuration + (sectionDelay * 0.6);
         } else {
-          // Other sections - use label time + transition + offset
+          // Other sections - use label time + transition offset
           const labelTime = tl.labels[key];
           if (labelTime === undefined) {
             console.warn(`ProductCycleSection: Label "${key}" not found`);
             return;
           }
+          // Add offset to ensure section is fully visible after transition
           targetTime = labelTime + slideDuration + (sectionDelay * 0.6);
         }
 
         // Clamp to timeline bounds
         const maxTime = tl.duration();
         targetTime = Math.max(0, Math.min(targetTime, maxTime - 0.1));
+        
+        console.log(`[ProductCycle] Navigation requested - ID: ${id}, Key: ${key}, Target Time: ${targetTime.toFixed(2)}s, Timeline Duration: ${maxTime.toFixed(2)}s`);
 
-        // If ScrollTrigger is not active yet, scroll to activate it
+        // Wait for ScrollTrigger to be active if needed
         if (!st.isActive) {
-          // Scroll to section start to activate ScrollTrigger
-          const start = typeof st.start === 'number' ? st.start : (st.start as number);
-          window.scrollTo({ top: start, behavior: 'auto' });
-          
-          // Wait for ScrollTrigger to activate (with timeout)
           let attempts = 0;
-          const maxAttempts = 50;
+          const maxAttempts = 25;
           const waitForActive = () => {
             attempts++;
-            if (st.isActive) {
-              // Now tween to target
+            const currentSt = ScrollTrigger.getAll().find((s) => s.trigger === sectionEl);
+            if (currentSt?.isActive) {
               performTween();
             } else if (attempts < maxAttempts) {
               requestAnimationFrame(waitForActive);
             } else {
-              // Timeout - try tween anyway
-              console.warn("ScrollTrigger not active after waiting, attempting tween anyway");
               performTween();
             }
           };
           requestAnimationFrame(waitForActive);
         } else {
-          // Already active, tween directly
           performTween();
         }
 
+        // function performTween() {
+        //   if (!st || !tl) return;
+        
+        //   // Get current timeline position before navigation
+        //   const currentTime = tl.time();
+        //   const currentProgress = currentTime / tl.duration();
+        //   console.log(`[ProductCycle] Navigation started - Target: ${id}, Current Progress: ${(currentProgress * 100).toFixed(2)}%`);
+        
+        //   // Get ScrollTrigger bounds
+        //   const start = typeof st.start === 'number' ? st.start : (st.start as number);
+        //   const end = typeof st.end === 'number' ? st.end : (st.end as number);
+          
+        //   // Calculate target progress with safety margin
+        //   const targetProgress = targetTime / tl.duration();
+          
+        //   // Calculate target scroll position WITHIN bounds
+        //   const scrollRange = end - start;
+        //   const rawTargetScrollY = start + (scrollRange * targetProgress);
+          
+        //   // Apply safety margin (stay 50px away from end)
+        //   const safeEnd = end - 50;
+        //   const targetScrollY = Math.max(start + 10, Math.min(rawTargetScrollY, safeEnd));
+          
+        //   console.log(`[ProductCycle] Target Progress: ${(targetProgress * 100).toFixed(2)}%, Target Scroll: ${targetScrollY.toFixed(0)}px (bounds: ${start.toFixed(0)}-${safeEnd.toFixed(0)}px)`);
+        
+        //   // Temporarily disable ScrollTrigger during navigation
+        //   const wasEnabled = st.isActive;
+        //   if (wasEnabled) {
+        //     st.disable();
+        //     console.log(`[ProductCycle] ScrollTrigger disabled for navigation`);
+        //   }
+        
+        //   // Tween timeline to target position
+        //   tl.tweenTo(targetTime, {
+        //     duration: 0.8,
+        //     ease: "power2.inOut",
+        //     onUpdate: () => {
+        //       // Sync scroll position with timeline progress
+        //       const progress = tl.time() / tl.duration();
+        //       const scrollPos = start + (scrollRange * progress);
+        //       const clampedScrollY = Math.max(start + 10, Math.min(scrollPos, safeEnd));
+        //       window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+        //     },
+        //     onComplete: () => {
+        //       if (!st || !tl) return;
+        
+        //       // Final sync - ensure timeline is exactly at target position
+        //       tl.time(targetTime);
+        //       window.scrollTo({ top: targetScrollY, behavior: 'auto' });
+        
+        //       console.log(`[ProductCycle] Navigation complete - Timeline Time: ${tl.time().toFixed(2)}s, Scroll Y: ${targetScrollY.toFixed(0)}px`);
+        
+        //       // Lock the timeline position
+        //       lockedTimelineTimeRef.current = targetTime;
+        //       console.log(`[ProductCycle] Timeline position locked at ${targetTime.toFixed(2)}s`);
+        
+        //       // Re-enable ScrollTrigger after ensuring position is stable
+        //       if (wasEnabled) {
+        //         setTimeout(() => {
+        //           if (!st || !tl) return;
+                  
+        //           // Verify timeline is still at target position
+        //           if (Math.abs(tl.time() - targetTime) > 0.01) {
+        //             console.warn(`[ProductCycle] Timeline drifted! Correcting from ${tl.time().toFixed(2)}s to ${targetTime.toFixed(2)}s`);
+        //             tl.time(targetTime);
+        //             window.scrollTo({ top: targetScrollY, behavior: 'auto' });
+        //           }
+                  
+        //           st.enable();
+        //           console.log(`[ProductCycle] ScrollTrigger re-enabled, timeline locked at ${tl.time().toFixed(2)}s`);
+                  
+        //           // Final verification
+        //           setTimeout(() => {
+        //             if (!st || !tl) return;
+        //             const currentTime = tl.time();
+        //             const currentScrollY = window.scrollY;
+                    
+        //             if (currentScrollY > safeEnd || Math.abs(currentTime - targetTime) > 0.1) {
+        //               console.warn(`[ProductCycle] Position incorrect after re-enable! Correcting...`);
+        //               tl.time(targetTime);
+        //               window.scrollTo({ top: targetScrollY, behavior: 'auto' });
+        //             } else {
+        //               console.log(`[ProductCycle] Position verified - Timeline: ${currentTime.toFixed(2)}s, Scroll Y: ${currentScrollY.toFixed(0)}px`);
+        //             }
+        //           }, 100);
+        //         }, 300);
+        //       }
+        //     }
+        //   });
+        // }
         function performTween() {
           if (!st || !tl) return;
+        
+          // Get current timeline position
+          const currentTime = tl.time();
+          console.log(`[ProductCycle] Navigation started - Target: ${id}, Current Time: ${currentTime.toFixed(2)}s, Target Time: ${targetTime.toFixed(2)}s`);
+        
+          // Get ScrollTrigger bounds
+          const start = typeof st.start === 'number' ? st.start : (st.start as number);
+          const end = typeof st.end === 'number' ? st.end : (st.end as number);
+          const scrollRange = end - start;
           
-          // Temporarily disable ScrollTrigger during tween
+          // Calculate safe end (with margin)
+          const safeEnd = end - 100;
+          
+          console.log(`[ProductCycle] ScrollTrigger bounds - Start: ${start.toFixed(0)}px, End: ${safeEnd.toFixed(0)}px`);
+        
+          // If we're already very close to the target, just snap to it
+          if (Math.abs(currentTime - targetTime) < 0.1) {
+            console.log(`[ProductCycle] Already at target, snapping to exact position`);
+            tl.time(targetTime);
+            
+            // Sync scroll position
+            const progress = targetTime / tl.duration();
+            const targetScrollY = start + (scrollRange * progress);
+            const clampedScrollY = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
+            window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+            
+            // Lock position
+            lockedTimelineTimeRef.current = targetTime;
+            return;
+          }
+        
+          // Disable ScrollTrigger during tween
           const wasEnabled = st.isActive;
           if (wasEnabled) {
             st.disable();
           }
-
-          // Tween timeline to target position
+        
+          // Tween timeline to target with synchronized scroll
           tl.tweenTo(targetTime, {
-            ease: "power2.inOut",
-            duration: 0.6, // Faster animation
+            duration: 0.5, // Shorter duration since we're already close
+            ease: "power2.out", // Smoother ease out
+            onUpdate: () => {
+              // Keep scroll in sync with timeline during tween
+              const progress = tl.time() / tl.duration();
+              const scrollPos = start + (scrollRange * progress);
+              const clampedScrollY = Math.max(start + 10, Math.min(scrollPos, safeEnd));
+              window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+            },
             onComplete: () => {
               if (!st || !tl) return;
+        
+              // Lock to exact target position
+              tl.time(targetTime);
               
-              // Sync scroll position with timeline
-              const start = typeof st.start === 'number' ? st.start : (st.start as number);
-              const end = typeof st.end === 'number' ? st.end : (st.end as number);
+              // Final scroll sync
               const progress = targetTime / tl.duration();
-              const targetScrollY = start + ((end - start) * progress);
-              
-              // Set scroll position
-              window.scrollTo({ top: targetScrollY, behavior: 'auto' });
-              
-              // Re-enable ScrollTrigger
+              const targetScrollY = start + (scrollRange * progress);
+              const clampedScrollY = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
+              window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+        
+              console.log(`[ProductCycle] Navigation complete - Timeline: ${tl.time().toFixed(2)}s, Scroll: ${clampedScrollY.toFixed(0)}px`);
+        
+              // Lock the timeline position
+              lockedTimelineTimeRef.current = targetTime;
+        
+              // Re-enable ScrollTrigger after delay
               if (wasEnabled) {
-                requestAnimationFrame(() => {
+                setTimeout(() => {
                   if (!st || !tl) return;
-                  tl.time(targetTime); // Ensure timeline is at target
+                  
+                  // Final verification before re-enabling
+                  if (Math.abs(tl.time() - targetTime) > 0.05) {
+                    tl.time(targetTime);
+                    const progress = targetTime / tl.duration();
+                    const targetScrollY = start + (scrollRange * progress);
+                    const clampedScrollY = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
+                    window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+                  }
+                  
                   st.enable();
-                });
+                  console.log(`[ProductCycle] ScrollTrigger re-enabled at ${tl.time().toFixed(2)}s`);
+                }, 200);
               }
             }
           });
         }
       };
 
-      // Start navigation immediately
+      // Start navigation
       requestAnimationFrame(navigateToSlide);
     };
 
@@ -2382,7 +2742,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       {/* Toolkit Section - Slides in from right first */}
       <div
         ref={toolkitSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#0B0B0B] flex flex-col justify-between overflow-hidden"
         style={{
           zIndex: 10,
         }}
@@ -2529,7 +2889,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-create-event"
         ref={firstSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 20,
         }}
@@ -2589,7 +2949,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-issue-tickets"
         ref={secondSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 21,
         }}
@@ -2649,7 +3009,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-purchase-rsvp"
         ref={thirdSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 22,
         }}
@@ -2717,7 +3077,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-data-insights"
         ref={fourthSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 23,
         }}
@@ -2794,7 +3154,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-email-marketing"
         ref={fifthSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 24,
         }}
@@ -2872,7 +3232,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-promotions"
         ref={sixthSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 25,
         }}
@@ -2942,7 +3302,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
       <div
         id="pc-marketing-insights"
         ref={seventhSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 26,
         }}
@@ -3019,8 +3379,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Eighth Section - Mini Portfolio */}
       <div
+        id="pc-mini-portfolio"
         ref={eighthSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 27,
         }}
@@ -3098,8 +3459,9 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
 
       {/* Ninth Section - Discovery Channel */}
       <div
+        id="pc-discovery-channel"
         ref={ninthSectionRef}
-        className="absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
+        className="panel absolute top-0 right-0 w-full h-full bg-[#EBE4D4] flex items-center justify-center overflow-hidden"
         style={{
           zIndex: 28,
         }}

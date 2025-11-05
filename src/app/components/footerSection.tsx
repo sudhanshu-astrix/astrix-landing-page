@@ -89,59 +89,6 @@ export default function FooterSection({ className }: { className?: string }) {
           {/* Socials pill */}
           <div className="flex items-center gap-4 bg-[#1f1f1f97] rounded-lg px-4 py-2">
             <a
-              href="#"
-              aria-label="Spotify"
-              className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
-              onClick={() => {
-                mixpanel.track("Footer - Spotify Clicked", {
-                  location: "Footer",
-                });
-              }}
-            >
-              <Image
-                src="/Assets/Icons/SpotifyIcon.svg"
-                alt="Spotify"
-                width={16}
-                height={16}
-              />
-            </a>
-            <a
-              href="https://x.com/astrix_live"
-              aria-label="X"
-              className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
-              onClick={() => {
-                mixpanel.track("Footer - Twitter Clicked", {
-                  location: "Footer",
-                });
-              }}
-            >
-              <Image
-                src="/Assets/Icons/XIcon.svg"
-                alt="X"
-                width={16}
-                height={16}
-              />
-            </a>
-            <a
-              href="https://www.youtube.com/@astrix-live"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-              className="w-6 h-6 grid place-items-center rounded-full hover:bg-white/20 transition-colors"
-              onClick={() => {
-                mixpanel.track("Footer - YouTube Clicked", {
-                  location: "Footer",
-                });
-              }}
-            >
-              <Image
-                src="/Assets/Icons/YoutubeIcon.svg"
-                alt="YouTube"
-                width={16}
-                height={16}
-              />
-            </a>
-            <a
               href="https://www.instagram.com/astrix.live/"
               target="_blank"
               rel="noopener noreferrer"

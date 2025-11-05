@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import mixpanel from "@/lib/mixpanelClient";
 
-export default function HeroSection({ className }: { className?: string }) {
+export default function HeroSection({ className}: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isServicesDropdownOpenMobile, setIsServicesDropdownOpenMobile] =
@@ -248,11 +248,12 @@ export default function HeroSection({ className }: { className?: string }) {
   const handleNavClick = (targetId: string) => {
     disableScrollPinning(); // temporarily unpin
 
+    console.log({targetId});
     const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({
         behavior: "smooth",
-        block: isMobile ? "center" : "end",
+        // block: isMobile ? "center" : "end",
       });
     }
 
@@ -260,49 +261,282 @@ export default function HeroSection({ className }: { className?: string }) {
     setTimeout(() => enableScrollPinning(), 3000);
   };
 
-  const scrollToProductSection = (targetId: string) => {
+  // const scrollToProductCycleSection = (targetId: string) => {
+  //   setIsServicesDropdownOpen(false);
+  //   disableScrollPinning();
+    
+  //   // Use requestAnimationFrame to ensure DOM is ready
+  //   requestAnimationFrame(() => {
+  //     const productCycleRoot = document.getElementById("product-cycle-root");
+  
+  //     if (productCycleRoot) {
+  //       console.log("productCycleRoot", productCycleRoot);
+        
+  //       // Get the element's position relative to the document
+  //       const rect = productCycleRoot.getBoundingClientRect();
+  //       const elementTop = rect.top + window.scrollY;
+        
+  //       // Calculate maximum scrollable position
+  //       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        
+  //       // Calculate target scroll position to START of ProductCycleSection
+  //       // This ensures ScrollTrigger is active when we try to navigate
+  //       const targetScroll = Math.max(0, Math.min(elementTop, maxScroll));
+        
+  //       console.log("Scrolling to ProductCycleSection start:", targetScroll, "Element top:", elementTop, "Max scroll:", maxScroll);
+        
+  //       // First, scroll to the ProductCycleSection
+  //       window.scrollTo({
+  //         top: targetScroll,
+  //         behavior: "smooth",
+  //       });
+  
+  //       // Wait for scroll to complete, THEN dispatch navigation event
+  //       let lastScrollY = window.scrollY;
+  //       let scrollStableCount = 0;
+  //       const requiredStableFrames = 3; // Need 3 consecutive stable frames
+        
+  //       const checkScrollComplete = () => {
+  //         const currentScroll = window.scrollY;
+  //         const scrollDiff = Math.abs(currentScroll - targetScroll);
+          
+  //         // Check if scroll position is stable (not changing)
+  //         if (Math.abs(currentScroll - lastScrollY) < 1) {
+  //           scrollStableCount++;
+  //         } else {
+  //           scrollStableCount = 0;
+  //         }
+          
+  //         lastScrollY = currentScroll;
+          
+  //         // Scroll is complete when we're at target AND position is stable
+  //         if (scrollDiff < 10 && scrollStableCount >= requiredStableFrames) {
+  //           console.log("Scroll complete and stable, navigating to slide:", targetId);
+            
+  //           // Small delay to ensure ScrollTrigger is fully active
+  //           setTimeout(() => {
+  //             const event = new CustomEvent("gotoProductCycle", {
+  //               detail: { id: targetId }
+  //             });
+  //             window.dispatchEvent(event);
+  //           }, 100);
+  //         } else {
+  //           // Still scrolling or stabilizing, check again
+  //           requestAnimationFrame(checkScrollComplete);
+  //         }
+  //       };
+  
+  //       // Start checking after initial delay to allow smooth scroll to begin
+  //       setTimeout(() => {
+  //         checkScrollComplete();
+  //       }, 100);
+  //     } else {
+  //       console.warn("product-cycle-root element not found");
+  //     }
+  //   });
+    
+  //   // Re-enable pinning after navigation completes
+  //   setTimeout(() => enableScrollPinning(), 4000);
+  // };
+
+  const scrollToProductCycleSection = (targetId: string) => {
     setIsServicesDropdownOpen(false);
-    setIsMenuOpen(false);
     disableScrollPinning();
-
-    const isDesktop = window.innerWidth >= 768;
-
-    if (isDesktop) {
-      // Find the root section that contains ScrollTrigger
-      const root = document.getElementById("product-cycle-root");
-      
-      if (!root) {
-        console.warn("product-cycle-root not found");
-        setTimeout(() => enableScrollPinning(), 2000);
-        return;
-      }
-
-      // Scroll to the root section (smooth)
-      const rootRect = root.getBoundingClientRect();
-      const rootTop = rootRect.top + window.scrollY;
-      
-      window.scrollTo({ 
-        top: rootTop, 
-        behavior: "smooth" 
-      });
-
-      // Dispatch event immediately - handler will wait for ScrollTrigger to be ready
-      // Small delay to allow scroll to start
-      setTimeout(() => {
-        window.dispatchEvent(
-          new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
-        );
-        setTimeout(() => enableScrollPinning(), 2000);
-      }, 300);
-    } else {
-      const el = document.getElementById(targetId);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+    
+    // Map section IDs to their timeline progress (0 to 1)
+    const idToProgress: Record<string, number> = {
+      "pc-create-event": 0.05,        // ~5% - Just after toolkit slides out
+      "pc-issue-tickets": 0.15,        // ~15%
+      "pc-purchase-rsvp": 0.25,        // ~25%
+      "pc-data-insights": 0.35,        // ~35%
+      "pc-email-marketing": 0.50,      // ~50%
+      "pc-promotions": 0.60,           // ~60%
+      "pc-marketing-insights": 0.70,   // ~70%
+      "pc-mini-portfolio": 0.85,       // ~85%
+      "pc-discovery-channel": 0.95,    // ~95%
+    };
+    
+    const targetProgress = idToProgress[targetId];
+    if (targetProgress === undefined) {
+      console.warn(`Unknown target ID: ${targetId}`);
+      enableScrollPinning();
+      return;
     }
-
-    setTimeout(() => enableScrollPinning(), 2000);
+    
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      const productCycleRoot = document.getElementById("product-cycle-root");
+  
+      if (productCycleRoot) {
+        console.log("productCycleRoot found, target:", targetId, "progress:", targetProgress);
+        
+        // Get the element's position relative to the document
+        const rect = productCycleRoot.getBoundingClientRect();
+        const sectionTop = rect.top + window.scrollY;
+        
+        // Try to get ScrollTrigger from window or fallback to estimation
+        let retryCount = 0;
+        const maxRetries = 30; // Try for 3 seconds max
+        
+        const getScrollTriggerAndNavigate = () => {
+          retryCount++;
+          
+          // First, try to get cached ScrollTrigger reference (instant)
+          let productCycleTrigger: unknown = null;
+          const cachedTrigger = (window as unknown as { __productCycleScrollTrigger?: unknown }).__productCycleScrollTrigger;
+          
+          if (cachedTrigger) {
+            console.log("[HeroSection] Using cached ScrollTrigger reference (instant navigation)");
+            productCycleTrigger = cachedTrigger;
+          } else {
+            // Fallback: Search for ScrollTrigger if not cached yet
+            console.log(`[HeroSection] Cached reference not found, searching... (attempt ${retryCount}/${maxRetries})`);
+            
+            let ScrollTrigger: { getAll?: () => unknown[] } | null = null;
+            
+            // Method 1: From window.ScrollTrigger
+            if (typeof window !== 'undefined' && (window as unknown as { ScrollTrigger?: unknown }).ScrollTrigger) {
+              ScrollTrigger = (window as unknown as { ScrollTrigger: { getAll?: () => unknown[] } }).ScrollTrigger;
+            }
+            
+            // Method 2: Try to import dynamically
+            if (!ScrollTrigger && typeof window !== 'undefined' && (window as unknown as { gsap?: { plugins?: { ScrollTrigger?: unknown } } }).gsap?.plugins?.ScrollTrigger) {
+              ScrollTrigger = (window as unknown as { gsap: { plugins: { ScrollTrigger: { getAll?: () => unknown[] } } } }).gsap.plugins.ScrollTrigger;
+            }
+            
+            if (ScrollTrigger) {
+              const allTriggers = ScrollTrigger.getAll?.();
+              productCycleTrigger = allTriggers?.find((st: unknown) => 
+                (st as { trigger?: unknown; vars?: { id?: string } }).trigger === productCycleRoot || (st as { trigger?: unknown; vars?: { id?: string } }).vars?.id === "product-cycle-root"
+              );
+            }
+          }
+          
+          // If we found the ScrollTrigger, use it
+          if (productCycleTrigger) {
+            console.log("[HeroSection] ScrollTrigger found!", productCycleTrigger);
+            
+            // Calculate scroll position based on ScrollTrigger bounds and target progress
+            const trigger = productCycleTrigger as { start?: number | (() => number); end?: number | (() => number); isActive?: boolean };
+            const start = typeof trigger.start === 'number' 
+              ? trigger.start 
+              : (typeof trigger.start === 'function' 
+                  ? trigger.start() 
+                  : sectionTop);
+            const end = typeof trigger.end === 'number'
+              ? trigger.end
+              : (typeof trigger.end === 'function'
+                  ? trigger.end()
+                  : start + 12000);
+            
+            const currentScrollY = window.scrollY;
+            const isInSection = currentScrollY >= start && currentScrollY <= end;
+            
+            console.log("[HeroSection] Navigation context:", {
+              currentScroll: currentScrollY.toFixed(0),
+              sectionStart: start.toFixed(0),
+              sectionEnd: end.toFixed(0),
+              isInSection: isInSection,
+              targetId: targetId
+            });
+            
+            // If already in the section, just dispatch the event without scrolling
+            if (isInSection) {
+              console.log("[HeroSection] Already in ProductCycleSection, navigating directly to:", targetId);
+              const event = new CustomEvent("gotoProductCycle", {
+                detail: { id: targetId }
+              });
+              window.dispatchEvent(event);
+              return;
+            }
+            
+            // Not in section yet, scroll to it first
+            const scrollRange = end - start;
+            const targetScrollY = start + (scrollRange * targetProgress);
+            
+            // Apply safety margin to prevent going beyond bounds
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const safeEnd = Math.min(end - 100, maxScroll);
+            const clampedTargetScroll = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
+            
+            console.log("[HeroSection] Scrolling to section first:", {
+              targetScroll: clampedTargetScroll.toFixed(0),
+              targetProgress: (targetProgress * 100).toFixed(1) + '%'
+            });
+            
+            // Scroll directly to the calculated position
+            window.scrollTo({
+              top: clampedTargetScroll,
+              behavior: "auto",
+            });
+  
+            // Wait for scroll to settle, then dispatch navigation event
+            setTimeout(() => {
+              console.log("[HeroSection] Dispatching navigation event for:", targetId);
+              const event = new CustomEvent("gotoProductCycle", {
+                detail: { id: targetId }
+              });
+              window.dispatchEvent(event);
+            }, 150);
+            
+            return;
+          }
+          
+          // If ScrollTrigger not ready and we haven't exceeded retries, try again
+          // Only retry if we didn't use the cached reference
+          if (retryCount < maxRetries && !cachedTrigger) {
+            console.log(`[HeroSection] ScrollTrigger not ready (attempt ${retryCount}/${maxRetries}), waiting...`);
+            setTimeout(getScrollTriggerAndNavigate, 100);
+            return;
+          }
+          
+          // Fallback: estimate scroll position without ScrollTrigger
+          console.warn("ScrollTrigger not found after retries, using estimation");
+          
+          // Estimate: ProductCycleSection is pinned for about 12000px of scroll
+          const estimatedScrollRange = 12000;
+          const estimatedStart = sectionTop;
+          const estimatedEnd = estimatedStart + estimatedScrollRange;
+          
+          const targetScrollY = estimatedStart + (estimatedScrollRange * targetProgress);
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const clampedTargetScroll = Math.max(estimatedStart, Math.min(targetScrollY, estimatedEnd - 100, maxScroll));
+          
+          console.log("Using estimated scroll position:", {
+            estimatedStart: estimatedStart.toFixed(0),
+            estimatedEnd: estimatedEnd.toFixed(0),
+            targetProgress: (targetProgress * 100).toFixed(1) + '%',
+            targetScrollY: clampedTargetScroll.toFixed(0)
+          });
+          
+          // Scroll to estimated position
+          window.scrollTo({
+            top: clampedTargetScroll,
+            behavior: "auto",
+          });
+  
+          // Wait for scroll to settle, then dispatch navigation event
+          setTimeout(() => {
+            console.log("Dispatching navigation event for:", targetId);
+            const event = new CustomEvent("gotoProductCycle", {
+              detail: { id: targetId }
+            });
+            window.dispatchEvent(event);
+          }, 150);
+        };
+        
+        // Start the process
+        getScrollTriggerAndNavigate();
+      } else {
+        console.warn("product-cycle-root element not found");
+        enableScrollPinning();
+      }
+    });
+    
+    // Re-enable pinning after navigation completes
+    setTimeout(() => enableScrollPinning(), 4000);
   };
+  
 
   return (
     <section
@@ -391,6 +625,7 @@ export default function HeroSection({ className }: { className?: string }) {
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
           <Link
             href="/about"
+            target="_blank"
             className={`w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
@@ -434,7 +669,7 @@ export default function HeroSection({ className }: { className?: string }) {
                   d="M19 9l-7 7-7-7"
                 />
               </svg>
-            </button>
+          </button>
 
             {/* Services Dropdown Menu */}
             {isServicesDropdownOpen && (
@@ -449,7 +684,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-create-event");
+                            scrollToProductCycleSection("pc-create-event");
                             mixpanel.track(
                               "Web Navbar Services - Create Event Clicked",
                               { location: "Web Navbar Services" }
@@ -463,7 +698,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-issue-tickets");
+                            scrollToProductCycleSection("pc-issue-tickets");
                             mixpanel.track(
                               "Web Navbar Services - Issue Tickets Clicked",
                               { location: "Web Navbar Services" }
@@ -477,7 +712,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-purchase-rsvp");
+                            scrollToProductCycleSection("pc-purchase-rsvp");
                             mixpanel.track(
                               "Web Navbar Services - Purchase RSVP Clicked",
                               { location: "Web Navbar Services" }
@@ -500,7 +735,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-data-insights");
+                            scrollToProductCycleSection("pc-data-insights");
                             mixpanel.track(
                               "Web Navbar Services - Data Insights Clicked",
                               { location: "Web Navbar Services" }
@@ -514,7 +749,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-email-marketing");
+                            scrollToProductCycleSection("pc-email-marketing");
                             mixpanel.track(
                               "Web Navbar Services - Email Marketing Clicked",
                               { location: "Web Navbar Services" }
@@ -528,7 +763,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-promotions");
+                            scrollToProductCycleSection("pc-promotions");
                             mixpanel.track(
                               "Web Navbar Services - Promotions/Discounts Clicked",
                               { location: "Web Navbar Services" }
@@ -542,7 +777,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-marketing-insights");
+                            scrollToProductCycleSection("pc-marketing-insights");
                             mixpanel.track(
                               "Web Navbar Services - Marketing Insights Clicked",
                               { location: "Web Navbar Services" }
@@ -565,7 +800,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-mini-portfolio");
+                            scrollToProductCycleSection("pc-mini-portfolio");
                             mixpanel.track(
                               "Web Navbar Services - Mini Portfolio Clicked",
                               { location: "Web Navbar Services" }
@@ -579,7 +814,7 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-discovery-channel");
+                            scrollToProductCycleSection("pc-discovery-channel");
                             mixpanel.track(
                               "Web Navbar Services - Discovery Channel Clicked",
                               { location: "Web Navbar Services" }
@@ -840,6 +1075,7 @@ export default function HeroSection({ className }: { className?: string }) {
           <div className="flex-1 flex flex-col justify-start px-3 pt-8 space-y-4">
             <Link
               href="/about"
+              target="_blank"
               className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
               onClick={() => {
                 setIsMenuOpen(false);
@@ -894,7 +1130,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-create-event");
                             mixpanel.track(
                               "Mobile Navbar Services - Create Event Clicked",
                               {
@@ -910,7 +1145,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-issue-tickets");
                             mixpanel.track(
                               "Mobile Navbar Services - Issue Tickets Clicked",
                               {
@@ -926,7 +1160,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-purchase-rsvp");
                             mixpanel.track(
                               "Mobile Navbar Services - Purchase/RSVP Clicked",
                               {
@@ -949,7 +1182,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-data-insights");
                             mixpanel.track(
                               "Mobile Navbar Services - Data Insights Clicked",
                               {
@@ -965,7 +1197,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-email-marketing");
                             mixpanel.track(
                               "Mobile Navbar Services - Email Marketing Clicked",
                               {
@@ -981,7 +1212,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-promotions");
                             mixpanel.track(
                               "Mobile Navbar Services - Promotions/Discounts Clicked",
                               {
@@ -997,7 +1227,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-marketing-insights");
                             mixpanel.track(
                               "Mobile Navbar Services - Marketing Insights Clicked",
                               {
@@ -1020,7 +1249,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-mini-portfolio");
                             mixpanel.track(
                               "Mobile Navbar Services - Mini Portfolio Clicked",
                               {
@@ -1036,7 +1264,6 @@ export default function HeroSection({ className }: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
-                            scrollToProductSection("pc-discovery-channel");
                             mixpanel.track(
                               "Mobile Navbar Services - Discovery Channel Clicked",
                               {
@@ -1082,10 +1309,10 @@ export default function HeroSection({ className }: { className?: string }) {
               CONTACT US
             </Link>
             <div className="absolute bottom-0 right-0 w-full p-5 flex flex-row gap-4">
-              <Link
-                href="https://app.astrix.live"
-                target="_blank"
-                rel="noopener noreferrer"
+            <Link
+              href="https://app.astrix.live"
+              target="_blank"
+              rel="noopener noreferrer"
                 className="w-fit px-3 py-1 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] text-[10px] leading-none text-shadow-sm"
                 onClick={() => {
                   mixpanel.track("Mobile Navbar - Get Started Clicked", {
@@ -1109,7 +1336,7 @@ export default function HeroSection({ className }: { className?: string }) {
                 }}
               >
                 <p className="leading-none mt-0.5">BOOK A DEMO</p>
-              </Link>
+            </Link>
             </div>
           </div>
         </div>

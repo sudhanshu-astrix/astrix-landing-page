@@ -38,33 +38,205 @@ export default function GlobalMenu() {
 
   const scrollToProductSection = (targetId: string) => {
     setIsOpen(false);
+    
+    // Mobile: simple scroll to element
     const isDesktop = window.innerWidth >= 768;
-    if (isDesktop) {
-      // Find the root section that contains ScrollTrigger
-      const root = document.getElementById("product-cycle-root");
-      
-      if (!root) {
-        return;
-      }
-
-      // Scroll to the root section (instant)
-      const rootRect = root.getBoundingClientRect();
-      const rootTop = rootRect.top + window.scrollY;
-      
-      window.scrollTo({ top: rootTop, behavior: "auto" });
-
-      // Dispatch once shortly after instant jump
-      setTimeout(() => {
-        window.dispatchEvent(
-          new CustomEvent("gotoProductCycle", { detail: { id: targetId } })
-        );
-      }, 120);
-    } else {
+    if (!isDesktop) {
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
+      return;
     }
+    
+    // Desktop: Navigate to ProductCycleSection with specific slide
+    // Map section IDs to their timeline progress (0 to 1)
+    const idToProgress: Record<string, number> = {
+      "pc-create-event": 0.05,        // ~5% - Just after toolkit slides out
+      "pc-issue-tickets": 0.15,        // ~15%
+      "pc-purchase-rsvp": 0.25,        // ~25%
+      "pc-data-insights": 0.35,        // ~35%
+      "pc-email-marketing": 0.50,      // ~50%
+      "pc-promotions": 0.60,           // ~60%
+      "pc-marketing-insights": 0.70,   // ~70%
+      "pc-mini-portfolio": 0.85,       // ~85%
+      "pc-discovery-channel": 0.95,    // ~95%
+    };
+    
+    const targetProgress = idToProgress[targetId];
+    if (targetProgress === undefined) {
+      console.warn(`Unknown target ID: ${targetId}`);
+      return;
+    }
+    
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      const productCycleRoot = document.getElementById("product-cycle-root");
+  
+      if (productCycleRoot) {
+        console.log("[GlobalMenu] Navigating to:", targetId, "progress:", targetProgress);
+        
+        // Get the element's position relative to the document
+        const rect = productCycleRoot.getBoundingClientRect();
+        const sectionTop = rect.top + window.scrollY;
+        
+        // Try to get ScrollTrigger from window or fallback to estimation
+        let retryCount = 0;
+        const maxRetries = 30; // Try for 3 seconds max
+        
+        const getScrollTriggerAndNavigate = () => {
+          retryCount++;
+          
+          // First, try to get cached ScrollTrigger reference (instant)
+          let productCycleTrigger: unknown = null;
+          const cachedTrigger = (window as unknown as { __productCycleScrollTrigger?: unknown }).__productCycleScrollTrigger;
+          
+          if (cachedTrigger) {
+            console.log("[GlobalMenu] Using cached ScrollTrigger reference (instant navigation)");
+            productCycleTrigger = cachedTrigger;
+          } else {
+            // Fallback: Search for ScrollTrigger if not cached yet
+            console.log(`[GlobalMenu] Cached reference not found, searching... (attempt ${retryCount}/${maxRetries})`);
+            
+            let ScrollTrigger: { getAll?: () => unknown[] } | null = null;
+            
+            // Method 1: From window.ScrollTrigger
+            if (typeof window !== 'undefined' && (window as unknown as { ScrollTrigger?: unknown }).ScrollTrigger) {
+              ScrollTrigger = (window as unknown as { ScrollTrigger: { getAll?: () => unknown[] } }).ScrollTrigger;
+            }
+            
+            // Method 2: Try to import dynamically
+            if (!ScrollTrigger && typeof window !== 'undefined' && (window as unknown as { gsap?: { plugins?: { ScrollTrigger?: unknown } } }).gsap?.plugins?.ScrollTrigger) {
+              ScrollTrigger = (window as unknown as { gsap: { plugins: { ScrollTrigger: { getAll?: () => unknown[] } } } }).gsap.plugins.ScrollTrigger;
+            }
+            
+            if (ScrollTrigger) {
+              const allTriggers = ScrollTrigger.getAll?.();
+              productCycleTrigger = allTriggers?.find((st: unknown) => 
+                (st as { trigger?: unknown; vars?: { id?: string } }).trigger === productCycleRoot || (st as { trigger?: unknown; vars?: { id?: string } }).vars?.id === "product-cycle-root"
+              );
+            }
+          }
+          
+          // If we found the ScrollTrigger, use it
+          if (productCycleTrigger) {
+            console.log("[GlobalMenu] ScrollTrigger found!", productCycleTrigger);
+            
+            // Calculate scroll position based on ScrollTrigger bounds and target progress
+            const trigger = productCycleTrigger as { start?: number | (() => number); end?: number | (() => number); isActive?: boolean };
+            const start = typeof trigger.start === 'number' 
+              ? trigger.start 
+              : (typeof trigger.start === 'function' 
+                  ? trigger.start() 
+                  : sectionTop);
+            const end = typeof trigger.end === 'number'
+              ? trigger.end
+              : (typeof trigger.end === 'function'
+                  ? trigger.end()
+                  : start + 12000);
+            
+            const currentScrollY = window.scrollY;
+            const isInSection = currentScrollY >= start && currentScrollY <= end;
+            
+            console.log("[GlobalMenu] Navigation context:", {
+              currentScroll: currentScrollY.toFixed(0),
+              sectionStart: start.toFixed(0),
+              sectionEnd: end.toFixed(0),
+              isInSection: isInSection,
+              targetId: targetId
+            });
+            
+            // If already in the section, just dispatch the event without scrolling
+            if (isInSection) {
+              console.log("[GlobalMenu] Already in ProductCycleSection, navigating directly to:", targetId);
+              const event = new CustomEvent("gotoProductCycle", {
+                detail: { id: targetId }
+              });
+              window.dispatchEvent(event);
+              return;
+            }
+            
+            // Not in section yet, scroll to it first
+            const scrollRange = end - start;
+            const targetScrollY = start + (scrollRange * targetProgress);
+            
+            // Apply safety margin to prevent going beyond bounds
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const safeEnd = Math.min(end - 100, maxScroll);
+            const clampedTargetScroll = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
+            
+            console.log("[GlobalMenu] Scrolling to section first:", {
+              targetScroll: clampedTargetScroll.toFixed(0),
+              targetProgress: (targetProgress * 100).toFixed(1) + '%'
+            });
+            
+            // Scroll directly to the calculated position
+            window.scrollTo({
+              top: clampedTargetScroll,
+              behavior: "auto",
+            });
+  
+            // Wait for scroll to settle, then dispatch navigation event
+            setTimeout(() => {
+              console.log("[GlobalMenu] Dispatching navigation event for:", targetId);
+              const event = new CustomEvent("gotoProductCycle", {
+                detail: { id: targetId }
+              });
+              window.dispatchEvent(event);
+            }, 150);
+            
+            return;
+          }
+          
+          // If ScrollTrigger not ready and we haven't exceeded retries, try again
+          // Only retry if we didn't use the cached reference
+          if (retryCount < maxRetries && !cachedTrigger) {
+            console.log(`[GlobalMenu] ScrollTrigger not ready (attempt ${retryCount}/${maxRetries}), waiting...`);
+            setTimeout(getScrollTriggerAndNavigate, 100);
+            return;
+          }
+          
+          // Fallback: estimate scroll position without ScrollTrigger
+          console.warn("[GlobalMenu] ScrollTrigger not found after retries, using estimation");
+          
+          // Estimate: ProductCycleSection is pinned for about 12000px of scroll
+          const estimatedScrollRange = 12000;
+          const estimatedStart = sectionTop;
+          const estimatedEnd = estimatedStart + estimatedScrollRange;
+          
+          const targetScrollY = estimatedStart + (estimatedScrollRange * targetProgress);
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const clampedTargetScroll = Math.max(estimatedStart, Math.min(targetScrollY, estimatedEnd - 100, maxScroll));
+          
+          console.log("[GlobalMenu] Using estimated scroll position:", {
+            estimatedStart: estimatedStart.toFixed(0),
+            estimatedEnd: estimatedEnd.toFixed(0),
+            targetProgress: (targetProgress * 100).toFixed(1) + '%',
+            targetScrollY: clampedTargetScroll.toFixed(0)
+          });
+          
+          // Scroll to estimated position
+          window.scrollTo({
+            top: clampedTargetScroll,
+            behavior: "auto",
+          });
+  
+          // Wait for scroll to settle, then dispatch navigation event
+          setTimeout(() => {
+            console.log("[GlobalMenu] Dispatching navigation event for:", targetId);
+            const event = new CustomEvent("gotoProductCycle", {
+              detail: { id: targetId }
+            });
+            window.dispatchEvent(event);
+          }, 150);
+        };
+        
+        // Start the process
+        getScrollTriggerAndNavigate();
+      } else {
+        console.warn("[GlobalMenu] product-cycle-root element not found");
+      }
+    });
   };
 
   if (!isHome) return null;

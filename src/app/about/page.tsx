@@ -208,14 +208,14 @@ export default function AboutUsPage() {
       </header>
       <section className="w-full h-full flex items-center justify-center px-4">
         <div className="w-full  h-full xl:max-w-[80%] xl:mx-auto ">
-          <div className="bg-[url('/Assets/Images/aboutBg.png')] bg-cover bg-center flex items-center flex-col  justify-center pb-[40px] sm:pb-[50px] md:pb-[180px]  ">
+          <div className="bg-[url('/AboutBg.svg')] bg-cover bg-top flex items-center flex-col justify-center pb-[40px] sm:pb-[50px] md:pb-[180px]">
             {/* upper div */}
-            <div className="w-full  flex flex-col md:flex-row justify-start items-start gap-[40px] md:gap-[200px]  pb-[80px]  md:pb-[160px] pt-[40px]">
+            <div className="w-full flex flex-col md:flex-row justify-start items-start gap-[40px] md:gap-[200px] pb-[80px] md:pb-[160px] pt-[120px]">
               <p className="text-[2.2rem] md:text-[4rem] text-[#FFF3B0] font-instrument-serif leading-none text-nowrap">
                 About Us
               </p>
 
-              <p className=" w-full max-w-[200px]  self-end md:self-auto md:max-w-[800px] font-switzer font-[400] text-[#E4E4E4] text-xs sm:text-lg  md:text-[1.5rem] leading-[120%]">
+              <p className=" w-full max-w-[200px]  self-end md:self-auto md:max-w-[800px] font-switzer font-[400] text-[#E4E4E4] text-xs sm:text-lg  md:text-[1.3rem] leading-[120%]">
                 Let&apos;s be honest. The endless scroll is getting old and the
                 feeds are feeling stale. We&apos;ve built a world to share
                 everything, but find it harder than ever to feel like we belong.
@@ -226,14 +226,13 @@ export default function AboutUsPage() {
             {/* middle div */}
             <div className="w-full relative flex  pt-[80px]  md:pt-[160px] pb-[80px] md:pb-[200px] ">
               {/* yellow arrow + text */}
-              <div className="absolute top-0 right-0 sm:-top-[20px] sm:right-[10%] md:right-[16%] md:top-0 flex flex-col items-center text-[#FFF3B0] text-sm font-switzer">
-                <span className="italic text-xs md:text-base">
-                  ( of the fans, by the fans, and for the fans )
+              <div className="absolute top-0 right-0 sm:-top-[20px] sm:right-[10%] md:right-[16%] md:top-0 flex flex-row-reverse items-start gap-4 text-[#FFF3B0] text-sm font-switzer">
+                <span className="italic text-xs md:text-base relative -mt-4">
+                  ( of the fans, by the fans, <br /> and for the fans )
                 </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="173"
-                  height="97"
+                  className="w-[100px] h-auto md:w-[173px] md:h-[97px]"
                   viewBox="0 0 173 97"
                   fill="none"
                 >
@@ -286,23 +285,23 @@ export default function AboutUsPage() {
               {/* main paragraph */}
               <p className=" text-[1.5rem] md:text-[4rem] font-switzer font-[500] text-[#E4E4E4] leading-[120%] ident-20 md:indent-100 md:max-w-[1000px]">
                 we started Astrix because we believe the real magic isn&apos;t
-                in the first click or the fleeting view; it&apos;s in the bonds
+                in the first click or the fleeting view; it&apos;s in the bonds <br />
                 you build long after someone discovers you.
               </p>
             </div>
 
             {/* third div */}
-            <div className="w-full flex justify-start gap-[60px] md:gap-[200px] items-start">
+            <div className="w-full flex justify-between gap-14 md:gap-[200px] items-start">
               <p className="texyt-base md:text-[2rem] text-[#E4E4E4] font-switzer font-[400] text-nowrap">
                 We believe
               </p>
-              <div className="w-full flex flex-col md:flex-row gap-[60px] md:gap-[200px] ">
-                <p className="text-[#E4E4E4] font-switzer font-[400] text-xs sm:text-base md:text-[1.5rem] max-w-[390px] leading-[120%]">
+              <div className="w-full flex flex-col md:flex-row gap-4 md:gap-[200px] ">
+                <p className="text-[#E4E4E4] font-switzer font-[400] text-xs sm:text-base md:text-[1.3rem] max-w-[390px] leading-[120%]">
                   an audience is something you gather, but a community is
                   something you grow. It&apos;s the difference between people
                   just showing up and people feeling truly seen.
                 </p>
-                <p className="text-[#E4E4E4] font-switzer font-[400] text-xs sm:text-base md:ext-[1.5rem] max-w-[390px] leading-[120%]">
+                <p className="text-[#E4E4E4] font-switzer font-[400] text-xs sm:text-base md:text-[1.3rem] max-w-[390px] leading-[120%]">
                   in &quot;third spaces&quot;, those rare places, online or off, that
                   aren&apos;t work and aren&apos;t home, but are where you find
                   your people and build real, authentic
@@ -313,11 +312,11 @@ export default function AboutUsPage() {
           </div>
 
           {/* fourth div */}
-          <div className="w-full py-[60px] md:py-[160px] pb-[80px] md:pb-[180px]  flex flex-col justify-center items-center gap-4 ">
-            <div className="h-[2px] w-[120px] md:w-[260px] bg-[#FFF3B0] "></div>
-            <p className="text-[#E4E4E4] font-switzer font-[400] text-[24px] md:text-[47px] text-center leading-[120%]">
+          <div className="w-full py-[60px] md:py-[160px] pb-[80px] md:pb-[180px] flex flex-col justify-center items-center gap-4 ">
+            <div className="h-[2px] mb-4 w-[120px] md:w-[260px] bg-[#FFF3B0] "></div>
+            <p className="text-[#E4E4E4] font-switzer font-[400] text-[24px] md:text-[48px] text-center leading-[120%]">
               our{" "}
-              <span className="font-instrument-serif text-[#FFF3B0] text-[24px] md:text-[58px] leading-[120%]">
+              <span className="font-instrument-serif text-[#FFF3B0] text-[24px] md:text-[48px] leading-[120%]">
                 mission
               </span>{" "}
               is to empower experience curators to nurture close-knit
@@ -325,11 +324,11 @@ export default function AboutUsPage() {
             </p>
           </div>
           {/* fifth div */}
-          <div className="w-full pb-[220px]    flex flex-col justify-center items-center gap-4">
-            <div className="h-[2px] w-[120px] md:w-[260px] bg-[#FFF3B0] "></div>
-            <p className="text-[#E4E4E4] font-switzer font-[400] text-[24px] md:text-[47px] text-center leading-[120%]">
+          <div className="w-full pb-[220px] flex flex-col justify-center items-center gap-4">
+            <div className="h-[2px] mb-4 w-[120px] md:w-[260px] bg-[#FFF3B0] "></div>
+            <p className="text-[#E4E4E4] font-switzer font-[400] text-[24px] md:text-[48px] text-center leading-[120%]">
               we en
-              <span className="font-instrument-serif text-[#FFF3B0] text-[24px] md:text-[58px] leading-[120%]">
+              <span className="font-instrument-serif text-[#FFF3B0] text-[24px] md:text-[48px] leading-[120%]">
                 vision
               </span>{" "}
               an inclusive space for anyone and everyone where discovery sparks
