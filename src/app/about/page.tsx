@@ -121,7 +121,7 @@ export default function AboutUsPage() {
           />
         </div>
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
-          <span className="w-fit px-3 md:px-5 py-1 h-[30px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] leading-none">
+          <span className="w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#FFFFFF] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[#0F0F0F] leading-none">
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400] text-shadow-md">
               ABOUT
             </p>
@@ -131,7 +131,7 @@ export default function AboutUsPage() {
           <div className="relative" data-services-dropdown>
             <button 
               onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
-              className="w-fit p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] leading-none"
+              className="w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] leading-none"
             >
               <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
                 SERVICES
@@ -188,7 +188,7 @@ export default function AboutUsPage() {
           <Link
             href="/#contact"
             onClick={handleContactClick}
-            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#0F0F0F] cursor-pointer p-3 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5 shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)]"
+            className="w-fit transition-all duration-300 hover:bg-[#fff] hover:text-[#0F0F0F] cursor-pointer px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] text-xs md:text-[10px] leading-none hover:contrast-125 hover:-translate-y-0.5 shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)]"
           >
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400] text-shadow-md">
               CONTACT US
@@ -199,7 +199,7 @@ export default function AboutUsPage() {
           href="https://app.astrix.live"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden h-[35px] md:inline-flex w-fit px-5 py-1 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] text-xs md:text-[10px] leading-none hover:contrast-125 transition-all hover:-translate-y-0.5"
+          className="hidden md:inline-flex w-fit px-4 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] text-xs md:text-[10px] leading-none hover:contrast-125 transition-all hover:-translate-y-0.5"
         >
           <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
             GET STARTED

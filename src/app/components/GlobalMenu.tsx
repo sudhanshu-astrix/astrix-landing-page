@@ -14,27 +14,34 @@ export default function GlobalMenu() {
   
 
   useEffect(() => {
+    // Reset icon state when pathname changes
+    setShowIcon(false);
+    
     const hero = document.querySelector('[data-hero-section="true"]') as HTMLElement | null;
     if (!hero) {
-      setShowIcon(true);
+      setShowIcon(false);
       return;
     }
 
     const update = () => {
       const rect = hero.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      // Hide icon whenever any part of hero is visible
-      setShowIcon(!inView);
+      // Show icon only when hero section has completely scrolled past (is above viewport)
+      const hasScrolledPastHero = rect.bottom <= 0;
+      setShowIcon(hasScrolledPastHero);
     };
 
+    // Initial check
     update();
+    
+    // Add scroll and resize listeners
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
+    
     return () => {
       window.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, []);
+  }, [pathname]);
 
   const scrollToProductSection = (targetId: string) => {
     setIsOpen(false);

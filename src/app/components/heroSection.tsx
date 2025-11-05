@@ -247,13 +247,15 @@ export default function HeroSection({ className}: { className?: string }) {
 
   const handleNavClick = (targetId: string) => {
     disableScrollPinning(); // temporarily unpin
+    setIsServicesDropdownOpenMobile(false);
+    setIsMenuOpen(false);
 
     console.log({targetId});
     const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({
         behavior: "smooth",
-        // block: isMobile ? "center" : "end",
+        block: isMobile ? "center" : "end",
       });
     }
 
@@ -625,8 +627,7 @@ export default function HeroSection({ className}: { className?: string }) {
         <div className="hidden md:flex md:flex-1 items-center justify-end gap-3 lg:gap-5 px-4 lg:px-10">
           <Link
             href="/about"
-            target="_blank"
-            className={`w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+            className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
             onClick={() =>
@@ -649,7 +650,7 @@ export default function HeroSection({ className}: { className?: string }) {
                   location: "Web Navbar",
                 });
               }}
-              className="w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+              className="w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
             >
               <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
                 SERVICES
@@ -855,7 +856,7 @@ export default function HeroSection({ className}: { className?: string }) {
                 location: "Web Navbar",
               });
             }}
-            className={`w-fit px-5 py-1 h-[35px] flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+            className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
           >
@@ -868,7 +869,7 @@ export default function HeroSection({ className}: { className?: string }) {
           href="https://app.astrix.live"
           target="_blank"
           rel="noopener noreferrer"
-          className={`hidden h-[35px] md:inline-flex w-fit px-5 py-[14px] items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
+          className={`hidden md:inline-flex w-fit px-4 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
             isServicesDropdownOpen ? "blur-sm" : ""
           }`}
           onClick={() => {
@@ -1130,6 +1131,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-create-event");
                             mixpanel.track(
                               "Mobile Navbar Services - Create Event Clicked",
                               {
@@ -1145,6 +1147,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-issue-tickets");
                             mixpanel.track(
                               "Mobile Navbar Services - Issue Tickets Clicked",
                               {
@@ -1160,6 +1163,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-purchase-rsvp");
                             mixpanel.track(
                               "Mobile Navbar Services - Purchase/RSVP Clicked",
                               {
@@ -1182,6 +1186,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-data-insights");
                             mixpanel.track(
                               "Mobile Navbar Services - Data Insights Clicked",
                               {
@@ -1197,6 +1202,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-email-marketing");
                             mixpanel.track(
                               "Mobile Navbar Services - Email Marketing Clicked",
                               {
@@ -1212,6 +1218,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-promotions");
                             mixpanel.track(
                               "Mobile Navbar Services - Promotions/Discounts Clicked",
                               {
@@ -1227,6 +1234,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-marketing-insights");
                             mixpanel.track(
                               "Mobile Navbar Services - Marketing Insights Clicked",
                               {
@@ -1249,6 +1257,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-mini-portfolio");
                             mixpanel.track(
                               "Mobile Navbar Services - Mini Portfolio Clicked",
                               {
@@ -1264,6 +1273,7 @@ export default function HeroSection({ className}: { className?: string }) {
                       <li>
                         <button
                           onClick={() => {
+                            handleNavClick("pc-discovery-channel");
                             mixpanel.track(
                               "Mobile Navbar Services - Discovery Channel Clicked",
                               {

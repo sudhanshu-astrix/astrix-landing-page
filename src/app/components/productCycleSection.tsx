@@ -2087,36 +2087,59 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           // Calculate safe end (with margin)
           const safeEnd = end - 100;
           
-          console.log(`[ProductCycle] ScrollTrigger bounds - Start: ${start.toFixed(0)}px, End: ${safeEnd.toFixed(0)}px`);
+          const currentScrollY = window.scrollY;
+          const isAlreadyInSection = currentScrollY >= start && currentScrollY <= end;
+          
+          console.log(`[ProductCycle] ScrollTrigger bounds - Start: ${start.toFixed(0)}px, End: ${safeEnd.toFixed(0)}px, Already in section: ${isAlreadyInSection}`);
         
           // If we're already very close to the target, just snap to it
           if (Math.abs(currentTime - targetTime) < 0.1) {
             console.log(`[ProductCycle] Already at target, snapping to exact position`);
             tl.time(targetTime);
             
-            // Sync scroll position
-            const progress = targetTime / tl.duration();
-            const targetScrollY = start + (scrollRange * progress);
-            const clampedScrollY = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
-            window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+            // Only sync scroll if coming from outside the section
+            if (!isAlreadyInSection) {
+              const progress = targetTime / tl.duration();
+              const targetScrollY = start + (scrollRange * progress);
+              const clampedScrollY = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
+              window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
+            }
             
             // Lock position
             lockedTimelineTimeRef.current = targetTime;
             return;
           }
         
-          // Disable ScrollTrigger during tween
+          // If already in section, just tween timeline without touching scroll
+          // ScrollTrigger will handle scroll sync naturally when re-enabled
+          if (isAlreadyInSection) {
+            console.log(`[ProductCycle] Already in section - direct timeline animation`);
+            
+            // Just animate the timeline, don't touch scroll at all
+            gsap.to(tl, {
+              time: targetTime,
+              duration: 0.8,
+              ease: "power2.inOut",
+              onComplete: () => {
+                console.log(`[ProductCycle] Navigation complete (in-section) - Timeline: ${tl.time().toFixed(2)}s`);
+                // Lock the timeline position
+                lockedTimelineTimeRef.current = targetTime;
+              }
+            });
+            return;
+          }
+        
+          // Coming from outside section - need to sync scroll during navigation
           const wasEnabled = st.isActive;
           if (wasEnabled) {
             st.disable();
           }
         
-          // Tween timeline to target with synchronized scroll
+          // Tween timeline and sync scroll (only when coming from outside)
           tl.tweenTo(targetTime, {
-            duration: 0.5, // Shorter duration since we're already close
-            ease: "power2.out", // Smoother ease out
-            onUpdate: () => {
-              // Keep scroll in sync with timeline during tween
+            duration: 0.5,
+            ease: "power2.inOut",
+            onUpdate: function() {
               const progress = tl.time() / tl.duration();
               const scrollPos = start + (scrollRange * progress);
               const clampedScrollY = Math.max(start + 10, Math.min(scrollPos, safeEnd));
@@ -2134,7 +2157,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
               const clampedScrollY = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
               window.scrollTo({ top: clampedScrollY, behavior: 'auto' });
         
-              console.log(`[ProductCycle] Navigation complete - Timeline: ${tl.time().toFixed(2)}s, Scroll: ${clampedScrollY.toFixed(0)}px`);
+              console.log(`[ProductCycle] Navigation complete (external) - Timeline: ${tl.time().toFixed(2)}s, Scroll: ${clampedScrollY.toFixed(0)}px`);
         
               // Lock the timeline position
               lockedTimelineTimeRef.current = targetTime;
