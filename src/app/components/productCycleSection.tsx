@@ -1654,13 +1654,13 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 // Detect scroll direction
                 const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
                 const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+                const lockedProgress = lockedTime / timeline.duration();
+                const currentProgress = currentTime / timeline.duration();
                 
                 // Check if user is intentionally scrolling backward (upward)
                 if (scrollDirection === 'up' && scrollDelta > 5) {
                   // User is scrolling up - check if they're trying to leave the section
                   // If scroll position is approaching the start of ScrollTrigger (within 20% of locked position)
-                  const lockedProgress = lockedTime / timeline.duration();
-                  const currentProgress = currentTime / timeline.duration();
                   
                   // If user scrolled up significantly from locked position, unlock
                   if (currentProgress < lockedProgress * 0.8) {
@@ -1672,8 +1672,21 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   }
                 }
                 
+                // Check if user is intentionally scrolling forward (downward) beyond the section
+                if (scrollDirection === 'down' && scrollDelta > 5) {
+                  // If user is near the end (>85% progress, e.g., Discovery Channel) and trying to scroll beyond
+                  if (lockedProgress > 0.85 && currentScrollY > end - 200) {
+                    console.log(`[ProductCycle] User scrolling forward past last slide (${(lockedProgress * 100).toFixed(1)}%), unlocking timeline to allow exit`);
+                    lockedTimelineTimeRef.current = null;
+                    lastScrollY = currentScrollY;
+                    lastTimelineTime = currentTime;
+                    return;
+                  }
+                }
+                
                 // Check if scroll position is beyond ScrollTrigger end
-                if (currentScrollY > end) {
+                // Only prevent if not intentionally scrolling forward
+                if (currentScrollY > end && scrollDirection !== 'down') {
                   console.warn(`[ProductCycle] Scroll beyond ScrollTrigger end detected! Current: ${currentScrollY.toFixed(0)}px, Max: ${end.toFixed(0)}px. Restoring...`);
                   const progress = lockedTime / timeline.duration();
                   const scrollRange = end - start;

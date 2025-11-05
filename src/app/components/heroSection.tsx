@@ -343,8 +343,18 @@ export default function HeroSection({ className}: { className?: string }) {
 
   const scrollToProductCycleSection = (targetId: string) => {
     setIsServicesDropdownOpen(false);
-    disableScrollPinning();
     
+    // Mobile: simple scroll to element
+    const isDesktop = window.innerWidth >= 768;
+    if (!isDesktop) {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+    
+    // Desktop: Navigate to ProductCycleSection with specific slide
     // Map section IDs to their timeline progress (0 to 1)
     const idToProgress: Record<string, number> = {
       "pc-create-event": 0.05,        // ~5% - Just after toolkit slides out
@@ -361,7 +371,6 @@ export default function HeroSection({ className}: { className?: string }) {
     const targetProgress = idToProgress[targetId];
     if (targetProgress === undefined) {
       console.warn(`Unknown target ID: ${targetId}`);
-      enableScrollPinning();
       return;
     }
     
@@ -370,7 +379,7 @@ export default function HeroSection({ className}: { className?: string }) {
       const productCycleRoot = document.getElementById("product-cycle-root");
   
       if (productCycleRoot) {
-        console.log("productCycleRoot found, target:", targetId, "progress:", targetProgress);
+        console.log("[HeroSection] Navigating to:", targetId, "progress:", targetProgress);
         
         // Get the element's position relative to the document
         const rect = productCycleRoot.getBoundingClientRect();
@@ -452,34 +461,30 @@ export default function HeroSection({ className}: { className?: string }) {
               return;
             }
             
-            // Not in section yet, scroll to it first
-            const scrollRange = end - start;
-            const targetScrollY = start + (scrollRange * targetProgress);
+            // Not in section yet - scroll to START of section first to ensure it's pinned
+            // Then navigate to the specific slide
+            const sectionStartScroll = start + 50; // Scroll just past the start to ensure pinning
             
-            // Apply safety margin to prevent going beyond bounds
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const safeEnd = Math.min(end - 100, maxScroll);
-            const clampedTargetScroll = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
-            
-            console.log("[HeroSection] Scrolling to section first:", {
-              targetScroll: clampedTargetScroll.toFixed(0),
+            console.log("[HeroSection] Scrolling to section start first to pin it:", {
+              sectionStart: sectionStartScroll.toFixed(0),
+              targetId: targetId,
               targetProgress: (targetProgress * 100).toFixed(1) + '%'
             });
             
-            // Scroll directly to the calculated position
+            // Scroll to section start to ensure it's pinned
             window.scrollTo({
-              top: clampedTargetScroll,
+              top: sectionStartScroll,
               behavior: "auto",
             });
   
-            // Wait for scroll to settle, then dispatch navigation event
+            // Wait for section to pin, then dispatch navigation event to specific slide
             setTimeout(() => {
-              console.log("[HeroSection] Dispatching navigation event for:", targetId);
+              console.log("[HeroSection] Section pinned, dispatching navigation event for:", targetId);
               const event = new CustomEvent("gotoProductCycle", {
                 detail: { id: targetId }
               });
               window.dispatchEvent(event);
-            }, 150);
+            }, 200);
             
             return;
           }
@@ -493,50 +498,41 @@ export default function HeroSection({ className}: { className?: string }) {
           }
           
           // Fallback: estimate scroll position without ScrollTrigger
-          console.warn("ScrollTrigger not found after retries, using estimation");
+          console.warn("[HeroSection] ScrollTrigger not found after retries, using estimation");
           
-          // Estimate: ProductCycleSection is pinned for about 12000px of scroll
-          const estimatedScrollRange = 12000;
+          // Estimate: ProductCycleSection starts at sectionTop
           const estimatedStart = sectionTop;
-          const estimatedEnd = estimatedStart + estimatedScrollRange;
+          const sectionStartScroll = estimatedStart + 50; // Scroll just past the start to ensure pinning
           
-          const targetScrollY = estimatedStart + (estimatedScrollRange * targetProgress);
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const clampedTargetScroll = Math.max(estimatedStart, Math.min(targetScrollY, estimatedEnd - 100, maxScroll));
-          
-          console.log("Using estimated scroll position:", {
+          console.log("[HeroSection] Using estimated scroll position - scrolling to section start:", {
             estimatedStart: estimatedStart.toFixed(0),
-            estimatedEnd: estimatedEnd.toFixed(0),
-            targetProgress: (targetProgress * 100).toFixed(1) + '%',
-            targetScrollY: clampedTargetScroll.toFixed(0)
+            sectionStartScroll: sectionStartScroll.toFixed(0),
+            targetId: targetId,
+            targetProgress: (targetProgress * 100).toFixed(1) + '%'
           });
           
-          // Scroll to estimated position
+          // Scroll to section start to ensure it's pinned
           window.scrollTo({
-            top: clampedTargetScroll,
+            top: sectionStartScroll,
             behavior: "auto",
           });
   
-          // Wait for scroll to settle, then dispatch navigation event
+          // Wait for section to pin, then dispatch navigation event
           setTimeout(() => {
-            console.log("Dispatching navigation event for:", targetId);
+            console.log("[HeroSection] Section pinned (estimation), dispatching navigation event for:", targetId);
             const event = new CustomEvent("gotoProductCycle", {
               detail: { id: targetId }
             });
             window.dispatchEvent(event);
-          }, 150);
+          }, 200);
         };
         
         // Start the process
         getScrollTriggerAndNavigate();
       } else {
-        console.warn("product-cycle-root element not found");
-        enableScrollPinning();
+        console.warn("[HeroSection] product-cycle-root element not found");
       }
     });
-    
-    // Re-enable pinning after navigation completes
-    setTimeout(() => enableScrollPinning(), 4000);
   };
   
 

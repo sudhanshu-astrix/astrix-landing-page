@@ -163,34 +163,30 @@ export default function GlobalMenu() {
               return;
             }
             
-            // Not in section yet, scroll to it first
-            const scrollRange = end - start;
-            const targetScrollY = start + (scrollRange * targetProgress);
+            // Not in section yet - scroll to START of section first to ensure it's pinned
+            // Then navigate to the specific slide
+            const sectionStartScroll = start + 50; // Scroll just past the start to ensure pinning
             
-            // Apply safety margin to prevent going beyond bounds
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const safeEnd = Math.min(end - 100, maxScroll);
-            const clampedTargetScroll = Math.max(start + 10, Math.min(targetScrollY, safeEnd));
-            
-            console.log("[GlobalMenu] Scrolling to section first:", {
-              targetScroll: clampedTargetScroll.toFixed(0),
+            console.log("[GlobalMenu] Scrolling to section start first to pin it:", {
+              sectionStart: sectionStartScroll.toFixed(0),
+              targetId: targetId,
               targetProgress: (targetProgress * 100).toFixed(1) + '%'
             });
             
-            // Scroll directly to the calculated position
+            // Scroll to section start to ensure it's pinned
             window.scrollTo({
-              top: clampedTargetScroll,
+              top: sectionStartScroll,
               behavior: "auto",
             });
   
-            // Wait for scroll to settle, then dispatch navigation event
+            // Wait for section to pin, then dispatch navigation event to specific slide
             setTimeout(() => {
-              console.log("[GlobalMenu] Dispatching navigation event for:", targetId);
+              console.log("[GlobalMenu] Section pinned, dispatching navigation event for:", targetId);
               const event = new CustomEvent("gotoProductCycle", {
                 detail: { id: targetId }
               });
               window.dispatchEvent(event);
-            }, 150);
+            }, 200);
             
             return;
           }
@@ -206,36 +202,31 @@ export default function GlobalMenu() {
           // Fallback: estimate scroll position without ScrollTrigger
           console.warn("[GlobalMenu] ScrollTrigger not found after retries, using estimation");
           
-          // Estimate: ProductCycleSection is pinned for about 12000px of scroll
-          const estimatedScrollRange = 12000;
+          // Estimate: ProductCycleSection starts at sectionTop
           const estimatedStart = sectionTop;
-          const estimatedEnd = estimatedStart + estimatedScrollRange;
+          const sectionStartScroll = estimatedStart + 50; // Scroll just past the start to ensure pinning
           
-          const targetScrollY = estimatedStart + (estimatedScrollRange * targetProgress);
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const clampedTargetScroll = Math.max(estimatedStart, Math.min(targetScrollY, estimatedEnd - 100, maxScroll));
-          
-          console.log("[GlobalMenu] Using estimated scroll position:", {
+          console.log("[GlobalMenu] Using estimated scroll position - scrolling to section start:", {
             estimatedStart: estimatedStart.toFixed(0),
-            estimatedEnd: estimatedEnd.toFixed(0),
-            targetProgress: (targetProgress * 100).toFixed(1) + '%',
-            targetScrollY: clampedTargetScroll.toFixed(0)
+            sectionStartScroll: sectionStartScroll.toFixed(0),
+            targetId: targetId,
+            targetProgress: (targetProgress * 100).toFixed(1) + '%'
           });
           
-          // Scroll to estimated position
+          // Scroll to section start to ensure it's pinned
           window.scrollTo({
-            top: clampedTargetScroll,
+            top: sectionStartScroll,
             behavior: "auto",
           });
   
-          // Wait for scroll to settle, then dispatch navigation event
+          // Wait for section to pin, then dispatch navigation event
           setTimeout(() => {
-            console.log("[GlobalMenu] Dispatching navigation event for:", targetId);
+            console.log("[GlobalMenu] Section pinned (estimation), dispatching navigation event for:", targetId);
             const event = new CustomEvent("gotoProductCycle", {
               detail: { id: targetId }
             });
             window.dispatchEvent(event);
-          }, 150);
+          }, 200);
         };
         
         // Start the process
@@ -257,7 +248,7 @@ export default function GlobalMenu() {
             setIsOpen(true);
             mixpanel.track("Opened Global Menu");
           }}
-          className="fixed top-6 right-6 z-[1000] w-8 h-8 md:w-9 md:h-9"
+          className="fixed top-6 right-6 z-[1000] w-12 h-12 md:w-12 md:h-12"
         >
           <Image
             src="/Assets/Icons/menuicon.png"
@@ -278,9 +269,17 @@ export default function GlobalMenu() {
         <div className="flex flex-col h-full relative">
           {/* Header */}
           <div className="flex items-center justify-between px-6 pt-6">
-            <div className="flex items-center gap-2 w-[80px] h-[30px] relative">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                mixpanel.track("Global Menu - Logo Clicked", { location: "Global Menu" });
+              }}
+              className="flex items-center gap-2 w-[80px] h-[30px] relative cursor-pointer hover:opacity-80 transition-opacity"
+              aria-label="Go to home"
+            >
               <Image src="/Assets/Icons/LogoIcon.png" alt="Astrix Logo" fill className="object-contain" />
-            </div>
+            </button>
             <button
               onClick={() => {
                 setIsOpen(false)

@@ -224,9 +224,9 @@ export default function AboutUsPage() {
             </div>
 
             {/* middle div */}
-            <div className="w-full relative flex  pt-[80px]  md:pt-[160px] pb-[80px] md:pb-[200px] ">
+            <div className="w-full relative flex pt-[80px]  md:pt-[160px] pb-[80px] md:pb-[200px] ">
               {/* yellow arrow + text */}
-              <div className="absolute top-0 right-0 sm:-top-[20px] sm:right-[10%] md:right-[16%] md:top-0 flex flex-row-reverse items-start gap-4 text-[#FFF3B0] text-sm font-switzer">
+              <div className="absolute top-0 -right-6 sm:-top-[20px] sm:right-[10%] md:right-[0%] md:top-[5%] flex flex-row-reverse items-start gap-4 text-[#FFF3B0] text-sm font-switzer">
                 <span className="italic text-xs md:text-base relative -mt-4">
                   ( of the fans, by the fans, <br /> and for the fans )
                 </span>
@@ -283,7 +283,7 @@ export default function AboutUsPage() {
               </div>
 
               {/* main paragraph */}
-              <p className=" text-[1.5rem] md:text-[4rem] font-switzer font-[500] text-[#E4E4E4] leading-[120%] ident-20 md:indent-100 md:max-w-[1000px]">
+              <p className=" text-[1.3rem] md:text-[4rem] font-switzer font-[500] text-[#E4E4E4] leading-[120%] ident-20 md:indent-100 md:max-w-[1000px] w-[80%]">
                 we started Astrix because we believe the real magic isn&apos;t
                 in the first click or the fleeting view; it&apos;s in the bonds <br />
                 you build long after someone discovers you.
@@ -304,8 +304,7 @@ export default function AboutUsPage() {
                 <p className="text-[#E4E4E4] font-switzer font-[400] text-xs sm:text-base md:text-[1.3rem] max-w-[390px] leading-[120%]">
                   in &quot;third spaces&quot;, those rare places, online or off, that
                   aren&apos;t work and aren&apos;t home, but are where you find
-                  your people and build real, authentic
-                  <br /> relationships.
+                  your people and build real, authentic relationships.
                 </p>
               </div>
             </div>
