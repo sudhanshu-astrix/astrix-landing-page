@@ -3175,7 +3175,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full relative z-10">
               <MediaComponent
-              objectFit="cover"
+                objectFit="contain"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Data_Insights.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Data_Insights.webm"
                 isMobile={isMobile}
@@ -3253,7 +3253,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
             />
             <div className="w-full h-full z-10 relative top-0 left-0">
               <MediaComponent
-              objectFit="cover"
+              objectFit="contain"
                 mp4Src="https://astrix.blob.core.windows.net/cdn/landing-site/Email_Marketing.mp4"
                 webmSrc="/Assets/Images/Toolkit/Temp/Email_Marketing.webm"
                 isMobile={isMobile}
@@ -3298,20 +3298,20 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
           {/* Right Half - Text Content */}
           <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full md:order-2">
-            <div className="h-full w-full mx-4 md:mr-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
+            <div className="h-full w-full mx-4 md:mr-20 px-4 md:px-10 py-8 md:pb-20 flex flex-col justify-between">
               {/* Text Content */}
               <div
                 ref={sixthTextRef}
-                className="w-full flex flex-col items-end relative h-full pt-16 md:pt-0"
+                className="w-full flex flex-col items-end relative h-[60%] pt-16 md:pt-0"
               >
-                <div className="w-full flex flex-col py-6 md:py-10 items-end h-[60%] md:h-fit md:gap-10 justify-between">
+                <div className="w-full flex flex-col py-6 md:py-10 items-end h-full md:h-fit md:gap-10 justify-between">
                   <h2 className="text-xl sm:text-2xl md:text-4xl font-switzer font-[400] text-[#363636] leading-tight mb-3 md:mb-6 w-full">
                     <span className="word-by-word">
                       Set up exclusive promoter codes and custom discounts in
                       seconds.
                     </span>
                   </h2>
-                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer font-[300] text-gray-600 italic mb-4 md:mb-8">
+                  <p className="text-xs sm:text-sm md:text-xl w-full md:w-1/2 text-right font-switzer font-[300] text-gray-600 italic mb-4 md:mb-4">
                     <span className="word-by-word">
                       Boost sales, empower superfans, and simplify campaign
                       tracking.
@@ -3355,7 +3355,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
         {/* Section Content */}
         <div className="h-full w-full flex flex-col md:flex-row">
           {/* Left Half - Text Content */}
-          <div className="w-full md:w-1/2 flex items-center justify-center h-1/2 md:h-full">
+          <div className="w-full md:w-[45%] flex items-center justify-center h-1/2 md:h-full">
             <div className="h-full w-full mx-4 md:ml-24 px-4 md:px-10 py-8 md:py-20 flex flex-col justify-between">
               {/* Text Content */}
               <div
@@ -3391,7 +3391,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
           </div>
 
           {/* Right Half - Visual Content (Monitor Image) */}
-          <div className="w-full md:w-1/2 bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
+          <div className="w-full md:w-[55%] bg-[#EBE4D4] relative flex items-center justify-center h-1/2 md:h-full">
             {/* Noise effect overlay */}
             <Image
               src="/Assets/Images/NoiseEffectBg.svg"
