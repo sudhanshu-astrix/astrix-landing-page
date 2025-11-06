@@ -13,19 +13,24 @@ export default function GrowthCycleSection({
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isTitleSticky, setIsTitleSticky] = useState(true);
+  const [isSafariBrowser, setIsSafariBrowser] = useState(false);
 
   useEffect(() => {
+    // Detect Arc browser (Chromium-based, should be treated like Chrome)
+    const isArc = navigator.userAgent.includes('Arc');
+    
+    // Detect Safari for optimization (exclude Arc browser)
+    const isSafari = !isArc && /^((?!chrome|android).)*safari/i.test(
+      navigator.userAgent
+    );
+    setIsSafariBrowser(isSafari);
+
     const ctx = gsap.context(() => {
       const circles = gsap.utils.toArray<HTMLDivElement>(".circle");
       const texts = gsap.utils.toArray<HTMLElement>(".circle-text");
       const cards = gsap.utils.toArray<HTMLElement>(".card");
 
       if (circles.length < 5) return;
-
-      // Detect Safari for optimization
-      const isSafari = /^((?!chrome|android).)*safari/i.test(
-        navigator.userAgent
-      );
 
       // Get circle radius dynamically (from first circle)
       const circleSize = circles[0].offsetWidth;
@@ -44,27 +49,38 @@ export default function GrowthCycleSection({
         move = Math.sqrt(2) * r - r / 2.4; // original move for desktop
       }
 
+      // Set explicit initial states with xPercent/yPercent for Arc browser compatibility
+      gsap.set(circles[0], { xPercent: -50, yPercent: -50, opacity: 1 }); // Center circle
+      gsap.set(circles[1], { xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
+      gsap.set(circles[2], { xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
+      gsap.set(circles[3], { xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
+      gsap.set(circles[4], { xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
+      gsap.set(texts, { opacity: 0 });
+      
+      // Set initial states for desktop cards (Safari fix)
+      if (!isMobile) {
+        gsap.set(cards, { x: 400, y: -180, opacity: 0 });
+      }
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "center center",
-          end: isMobile ? "+=2700" : "+=3000", // Reduced from 8000 to 6000 for better control
-          scrub: isSafari && isMobile ? 0.5 : true, // Less smooth but faster on Safari mobile
+          end: isMobile ? "+=2700" : "+=3000",
+          scrub: isSafari && !isMobile ? 0.5 : (isSafari && isMobile ? 0.5 : true), // Safari desktop: 0.5s smoothing
           pin: true,
           anticipatePin: 1,
-          fastScrollEnd: isSafari, // Safari-specific optimization
-          onLeave: () => {
-            // Ensure smooth transition when leaving section
-            ScrollTrigger.refresh();
-          },
+          pinSpacing: true, // Explicitly enable pin spacing
+          invalidateOnRefresh: true, // Recalculate on refresh for Safari
+          immediateRender: false, // Safari: prevent immediate render
         },
       });
 
-      // Step 1: Expand circles outward diagonally
-      tl.to(circles[1], { x: -move, y: -move }, 0)
-        .to(circles[2], { x: move, y: -move }, 0)
-        .to(circles[3], { x: move, y: move }, 0)
-        .to(circles[4], { x: -move, y: move }, 0);
+      // Step 1: Expand circles outward diagonally with force3D for Safari
+      tl.to(circles[1], { x: -move, y: -move, force3D: true }, 0)
+        .to(circles[2], { x: move, y: -move, force3D: true }, 0)
+        .to(circles[3], { x: move, y: move, force3D: true }, 0)
+        .to(circles[4], { x: -move, y: move, force3D: true }, 0);
 
       // Step 2: Reveal texts clockwise (white text)
       tl.to(texts[0], { opacity: 1 }, ">")
@@ -123,20 +139,24 @@ export default function GrowthCycleSection({
             }); // Slide out to make room for next card
         });
       } else {
-        // Desktop: show all 3 together
+        // Desktop: show all 3 together with force3D for Safari
         tl.fromTo(
           cards,
-          { x: 400, y: -180, opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.3 },
+          { x: 400, y: -180, opacity: 0, force3D: true },
+          { x: 0, opacity: 1, stagger: 0.3, force3D: true },
           ">" // after fade effect
         );
+      }
+      
+      // Safari: Ensure timeline starts at beginning (progress 0)
+      if (isSafari) {
+        tl.progress(0);
       }
     }, sectionRef);
 
     // Safari-specific delayed refresh to prevent rendering issues
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     if (isSafari) {
-      gsap.delayedCall(1.5, () => {
+      gsap.delayedCall(0.1, () => {
         ScrollTrigger.refresh();
       });
     }
@@ -176,7 +196,7 @@ export default function GrowthCycleSection({
           className || ""
         } h-fit min-h-screen bg-[#0A0A0A] flex flex-col justify-between py-10 gap-10 relative`}
       >
-        <div className={`${isTitleSticky ? "md:sticky md:top-10 md:z-50" : "relative"} w-full max-w-6xl mx-auto px-6 md:px-10 text-center transition-all duration-200`}>
+        <div className={`${isTitleSticky && !isSafariBrowser ? "md:sticky md:top-10 md:z-50" : "relative"} w-full max-w-6xl mx-auto px-6 md:px-10 text-center transition-all duration-200`}>
           <h2 className="text-[48px] sm:text-[56px] md:text-[64px] leading-none text-[#F0E9B2] instrument-serif-regular">
             Growth Cycle
           </h2>
@@ -303,7 +323,9 @@ export default function GrowthCycleSection({
             border-radius: 50%;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            will-change: transform, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
           }
           .center {
             z-index: 10;
@@ -315,10 +337,16 @@ export default function GrowthCycleSection({
             transform: translate(-50%, -50%);
             font-weight: thin;
             opacity: 0;
+            will-change: opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
           }
           .card {
             position: relative;
             z-index: 40;
+            will-change: transform, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
           }
           @media (max-width: 767px) {
             .card {
