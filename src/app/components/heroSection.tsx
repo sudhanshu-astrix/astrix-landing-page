@@ -941,12 +941,13 @@ export default function HeroSection({ className}: { className?: string }) {
         }`}
       >
         <div className="text-center w-full h-fit max-w-full md:max-w-[80%] flex flex-col justify-around gap-10 md:gap-14">
-          <h1 className="text-2xl md:text-[72px] font-nohemi font-[400] text-white leading-[100%]">
-            An omnichannel platform
+          <h1 className="text-2xl md:text-[70px] text-center font-nohemi font-[400] text-white leading-[100%]">
+            A platform built for curators to distribute, retarget and identify their audience with data
+            {/* An omnichannel platform */}
+            {/* <br />
+            <span className="ml-10 md:ml-28">to distribute, retarget and identify</span>
             <br />
-            <span className="ml-10 md:ml-28">for optimizing community-</span>
-            <br />
-            <span className="ml-8 md:ml-0">building process</span>
+            <span className="ml-8 md:ml-0">their audience with data</span> */}
           </h1>
 
           <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
