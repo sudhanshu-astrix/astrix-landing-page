@@ -613,6 +613,13 @@ export default function HeroSection({ className}: { className?: string }) {
           )}
           Your browser does not support the video tag.
         </video>
+        <div 
+          className="absolute inset-0 z-40 bg-[black/20] backdrop-blur-sm"
+          style={{
+            pointerEvents: "none",
+          }}
+        >
+        </div>
 
         {/* Noise effect background */}
         <Image
