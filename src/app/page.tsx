@@ -4,6 +4,7 @@ import HeroSection from "./components/heroSection";
 import { optimizeForIOS } from "@/utils";
 import { useEffect, useState } from "react";
 import { useSectionTracker } from "@/hooks/useSectionTracker";
+import { trackEvent } from "@/utils/MetaPixel";
 
 // Lazy load below-the-fold components
 const CollaboratorSectionMobile = dynamic(
@@ -39,11 +40,21 @@ const TeaserSection = dynamic(() => import("./components/teaserSection"), {
 const FooterSection = dynamic(() => import("./components/footerSection"), {
   loading: () => <div className="min-h-[200px] bg-[#0A0A0A]" />,
 });
-
 export default function Home() {
   // Initialize iOS optimizations on page load
+  function getDeviceType() {
+    if (typeof window === "undefined") return "unknown";
+    const ua = navigator.userAgent.toLowerCase();
+    if (/mobile|android|iphone|ipad|ipod/i.test(ua)) return "mobile";
+    if (/tablet|ipad/i.test(ua)) return "tablet";
+    return "desktop";
+  }
   useEffect(() => {
     optimizeForIOS();
+    trackEvent("Landing-page-view", {
+      source: "Landing-page",
+      device_type: getDeviceType(),
+    });
   }, []);
 
   useSectionTracker([

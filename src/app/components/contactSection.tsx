@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import mixpanel from "@/lib/mixpanelClient";
+import { trackEvent } from "@/utils/MetaPixel";
 
 export default function ContactSection({ className }: { className?: string }) {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,17 @@ export default function ContactSection({ className }: { className?: string }) {
     const email = (form[2] as HTMLInputElement).value.trim();
     const phone = (form[3] as HTMLInputElement).value.trim();
     const message = (form[4] as HTMLTextAreaElement).value.trim();
+
+    trackEvent("Contact-form-view", {
+      source: "landing-page",
+      user_details: {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone,
+        message: message,
+      }
+    });
 
     if (!firstName) {
       toast.dismiss();
