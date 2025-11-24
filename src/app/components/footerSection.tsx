@@ -10,7 +10,7 @@ const footerData = {
       title: "Explore",
       links: [
         { label: "About Us", href: "/about" },
-        // { label: "FAQs", href: "#faqs" },
+        { label: "FAQs", href: "/faq" },
         { label: "Community Guidelines", target: "_blank", href: "https://aquamarine-manatee-f47.notion.site/community-guidelines?source=copy_link" },
         // { label: "Best Practices", href: "#best-practices" },
         { label: "Affiliate Program", target: "_blank", href: "https://aquamarine-manatee-f47.notion.site/Affiliate-Marketing-2a3d3c99956d809999f7df723a754fd2?source=copy_link" },
@@ -205,6 +205,32 @@ export default function FooterSection({ className }: { className?: string }) {
               links={section.links}
             />
           ))}
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-[0.5px] bg-[#31373F] mb-8"></div>
+
+        {/* Start your / Onboard Now Section */}
+        <div className="flex flex-col md:flex-row items-center justify-start gap-10 mb-8">
+          <h3 className="text-white text-xl md:text-2xl font-switzer font-[400] text-center md:text-left">
+            Start your
+          </h3>
+          <a
+            href="https://app.astrix.live/login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 md:px-8 py-3 md:py-2 rounded-full border border-[#B0E681] bg-transparent text-[#E4E4E4] text-sm md:text-base font-switzer font-[400] transition-all duration-200"
+            onClick={() => {
+              if (window != undefined && window.localStorage != undefined) {
+                localStorage.setItem("landingPageListEvent", "true");
+              }
+              mixpanel.track("Footer - Onboard Now Clicked", {
+                location: "Footer",
+              });
+            }}
+          >
+            Onboard Now
+          </a>
         </div>
 
         {/* Divider */}

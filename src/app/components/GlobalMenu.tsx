@@ -319,6 +319,20 @@ export default function GlobalMenu() {
               ABOUT
             </Link>
 
+            <Link
+              href="/pricing"
+              className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm"
+              onClick={() => {
+                setIsOpen(false)
+                  mixpanel.track(
+                              "Global Menu - Pricing Clicked",
+                              { location: "Global Menu" }
+                            );
+              }}
+            >
+              PRICING
+            </Link>
+
             {/* Services */}
             <div className="space-y-3">
               <button
