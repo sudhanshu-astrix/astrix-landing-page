@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import mixpanel from "@/lib/mixpanelClient";
 import FooterSection from "../components/footerSection";
@@ -231,6 +231,18 @@ function ExpandableFeatures({
 export default function PricingPage() {
   const router = useRouter();
   const [credits, setCredits] = useState(1000);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // Calculate price: 1 credit = ₹0.5
   const calculatePrice = (creditValue: number) => {
@@ -449,11 +461,11 @@ export default function PricingPage() {
             </div>
 
             {/* Credit Slider - Bar Chart Style */}
-            <div className="max-w-4xl mx-auto mb-8 mt-10">
+            <div className="w-full max-w-4xl mx-auto mb-8 mt-10 px-2 md:px-0">
               <div className="relative">
                 {/* Calculate selected bar index */}
                 {(() => {
-                  const totalBars = 100; // Total number of bars
+                  const totalBars = isMobile ? 60 : 100; // 60 bars on mobile, 100 on desktop
                   const minCredits = 1000;
                   const maxCredits = 10000;
                   const creditRange = maxCredits - minCredits;
@@ -475,9 +487,10 @@ export default function PricingPage() {
                           className="absolute -top-8 md:-top-6 left-0 transform -translate-x-1/2 transition-all duration-200 pointer-events-none z-20"
                           style={{
                             left: `${tooltipPosition}%`,
+                            maxWidth: 'calc(100% - 1rem)',
                           }}
                         >
-                            <p className="text-[#E4E4E4] text-sm md:text-md font-switzer font-[600] whitespace-nowrap">
+                            <p className="text-[#E4E4E4] text-xs md:text-sm lg:text-md font-switzer font-[600] whitespace-nowrap">
                               {credits.toLocaleString()} credits
                             </p>
                           {/* Tooltip arrow */}
@@ -486,7 +499,7 @@ export default function PricingPage() {
                       )}
                       
                       {/* Vertical Bars */}
-                      <div className="flex items-end justify-between gap-0.5 md:gap-1 h-6 md:h-8 mb-4 relative">
+                      <div className="flex items-end justify-between gap-[1px] md:gap-0.5 lg:gap-1 h-6 md:h-8 mb-4 relative overflow-hidden">
                         {barHeights.map((height, index) => {
                           const isHighlighted = Math.abs(index - selectedIndex) <= 4; // Highlight bars within 6 positions
                           return (
@@ -499,8 +512,8 @@ export default function PricingPage() {
                               }`}
                               style={{
                                 height: `${height}px`,
-                                width: "3px",
-                                minWidth: "3px",
+                                width: "2px",
+                                minWidth: "2px",
                               }}
                             />
                           );
@@ -519,7 +532,7 @@ export default function PricingPage() {
                         );
                         
                         return (
-                          <div className="flex items-center justify-between mb-4 w-full">
+                          <div className="flex items-center justify-between mb-4 w-full px-0">
                             {Array.from({ length: totalDots }).map((_, index) => {
                               const isSelected = index === selectedDotIndex;
                               return (
@@ -545,7 +558,7 @@ export default function PricingPage() {
                         step="100"
                         value={credits}
                         onChange={(e) => setCredits(Number(e.target.value))}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 touch-none md:touch-auto"
                         style={{
                           WebkitAppearance: 'none',
                           appearance: 'none',
@@ -553,11 +566,11 @@ export default function PricingPage() {
                       />
                       
                       {/* Slider Labels */}
-                      <div className="flex justify-between mt-2">
-                        <span className="text-[#E4E4E4] text-sm font-switzer font-[400]">
+                      <div className="flex justify-between mt-2 px-1">
+                        <span className="text-[#E4E4E4] text-xs md:text-sm font-switzer font-[400]">
                           1000 credits
                         </span>
-                        <span className="text-[#E4E4E4] text-sm font-switzer font-[400]">
+                        <span className="text-[#E4E4E4] text-xs md:text-sm font-switzer font-[400]">
                           10k credits
                         </span>
                       </div>
