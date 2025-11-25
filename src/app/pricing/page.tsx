@@ -462,7 +462,7 @@ export default function PricingPage() {
 
             {/* Credit Slider - Bar Chart Style */}
             <div className="w-full max-w-4xl mx-auto mb-8 mt-10 px-2 md:px-0">
-              <div className="relative">
+              <div className="relative" style={{ touchAction: 'pan-y' }}>
                 {/* Calculate selected bar index */}
                 {(() => {
                   const totalBars = isMobile ? 60 : 100; // 60 bars on mobile, 100 on desktop
@@ -558,10 +558,29 @@ export default function PricingPage() {
                         step="100"
                         value={credits}
                         onChange={(e) => setCredits(Number(e.target.value))}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 touch-none md:touch-auto"
+                        onInput={(e) => {
+                          // iOS Safari requires onInput for smooth dragging
+                          const target = e.target as HTMLInputElement;
+                          setCredits(Number(target.value));
+                        }}
+                        onTouchStart={(e) => {
+                          // Prevent default to allow smooth dragging on iOS
+                          e.stopPropagation();
+                        }}
+                        onTouchMove={(e) => {
+                          // Allow touch movement for slider
+                          e.stopPropagation();
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                         style={{
                           WebkitAppearance: 'none',
                           appearance: 'none',
+                          WebkitTapHighlightColor: 'transparent',
+                          touchAction: 'manipulation',
+                          padding: 0,
+                          margin: 0,
+                          cursor: 'pointer',
+                          minHeight: '44px', // iOS minimum touch target size
                         }}
                       />
                       

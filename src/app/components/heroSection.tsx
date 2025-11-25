@@ -664,13 +664,14 @@ export default function HeroSection({ className}: { className?: string }) {
             className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
+            style={{ color: '#FFFFFF' }}
             onClick={() =>
               mixpanel.track("Web Navbar - About Clicked", {
                 location: "Web Navbar",
               })
             }
           >
-            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]" style={{ color: '#FFFFFF' }}>
               ABOUT
             </p>
           </Link>
@@ -685,8 +686,9 @@ export default function HeroSection({ className}: { className?: string }) {
                 });
               }}
               className="w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none"
+              style={{ color: '#FFFFFF' }}
             >
-              <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+              <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]" style={{ color: '#FFFFFF' }}>
                 SERVICES
               </p>
               <svg
@@ -696,6 +698,7 @@ export default function HeroSection({ className}: { className?: string }) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                style={{ color: '#FFFFFF' }}
               >
                 <path
                   strokeLinecap="round"
@@ -872,13 +875,14 @@ export default function HeroSection({ className}: { className?: string }) {
             className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
+            style={{ color: '#FFFFFF' }}
             onClick={() => {
               mixpanel.track("Web Navbar - Pricing Clicked", {
                 location: "Web Navbar",
               });
             }}
           >
-            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]" style={{ color: '#FFFFFF' }}>
               PRICING
             </p>
           </Link>
@@ -894,8 +898,9 @@ export default function HeroSection({ className}: { className?: string }) {
             className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
               isServicesDropdownOpen ? "blur-sm" : ""
             }`}
+            style={{ color: '#FFFFFF' }}
           >
-            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+            <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]" style={{ color: '#FFFFFF' }}>
               CONTACT US
             </p>
           </Link>
@@ -907,13 +912,14 @@ export default function HeroSection({ className}: { className?: string }) {
           className={`hidden md:inline-flex w-fit px-4 py-2 items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs md:text-[10px] leading-none ${
             isServicesDropdownOpen ? "blur-sm" : ""
           }`}
+          style={{ color: '#FFFFFF' }}
           onClick={() => {
             mixpanel.track("Web Navbar - Get Started Clicked", {
               location: "Web Navbar",
             });
           }}
         >
-          <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]">
+          <p className="leading-none mt-0.5 text-xs font-nohemi font-[400]" style={{ color: '#FFFFFF' }}>
             GET STARTED
           </p>
         </Link>
@@ -983,8 +989,9 @@ export default function HeroSection({ className}: { className?: string }) {
                 });
               }}
               className="w-fit flex items-center justify-center px-3 md:px-5 py-[10px] md:py-[14px]  h-[30px] md:h-[40px]   rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3c7b] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-[10px] md:text-[10px] leading-none"
+              style={{ color: '#FFFFFF' }}
             >
-              <p className="leading-none mt-0.5 text-xs md:text-sm font-nohemi font-[400] text-shadow-md">
+              <p className="leading-none mt-0.5 text-xs md:text-sm font-nohemi font-[400] text-shadow-md" style={{ color: '#FFFFFF' }}>
                 BOOK A DEMO
               </p>
             </Link>

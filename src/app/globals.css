@@ -113,3 +113,142 @@ img {
   font-weight: 400;
   font-style: italic;
 }
+
+/* Force dark theme for navbar to prevent light theme interference */
+.navbar-dark {
+  color-scheme: dark !important;
+  background-color: rgba(15, 15, 15, 0.8) !important;
+  color: white !important;
+}
+
+/* Prevent theme-based color changes for all navbar content */
+.navbar-dark *,
+.navbar-dark *::before,
+.navbar-dark *::after {
+  color: inherit !important;
+}
+
+/* Explicitly set text colors for navbar elements */
+.navbar-dark p,
+.navbar-dark span,
+.navbar-dark div,
+.navbar-dark h1,
+.navbar-dark h2,
+.navbar-dark h3,
+.navbar-dark h4,
+.navbar-dark h5,
+.navbar-dark h6 {
+  color: white !important;
+}
+
+/* Force button and link colors */
+.navbar-dark button,
+.navbar-dark a {
+  color: white !important;
+}
+
+/* Force button text colors - prevent theme override */
+.navbar-dark button p,
+.navbar-dark button span,
+.navbar-dark a p,
+.navbar-dark a span {
+  color: white !important;
+}
+
+/* Maintain button backgrounds */
+.navbar-dark button[class*="bg-"],
+.navbar-dark a[class*="bg-"] {
+  background-color: rgba(60, 60, 60, 0.75) !important;
+}
+
+/* Prevent any auto color adjustments */
+@media (prefers-color-scheme: light) {
+  .navbar-dark,
+  .navbar-dark * {
+    color: white !important;
+  }
+  
+  .navbar-dark button,
+  .navbar-dark a {
+    color: white !important;
+  }
+  
+  .navbar-dark button p,
+  .navbar-dark button span,
+  .navbar-dark a p,
+  .navbar-dark a span {
+    color: white !important;
+  }
+}
+
+/* Force white text for heroSection navbar buttons to prevent theme interference */
+nav[data-hero-section="true"] button,
+nav[data-hero-section="true"] a,
+section[data-hero-section="true"] nav button,
+section[data-hero-section="true"] nav a {
+  color: white !important;
+}
+
+nav[data-hero-section="true"] button p,
+nav[data-hero-section="true"] button span,
+nav[data-hero-section="true"] a p,
+nav[data-hero-section="true"] a span,
+section[data-hero-section="true"] nav button p,
+section[data-hero-section="true"] nav button span,
+section[data-hero-section="true"] nav a p,
+section[data-hero-section="true"] nav a span {
+  color: white !important;
+}
+
+nav[data-hero-section="true"] button svg,
+section[data-hero-section="true"] nav button svg {
+  color: white !important;
+}
+
+@media (prefers-color-scheme: light) {
+  nav[data-hero-section="true"] button,
+  nav[data-hero-section="true"] a,
+  section[data-hero-section="true"] nav button,
+  section[data-hero-section="true"] nav a {
+    color: white !important;
+  }
+  
+  nav[data-hero-section="true"] button p,
+  nav[data-hero-section="true"] button span,
+  nav[data-hero-section="true"] a p,
+  nav[data-hero-section="true"] a span,
+  section[data-hero-section="true"] nav button p,
+  section[data-hero-section="true"] nav button span,
+  section[data-hero-section="true"] nav a p,
+  section[data-hero-section="true"] nav a span {
+    color: white !important;
+  }
+  
+  nav[data-hero-section="true"] button svg,
+  section[data-hero-section="true"] nav button svg {
+    color: white !important;
+  }
+}
+
+/* Force white text for teaserSection and heroSection buttons with dark backgrounds */
+#teaser a,
+section[data-hero-section="true"] a[href="#contact"] {
+  color: white !important;
+}
+
+#teaser a p,
+section[data-hero-section="true"] a[href="#contact"] p {
+  color: white !important;
+}
+
+@media (prefers-color-scheme: light) {
+  #teaser a,
+  section[data-hero-section="true"] a[href="#contact"] {
+    color: white !important;
+  }
+  
+  #teaser a p,
+  section[data-hero-section="true"] a[href="#contact"] p {
+    color: white !important;
+  }
+}
