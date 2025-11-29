@@ -142,6 +142,33 @@ export const metadata: Metadata = {
     shortcut: "/landing_pageicon.png",
     apple: "/landing_pageicon.png",
   },
+  openGraph: {
+    title: "Astrix - Build for the Shift",
+    description:
+      "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
+    images: [
+      {
+        url: "/meta_image.png",
+        width: 512,
+        height: 288,
+        alt: "Astrix | Distribute | Retarget | Discover - Hero image with silhouettes and logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Astrix - Build for the Shift",
+    description:
+      "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
+    images: [
+      {
+        url: "/meta_image.png",
+        width: 512,
+        height: 288,
+        alt: "Astrix | Distribute | Retarget | Discover - Hero image with silhouettes and logo",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
