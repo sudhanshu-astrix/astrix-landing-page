@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useSwipeable } from "react-swipeable";
 import Image from "next/image";
 import { collaborators } from "@/utils/Data";
@@ -12,7 +12,7 @@ export default function CollaboratorSectionMobile({
   className,
 }: CollaboratorSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement | null>(null);
 
   // Auto-scroll logic
   // const startAutoScroll = () => {
@@ -90,7 +90,7 @@ export default function CollaboratorSectionMobile({
   });
 
    const setRefs = (node: HTMLDivElement | null) => {
-    cardsRef.current = node;
+    (cardsRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
     handlers.ref(node);
   };
 
