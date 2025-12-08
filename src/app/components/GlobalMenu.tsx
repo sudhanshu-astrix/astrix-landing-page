@@ -397,8 +397,8 @@ export default function GlobalMenu() {
                     <h4 className="text-white text-xs font-instrument-serif font-[400] mb-2">Discover</h4>
                     <ul className="space-y-1 pl-2">
                       <li><button onClick={() => {scrollToProductSection('pc-mini-portfolio')
-                      mixpanel.track("Global Menu - Mini Portfolio Clicked", { location: "Global Menu" });
-                      }} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Mini Portfolio</button></li>
+                      mixpanel.track("Global Menu - Smart Profile Clicked", { location: "Global Menu" });
+                      }} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Smart Profile</button></li>
                       <li><button onClick={() => {scrollToProductSection('pc-discovery-channel')
                       mixpanel.track("Global Menu - Discovery Channel Clicked", { location: "Global Menu" });
                       }} className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors">Discovery Channel</button></li>

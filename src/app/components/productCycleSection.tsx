@@ -2696,7 +2696,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                 />
               </div>
               <AnimatedAction
-                text="MINI PORTFOLIO"
+                text="SMART PROFILE"
                 className="text-xl font-nohemi font-[400] text-[#363636] text-right mb-4"
                 delay={0.9}
               />
@@ -3464,7 +3464,7 @@ const ProductCycleSection = ({ className }: ProductCycleSectionProps) => {
                   ref={miniPortfolioRef}
                   className="text-base md:text-lg lg:text-2xl font-nohemi font-[400] text-[#363636] create-event"
                 >
-                  MINI PORTFOLIO
+                  SMART PROFILE
                 </p>
               </div>
             </div>

@@ -202,11 +202,11 @@ const faqData: FAQCategory[] = [
 
 export default function FAQSection({ className }: FAQSectionProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(
-    new Set([0, 1])
-  ); // First two categories expanded by default
+    new Set()
+  ); // All categories closed by default
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(
-    new Set(["0-0"])
-  ); // First question of first category expanded
+    new Set()
+  ); // All questions closed by default
 
   const toggleCategory = (index: number) => {
     const newExpanded = new Set(expandedCategories);

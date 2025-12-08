@@ -394,7 +394,7 @@ export default function AboutUsPage() {
                   <div>
                     <h3 className="text-white text-sm font-instrument-serif font-[400] mb-2">Discover</h3>
                     <ul className="space-y-1 ml-2">
-                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Mini Portfolio</button></li>
+                      <li><button onClick={() => scrollToProductSection('pc-mini-portfolio')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Smart Profile</button></li>
                       <li><button onClick={() => scrollToProductSection('pc-discovery-channel')} className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer">Discovery Channel</button></li>
                     </ul>
                   </div>
@@ -768,7 +768,7 @@ export default function AboutUsPage() {
                           onClick={() => handleMobileNavClick("pc-mini-portfolio")}
                           className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
                         >
-                          Mini Portfolio
+                          Smart Profile
                         </button>
                       </li>
                       <li>

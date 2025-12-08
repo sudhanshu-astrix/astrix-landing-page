@@ -840,13 +840,13 @@ export default function HeroSection({ className}: { className?: string }) {
                           onClick={() => {
                             scrollToProductCycleSection("pc-mini-portfolio");
                             mixpanel.track(
-                              "Web Navbar Services - Mini Portfolio Clicked",
+                              "Web Navbar Services - Smart Profile Clicked",
                               { location: "Web Navbar Services" }
                             );
                           }}
                           className="text-left w-full text-white text-sm font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors cursor-pointer"
                         >
-                          Mini Portfolio
+                          Smart Profile
                         </button>
                       </li>
                       <li>
@@ -1142,7 +1142,7 @@ export default function HeroSection({ className}: { className?: string }) {
                 });
               }}
             >
-              ABOUT
+              PRICING
             </Link>
 
             {/* Services Dropdown for Mobile */}
@@ -1316,7 +1316,7 @@ export default function HeroSection({ className}: { className?: string }) {
                           onClick={() => {
                             handleNavClick("pc-mini-portfolio");
                             mixpanel.track(
-                              "Mobile Navbar Services - Mini Portfolio Clicked",
+                              "Mobile Navbar Services - Smart Profile Clicked",
                               {
                                 location: "Mobile Navbar Services",
                               }
@@ -1324,7 +1324,7 @@ export default function HeroSection({ className}: { className?: string }) {
                           }}
                           className="text-left w-full text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors"
                         >
-                          Mini Portfolio
+                          Smart Profile
                         </button>
                       </li>
                       <li>
