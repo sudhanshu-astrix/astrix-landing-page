@@ -272,27 +272,26 @@ export default function GrowthCycleSection({
                     Distribution <br /> Tools
                   </h3>
                   <p className="text-sm sm:text-base md:text-sm text-[#949494] font-switzer font-[400] leading-relaxed">
-                    Unified tools for distribution (e.g. tickets, marketing,
-                    rewards from a single dashboard)
+                    Curators can sell and retarget better through one platform.
                   </p>
                 </div>
               </div>
 
               {/* Data Insights Card */}
-              <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
+              <div className="card p-6 sm:p-8 md:py-6 md:px-0 w-full md:w-80 md:max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
                   <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-24 md:h-24 rounded-full flex items-center justify-center">
                     <Image
-                      src={"/Assets/Icons/data.png"}
+                      src={"/Assets/Icons/third.png"}
                       alt="insight"
                       fill
                     />
                   </div>
                   <h3 className="text-4xl sm:text-3xl md:text-3xl font-nohemi font-[500] text-[#E4E4E4] instrument-serif-regular">
-                    Data <br /> Insights
+                    Smart <br /> Profile
                   </h3>
                   <p className="text-sm sm:text-base md:text-sm text-[#949494] font-switzer font-[400] leading-relaxed">
-                    Target your fans with data- <br /> backed insights.
+                    {"Allow them to collect subscribers and keep them updated with the curators' calendar and work."}
                   </p>
                 </div>
               </div>
@@ -301,14 +300,13 @@ export default function GrowthCycleSection({
               <div className="card p-6 sm:p-8 md:p-6 w-full md:w-72 md:max-w-sm rounded-xl shadow-lg">
                 <div className="flex flex-col items-center text-center space-y-4 md:space-y-2">
                   <div className="relative w-24 h-24 sm:w-24 sm:h-24 md:w-24 md:h-24 rounded-full flex items-center justify-center">
-                    <Image src={"/Assets/Icons/third.png"} alt="space" fill />
+                    <Image src={"/Assets/Icons/data.png"} alt="space" fill />
                   </div>
                   <h3 className="text-4xl sm:text-3xl md:text-3xl font-nohemi font-[500] text-[#E4E4E4] instrument-serif-regular">
-                    Third <br /> Spaces
+                    Data <br /> Insights
                   </h3>
                   <p className="text-sm sm:text-base md:text-sm text-[#949494] font-switzer font-[400] leading-relaxed">
-                    Give your fans a dedicated portal leading to loyalty and
-                    authentic relationships
+                    They get advanced insights around their attendees and subscribers.
                   </p>
                 </div>
               </div>
