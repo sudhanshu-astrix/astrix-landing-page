@@ -335,7 +335,7 @@ export default function AboutUsPage() {
             </p>
           </span>
 
-          <Link
+          {/* <Link
             href="/pricing"
             className={`w-fit px-4 py-2 flex items-center justify-center rounded-3xl border border-[#4e4e4e87] bg-[#1f1f1f9e] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:contrast-125 transition-all hover:-translate-y-0.5 text-xs leading-none ${
               isServicesDropdownOpen ? 'blur-sm' : ''
@@ -344,7 +344,7 @@ export default function AboutUsPage() {
             <p className="leading-none mt-0.5 text-xs font-nohemi font-[400] text-shadow-md">
               PRICING
             </p>
-          </Link>
+          </Link> */}
           
           {/* Services Dropdown */}
           <div className="relative" data-services-dropdown>
@@ -655,10 +655,10 @@ export default function AboutUsPage() {
               HOME
             </Link>
 
-            <Link href="/pricing" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm text-left">
+            {/* <Link href="/pricing" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm text-left">
             
               PRICING
-            </Link>
+            </Link> */}
 
             {/* Services Dropdown for Mobile */}
             <div className="space-y-3">
