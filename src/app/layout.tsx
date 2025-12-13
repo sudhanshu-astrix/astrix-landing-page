@@ -134,7 +134,7 @@ const nohemi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Astrix - Build for the Shift",
+  title: "Astrix - Built for the Shift",
   description:
     "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
   icons: {
