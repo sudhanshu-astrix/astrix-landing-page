@@ -143,7 +143,7 @@ export const metadata: Metadata = {
     apple: "/landing_pageicon.png",
   },
   openGraph: {
-    title: "Astrix - Build for the Shift",
+    title: "Astrix - Built for the Shift",
     description:
       "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
     images: [
@@ -157,7 +157,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Astrix - Build for the Shift",
+    title: "Astrix - Built for the Shift",
     description:
       "An omnichannel platform for optimizing community-building process. Create meaningful connections and drive sustainable growth.",
     images: [
