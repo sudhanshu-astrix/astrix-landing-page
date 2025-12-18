@@ -678,7 +678,6 @@ export default function PricingPage() {
               if (!selectedPlanData) return null;
               return (
                 <div
-                style={{marginLeft: "8%", marginRight: "8%"}}
                 className="bg-[#1A1A1A] rounded-md p-6 my-7 max-w-[350px] mx-auto border border-[#E8EAED]/40">
                   <div className="flex flex-col gap-2">
                     <div>

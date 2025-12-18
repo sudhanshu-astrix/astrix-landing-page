@@ -216,7 +216,7 @@ export default function FooterSection({ className }: { className?: string }) {
             Start your
           </h3>
           <a
-            href="https://app.astrix.live/login"
+            href="https://app.astrix.live/login?landingPageListEvent=true"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 md:px-8 py-3 md:py-2 rounded-full border border-[#B0E681] bg-transparent text-[#E4E4E4] text-sm md:text-base font-switzer font-[400] transition-all duration-200"
