@@ -59,12 +59,12 @@ const comparisonTableData = [
         smart: true,
         pro: true,
       },
-      {
-        label: "Subscribers Data Insights",
-        free: false,
-        smart: true,
-        pro: true,
-      },
+      // {
+      //   label: "Subscribers Data Insights",
+      //   free: false,
+      //   smart: true,
+      //   pro: true,
+      // },
     ],
   },
   {
@@ -106,7 +106,7 @@ const comparisonTableData = [
     ],
   },
   {
-    category: "Attendance Data",
+    category: "Attendee Data",
     rows: [
       { label: "Traffic by Source", free: true, smart: true, pro: true },
       {
@@ -142,13 +142,13 @@ const comparisonTableData = [
       {
         label: "Top Engaged Audience",
         free: false,
-        smart: false,
+        smart: true,
         pro: true,
       },
       {
         label: "Contacts Tab",
         free: false,
-        smart: false,
+        smart: true,
         pro: true,
       },
     ],
@@ -157,12 +157,12 @@ const comparisonTableData = [
     category: "Ticketing Redemptions",
     rows: [
       { label: "QR scanner Web App", free: true, smart: true, pro: true },
-      {
-        label: "Redemption insights",
-        free: false,
-        smart: false,
-        pro: true,
-      },
+      // {
+      //   label: "Redemption insights",
+      //   free: false,
+      //   smart: false,
+      //   pro: true,
+      // },
     ],
   },
 ];
