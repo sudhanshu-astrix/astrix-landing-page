@@ -106,7 +106,7 @@ const comparisonTableData = [
     ],
   },
   {
-    category: "Attendee Data",
+    category: "Attendees Data",
     rows: [
       { label: "Traffic by Source", free: true, smart: true, pro: true },
       {
