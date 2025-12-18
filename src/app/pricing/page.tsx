@@ -346,6 +346,7 @@ export default function PricingPage() {
   const [credits, setCredits] = useState(1000);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<"free" | "smart" | "pro">("free");
+  const [activeInfoLabel, setActiveInfoLabel] = useState<string | null>(null);
   
   // Detect mobile screen size
   useEffect(() => {
@@ -572,11 +573,11 @@ export default function PricingPage() {
                         <div className="flex items-center justify-between gap-2">
                           <span>{row.label}</span>
                           {("info" in row && row.info) && (
-                            <div className="relative group cursor-pointer flex items-center justify-center">
+                            <div className="relative group cursor-default">
                               <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#E8EAED]/60 text-[9px] text-[#E8EAED]/80">
                                 i
                               </span>
-                              <div className="pointer-events-none absolute left-5 top-full z-20 mt-1 w-56 rounded-md bg-[#202020] px-4 py-2 text-sm text-[#E8EAED] opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity">
+                              <div className="pointer-events-none absolute left-5 top-full z-20 mt-1 w-56 rounded-md bg-[#202020] px-4 py-2 text-xs text-[#E8EAED] opacity-0 group-hover:opacity-100 transition-opacity">
                                 {row.info as string}
                               </div>
                             </div>
@@ -718,7 +719,10 @@ export default function PricingPage() {
             </div>
 
             {/* Comparison Table */}
-            <div className="bg-[#050505] overflow-hidden">
+            <div
+              className="bg-[#050505] overflow-hidden"
+              onClick={() => setActiveInfoLabel(null)}
+            >
               {comparisonTableData.map((section) => (
                 <div key={section.category}>
                   {/* Category Header - Left aligned, full width */}
@@ -745,14 +749,23 @@ export default function PricingPage() {
                             {row.label}
                           </div>
                           {("info" in row && row.info) && (
-                            <div className="relative group cursor-pointer flex items-center justify-center">
-                              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#E8EAED]/60 text-[8px] text-[#E8EAED]/80">
-                                i
-                              </span>
-                              <div className="pointer-events-none absolute left-0 top-full z-20 mt-1 w-48 rounded-md bg-[#202020] px-4 py-2 text-xs text-[#E8EAED] opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity">
-                                {row.info as string}
-                              </div>
-                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveInfoLabel(
+                                  activeInfoLabel === row.label ? null : row.label
+                                );
+                              }}
+                              className="relative flex items-center justify-center h-3.5 w-3.5 rounded-full border border-[#E8EAED]/60 text-[8px] text-[#E8EAED]/80 bg-transparent"
+                            >
+                              i
+                              {activeInfoLabel === row.label && (
+                                <div className="absolute left-0 top-full z-20 mt-1 w-48 rounded-md bg-[#202020] px-4 py-2 text-xs text-[#E8EAED] shadow-lg">
+                                  {row.info as string}
+                                </div>
+                              )}
+                            </button>
                           )}
                         </div>
                       </div>
@@ -841,8 +854,8 @@ export default function PricingPage() {
 
             {/* Credit Slider - Bar Chart Style */}
             <div className="w-full max-w-4xl mx-auto mb-8 mt-10 px-2 md:px-0">
-              {/* Use touchAction 'none' to allow smooth horizontal dragging on iOS */}
-              <div className="relative" style={{ touchAction: 'none' }}>
+              {/* Wrapper allows horizontal dragging on touch devices */}
+              <div className="relative">
                 {/* Calculate selected bar index */}
                 {(() => {
                   const totalBars = isMobile ? 60 : 100; // 60 bars on mobile, 100 on desktop
@@ -930,7 +943,7 @@ export default function PricingPage() {
                         );
                       })()}
                       
-                      {/* Slider Input (overlaid) */}
+                      {/* Slider Input (overlaid, handles drag on all devices including iOS) */}
                       <input
                         type="range"
                         min="1000"
@@ -943,15 +956,9 @@ export default function PricingPage() {
                           const target = e.target as HTMLInputElement;
                           setCredits(Number(target.value));
                         }}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        className="absolute inset-0 w-full h-12 opacity-0 cursor-pointer z-10"
                         style={{
-                          WebkitAppearance: 'none',
-                          appearance: 'none',
                           WebkitTapHighlightColor: 'transparent',
-                          padding: 0,
-                          margin: 0,
-                          cursor: 'pointer',
-                          minHeight: '44px', // iOS minimum touch target size
                         }}
                       />
                       
