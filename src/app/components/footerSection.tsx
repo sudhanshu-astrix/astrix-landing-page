@@ -213,13 +213,13 @@ export default function FooterSection({ className }: { className?: string }) {
         {/* Start your / Onboard Now Section */}
         <div className="flex flex-col md:flex-row items-center justify-start gap-10 mb-8">
           <h3 className="text-white text-xl md:text-2xl font-switzer font-[400] text-center md:text-left">
-            Start your
+            Create an Account
           </h3>
           <a
             href="https://app.astrix.live/login?landingPageListEvent=true"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 md:px-8 py-3 md:py-2 rounded-full border border-[#B0E681] bg-transparent text-[#E4E4E4] text-sm md:text-base font-switzer font-[400] transition-all duration-200"
+            className="px-6 md:px-8 py-3 md:py-2 rounded-full border border-[#B0E681] bg-transparent text-[#E4E4E4] text-sm md:text-base font-switzer font-[400] transition-all duration-200 hover:bg-[#B0E681] hover:text-[#0F0F0F]"
             onClick={() => {
               if (window != undefined && window.localStorage != undefined) {
                 localStorage.setItem("landingPageListEvent", "true");
@@ -229,7 +229,7 @@ export default function FooterSection({ className }: { className?: string }) {
               });
             }}
           >
-            Onboard Now
+            ONBOARD NOW
           </a>
         </div>
 
