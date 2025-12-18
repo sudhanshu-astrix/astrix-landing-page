@@ -251,7 +251,7 @@ export default function FAQSection({ className }: FAQSectionProps) {
                   onClick={() => toggleCategory(categoryIndex)}
                   className="w-full flex items-center justify-between text-left group"
                 >
-                  <h3 className="text-xl md:text-xl font-switzer font-[500] text-[#F0E9B2] group-hover:text-[#FFF3B0] transition-colors duration-200">
+                  <h3 className="text-xl md:text-xl font-switzer font-[300] md:font-[500] text-[#F0E9B2] group-hover:text-[#FFF3B0] transition-colors duration-200">
                     {category.title}
                   </h3>
                   <svg

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import mixpanel from "@/lib/mixpanelClient";
 import FooterSection from "../components/footerSection";
@@ -347,6 +347,7 @@ export default function PricingPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<"free" | "smart" | "pro">("free");
   const [activeInfoLabel, setActiveInfoLabel] = useState<string | null>(null);
+  const sliderAreaRef = useRef<HTMLDivElement | null>(null);
   
   // Detect mobile screen size
   useEffect(() => {
@@ -365,6 +366,22 @@ export default function PricingPage() {
   };
 
   const price = calculatePrice(credits);
+  
+  // Touch handler for credit slider (improves drag on iOS)
+  const handleSliderTouch = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!sliderAreaRef.current) return;
+    const touch = e.touches[0];
+    const rect = sliderAreaRef.current.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const minCredits = 1000;
+    const maxCredits = 10000;
+    const creditRange = maxCredits - minCredits;
+    let ratio = (touch.clientX - rect.left) / rect.width;
+    ratio = Math.min(1, Math.max(0, ratio));
+    const rawCredits = minCredits + ratio * creditRange;
+    const snapped = Math.round(rawCredits / 100) * 100;
+    setCredits(snapped);
+  };
   
   // Handle contact navigation - navigate to home then scroll to contact section
   const handleContactClick = (e: React.MouseEvent) => {
@@ -518,7 +535,10 @@ export default function PricingPage() {
                         }
                       }
 
-                          if (!plan.external) {
+                          // If CTA is "BOOK A DEMO", always redirect to contact section
+                          if (plan.ctaLabel === "BOOK A DEMO") {
+                        handleContactClick(e);
+                      } else if (!plan.external) {
                         handleContactClick(e);
                       }
                       
@@ -657,7 +677,9 @@ export default function PricingPage() {
               const selectedPlanData = planHeaders.find((p) => p.id === selectedPlan);
               if (!selectedPlanData) return null;
               return (
-                <div className="bg-[#1A1A1A] rounded-md p-6 my-7 max-w-[350px] mx-auto border border-[#E8EAED]/40">
+                <div
+                style={{marginLeft: "8%", marginRight: "8%"}}
+                className="bg-[#1A1A1A] rounded-md p-6 my-7 max-w-[350px] mx-auto border border-[#E8EAED]/40">
                   <div className="flex flex-col gap-2">
                     <div>
                       <h3 className="text-sm font-switzer font-[500] text-[#F0E9B2] mb-2">
@@ -687,7 +709,10 @@ export default function PricingPage() {
                             window.localStorage.setItem("landingPageListEvent", "true");
                           }
                         }
-                        if (!selectedPlanData.external) {
+                        // If CTA is "BOOK A DEMO", always redirect to contact section
+                        if (selectedPlanData.ctaLabel === "BOOK A DEMO") {
+                          handleContactClick(e);
+                        } else if (!selectedPlanData.external) {
                           handleContactClick(e);
                         }
                         mixpanel.track(`Pricing - Mobile ${selectedPlanData.ctaLabel} Clicked`, {
@@ -855,7 +880,12 @@ export default function PricingPage() {
             {/* Credit Slider - Bar Chart Style */}
             <div className="w-full max-w-4xl mx-auto mb-8 mt-10 px-2 md:px-0">
               {/* Wrapper allows horizontal dragging on touch devices */}
-              <div className="relative">
+              <div
+                ref={sliderAreaRef}
+                className="relative"
+                onTouchStart={handleSliderTouch}
+                onTouchMove={handleSliderTouch}
+              >
                 {/* Calculate selected bar index */}
                 {(() => {
                   const totalBars = isMobile ? 60 : 100; // 60 bars on mobile, 100 on desktop

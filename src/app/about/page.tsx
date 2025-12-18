@@ -655,10 +655,10 @@ export default function AboutUsPage() {
               HOME
             </Link>
 
-            {/* <Link href="/pricing" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm text-left">
+            <Link href="/pricing" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-white text-xs font-nohemi font-[400] py-2 px-4 hover:text-[#CCD0D7] hover:bg-[#1F1F1F] transition-colors text-shadow-sm text-left">
             
               PRICING
-            </Link> */}
+            </Link>
 
             {/* Services Dropdown for Mobile */}
             <div className="space-y-3">
