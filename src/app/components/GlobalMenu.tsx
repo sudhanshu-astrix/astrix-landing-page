@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import mixpanel from "@/lib/mixpanelClient";
 
 export default function GlobalMenu() {
@@ -10,24 +10,56 @@ export default function GlobalMenu() {
   const [showIcon, setShowIcon] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === "/";
-  
+  const isAbout = pathname === "/about";
+  const isPricing = pathname === "/pricing";
+  const isFAQ = pathname === "/faq";
+  const shouldShowMenu = isHome || isAbout || isPricing || isFAQ;
+
+  const handleContactClick = (e: React.MouseEvent) => {
+    if (!isHome) {
+      e.preventDefault();
+      setIsOpen(false);
+      // Navigate to home page first
+      router.push("/");
+      // Wait for navigation to complete, then dispatch custom event for home page to handle
+      setTimeout(() => {
+        const event = new CustomEvent("scrollToSection", {
+          detail: { targetId: "contact" }
+        });
+        window.dispatchEvent(event);
+      }, 500);
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   useEffect(() => {
     // Reset icon state when pathname changes
     setShowIcon(false);
     
-    const hero = document.querySelector('[data-hero-section="true"]') as HTMLElement | null;
-    if (!hero) {
+    let targetElement: HTMLElement | null = null;
+    
+    if (isHome) {
+      // For home page, check hero section
+      targetElement = document.querySelector('[data-hero-section="true"]') as HTMLElement | null;
+    } else if (isAbout || isPricing || isFAQ) {
+      // For about, pricing, and FAQ pages, check the header/navbar
+      targetElement = document.querySelector('[data-page-header="true"]') as HTMLElement | null;
+    }
+    
+    if (!targetElement) {
       setShowIcon(false);
       return;
     }
 
     const update = () => {
-      const rect = hero.getBoundingClientRect();
-      // Show icon only when hero section has completely scrolled past (is above viewport)
-      const hasScrolledPastHero = rect.bottom <= 0;
-      setShowIcon(hasScrolledPastHero);
+      const rect = targetElement!.getBoundingClientRect();
+      // Show icon only when target element has completely scrolled past (is above viewport)
+      // For header, check if bottom is <= 0 (scrolled past)
+      const hasScrolledPast = rect.bottom <= 0;
+      setShowIcon(hasScrolledPast);
     };
 
     // Initial check
@@ -41,11 +73,25 @@ export default function GlobalMenu() {
       window.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, [pathname]);
+  }, [pathname, isHome, isAbout, isPricing, isFAQ]);
 
   const scrollToProductSection = (targetId: string) => {
     setIsOpen(false);
     
+    // If not on home page, navigate to home first
+    if (!isHome) {
+      router.push("/");
+      // Wait for navigation, then proceed with scrolling
+      setTimeout(() => {
+        scrollToProductSectionAfterNav(targetId);
+      }, 300);
+      return;
+    }
+    
+    scrollToProductSectionAfterNav(targetId);
+  };
+
+  const scrollToProductSectionAfterNav = (targetId: string) => {
     // Mobile: simple scroll to element
     const isDesktop = window.innerWidth >= 768;
     if (!isDesktop) {
@@ -237,7 +283,7 @@ export default function GlobalMenu() {
     });
   };
 
-  if (!isHome) return null;
+  if (!shouldShowMenu) return null;
 
   return (
     <>
@@ -409,7 +455,7 @@ export default function GlobalMenu() {
             </div>
 
             <Link
-              href="#"
+              href="/faq"
               className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
               onClick={() => {setIsOpen(false)
                   mixpanel.track(
@@ -423,11 +469,12 @@ export default function GlobalMenu() {
 
             <Link
               href="#contact"
-              onClick={() => {setIsOpen(false)
-                  mixpanel.track(
-                              "Global Menu - Contact Us Clicked",
-                              { location: "Global Menu" }
-                            );
+              onClick={(e) => {
+                handleContactClick(e);
+                mixpanel.track(
+                  "Global Menu - Contact Us Clicked",
+                  { location: "Global Menu" }
+                );
               }}
               className="text-white text-xs font-nohemi font-[400] hover:text-[#CCD0D7] transition-colors text-shadow-sm py-2 px-4 hover:bg-[#1F1F1F]"
             >
@@ -450,7 +497,8 @@ export default function GlobalMenu() {
               <Link
                 href="#contact"
                 className="w-fit px-3 py-1 flex items-center font-nohemi font-[400] justify-center rounded-3xl border border-[#4e4e4e87] bg-[#3c3c3cbf] shadow-[inset_0_2.39px_2.29px_rgba(0,0,0,0.25),0_2.29px_2.29px_rgba(0,0,0,0.25)] cursor-pointer hover:opacity-90 transition-all hover:-translate-y-0.5 text-white text-[10px] leading-none text-shadow-sm"
-                onClick={() => {setIsOpen(false)
+                onClick={(e) => {
+                  handleContactClick(e);
                   mixpanel.track("Global Menu - Book A Demo Clicked", { location: "Global Menu" });
                 }}
               >
