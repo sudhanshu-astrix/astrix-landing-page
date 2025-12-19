@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import HeroSection from "./components/heroSection";
 import { optimizeForIOS } from "@/utils";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSectionTracker } from "@/hooks/useSectionTracker";
 import { trackEvent } from "@/utils/MetaPixel";
 
