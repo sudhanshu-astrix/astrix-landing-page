@@ -71,19 +71,19 @@ const comparisonTableData = [
     category: "Marketing & Growth",
     rows: [
       {
-        label: "Email",
+        label: "Marketing Credits",
         info: "Get 100 Credits in Free and 500 Credits in Pro to send the mentioned number of Emails or SMS.",
-        free: "200",
+        free: "100",
         smart: "500",
-        pro: "1000",
+        pro: "500",
       },
-      {
-        label: "SMS",
-        info: "Get 100 Credits in Free and 500 Credits in Pro to send the mentioned number of Emails or SMS.",
-        free: "50",
-        smart: "150",
-        pro: "250",
-      },
+      // {
+      //   label: "SMS",
+      //   info: "Get 100 Credits in Free and 500 Credits in Pro to send the mentioned number of Emails or SMS.",
+      //   free: "50",
+      //   smart: "150",
+      //   pro: "250",
+      // },
       { label: "Discount Codes", free: true, smart: true, pro: true },
       {
         label: "Promoter Links (Affiliate Mgmt.)",
