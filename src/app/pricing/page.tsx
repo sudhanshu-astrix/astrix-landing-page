@@ -32,7 +32,7 @@ const comparisonTableData = [
         pro: true,
       },
       {
-        label: "Custom Registration Forms",
+        label: "Custom Survey Forms",
         free: "1",
         smart: "1",
         pro: "Unlimited",

@@ -198,6 +198,96 @@ const faqData: FAQCategory[] = [
       },
     ],
   },
+  {
+    title: "Finding & Accessing Your Tickets",
+    items: [
+      {
+        question: "How do I know where my ticket is?",
+        answer:
+          "Every purchased ticket lives in your SmartPass section. You'll also receive a copy via email right after checkout.",
+      },
+      {
+        question: "I'm not able to find my QR code.",
+        answer:
+          "No worries!\n\nGo to your Astrix app → SmartPass → Select the event.\nYour QR code will show up on the ticket screen.\nIf it still doesn't appear, check your confirmation email - it includes a QR.\nIf both are missing, reach out to us at support@astrix.live.",
+      },
+      {
+        question: "Do I need to show the email when I arrive at the event?",
+        answer:
+          "Your Astrix QR Code is enough for entry, just open the app and show it at the gate. If your phone battery is low or you prefer backup, the email version works too. Either one will scan instantly.",
+      },
+      {
+        question: "What if I don't receive my ticket?",
+        answer:
+          "Tickets are delivered instantly. If you don't see it, just refresh or check your registered email/SMS for a link. Still missing? Reach out to us at support@astrix.live",
+      },
+    ],
+  },
+  {
+    title: "Discovering Events",
+    items: [
+      {
+        question: "How do I find events happening near me?",
+        answer:
+          "Your home feed shows curated experiences based on your interests and location. You can also explore by categories – Music, Culture, Workshops, Parties, or Communities.",
+      },
+      {
+        question: "Will Astrix recommend events for me?",
+        answer:
+          "Yes. The more you attend and interact, the smarter your recommendations get. We'll never spam, only surface things genuinely relevant to your interests.",
+      },
+      {
+        question: "Can I see all the events I've attended?",
+        answer:
+          "Yes. Go to your SmartPass section and access the Past Event. You'll see every event, ticket, and badge you've collected.",
+      },
+    ],
+  },
+  {
+    title: "Purchasing Tickets",
+    items: [
+      {
+        question: "How do I buy a ticket?",
+        answer:
+          "Tap on any event → choose a ticket type → pay securely via UPI, card, or wallet.\nOnce paid, your ticket appears instantly in your SmartPass section with a QR code.",
+      },
+    ],
+  },
+  {
+    title: "Event Entry & Age Restrictions",
+    items: [
+      {
+        question: "I am under 18 years of age, would I be allowed at the event?",
+        answer:
+          "It depends on the event's age policy. Each listing clearly states if it's 18+, 21+, or All Ages. Please bring a valid photo ID, entry rules are enforced by the venue, not Astrix. If unsure, check the event description or contact the organiser directly.",
+      },
+    ],
+  },
+  {
+    title: "Platform Access",
+    items: [
+      {
+        question: "I can't find the app on the App Store/Play Store, what do I do?",
+        answer:
+          "Astrix is currently available as a web app and a website at astrix.live.",
+      },
+    ],
+  },
+  {
+    title: "Refunds & Payment Issues",
+    items: [
+      {
+        question: "Can I get a refund if I can't attend?",
+        answer:
+          "Whether a refund is possible depends entirely on the policy set by the event organizer, as Astrix does not control their individual refund rules.",
+      },
+      {
+        question: "My payment failed, but the money was deducted. What should I do?",
+        answer:
+          "In the rare case of a payment failure where money is deducted, the amount is almost always reversed automatically by your bank or payment gateway within 5-10 business days. If you do not receive a ticket or a refund after 24 hours, please contact us at support@astrix.live with your transaction details.",
+      },
+    ],
+  },
 ];
 
 export default function FAQSection({ className }: FAQSectionProps) {
