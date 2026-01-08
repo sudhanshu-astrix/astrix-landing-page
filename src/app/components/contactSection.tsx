@@ -105,8 +105,11 @@ export default function ContactSection({ className }: { className?: string }) {
         });
         
         // Track Facebook Pixel CompleteRegistration event
-        if (typeof window !== "undefined" && window.fbq) {
-          window.fbq("track", "CompleteRegistration");
+        try {
+          trackEvent("CompleteRegistration", {email, firstName, lastName, phone, message});
+          console.log("Facebook Pixel CompleteRegistration event tracked");
+        } catch (error) {
+          console.warn("Facebook Pixel tracking failed:", error);
         }
         
         form.reset();
