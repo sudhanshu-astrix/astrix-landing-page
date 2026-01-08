@@ -103,6 +103,12 @@ export default function ContactSection({ className }: { className?: string }) {
           phone,
           message,
         });
+        
+        // Track Facebook Pixel CompleteRegistration event
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq("track", "CompleteRegistration");
+        }
+        
         form.reset();
       } else {
         toast.warning(result.error || "Something went wrong.");
