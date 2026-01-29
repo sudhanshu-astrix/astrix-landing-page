@@ -12,7 +12,7 @@ const comparisonTableData = [
   {
     category: "Organiser Fees",
     rows: [
-      { label: "Zero listing fees", free: true, smart: true, pro: true },
+      // { label: "Zero listing fees", free: true, smart: true, pro: true },
       { label: "Pre-Event Payout", free: false, smart: false, pro: true },
     ],
   },
