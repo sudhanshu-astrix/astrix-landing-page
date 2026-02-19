@@ -48,7 +48,7 @@ const comparisonTableData = [
   {
     category: "Smart Profile",
     rows: [
-      { label: "Zero-Listing Fees", free: true, smart: true, pro: true },
+      // { label: "Zero-Listing Fees", free: true, smart: true, pro: true },
       { label: "Curated Gallery", free: true, smart: true, pro: true },
       { label: "Product / Collection links", free: true, smart: true, pro: true },
       { label: "Social Embeds", free: true, smart: true, pro: true },
@@ -205,7 +205,7 @@ const pricingData = {
     subtitle: "Spend nothing for first month",
     features: [
       "Access to all pro features",
-      "Zero Listing Fees",
+      // "Zero Listing Fees",
       "Unlimited Private Listings",
       "Market to Subscribers for Free",
       "Astrix Sub-domain",
@@ -227,7 +227,7 @@ const pricingData = {
         target: "_blank",
       },
       features: {
-        "Organiser Fees": ["Zero Listing Fees"],
+        // "Organiser Fees": ["Zero Listing Fees"],
         "Ticketing Features": [
           "1 Private Ticket Listing",
           "Ticket Types (RSVP, Paid, PWYW)",
@@ -268,7 +268,7 @@ const pricingData = {
         href: "#contact",
       },
       features: {
-        "Organiser Fees": ["Zero Listing Fees", "Pre-Event Payout"],
+        "Organiser Fees": ["Pre-Event Payout"],
         "Ticketing Features": [
           "Unlimited Private Ticket Listing",
           "Ticket Types (RSVP, Paid, PWYW)",
